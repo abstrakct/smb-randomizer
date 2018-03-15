@@ -7,6 +7,8 @@
  *
  * inspired by alttp randomizer
  *
+ * Sources used:
+ * https://github.com/justinmichaud/rust-nes-emulator/blob/master/SMAS%20SMB1%20Level%20Data/Level%20Data.pdf
  *
  * TODO: Allow changing text?
  */
@@ -17,7 +19,9 @@ class Rom {
     const SIZE = 40976;
 
     private $tmpfile;
+    private $log;
     protected $rom;
+    protected $level;
 
     /**
      * constructor
@@ -33,6 +37,10 @@ class Rom {
         }
 
         $this->rom = fopen($this->tmpfile, "r+");
+    }
+
+    public function setLogger($l) {
+        $this->log = $l;
     }
 
     /**
@@ -93,8 +101,23 @@ class Rom {
 		//}
 		fseek($this->rom, $offset);
 		fwrite($this->rom, $data);
+
+        $d = array_values(unpack('C*', $data));
+        $m = sprintf("rom::write addr: %04x ", $offset);
+        $this->log->write($m);
+        foreach($d as $value) {
+            $this->log->write(sprintf("%02x ", $value));
+        }
+        $this->log->write("\n");
 		return $this;
 	}
+
+    public function writeArray(int $offset, array $adata, bool $log = true) : self {
+        $data = pack('C*', $adata);
+        fseek($this->rom, $offset);
+        fwrite($this->rom, $data);
+        return $this;
+    }
 
     public function setMarioOuterColor(int $color) : self {
         $this->write(0x005E8, pack('C*', $color));
@@ -141,6 +164,13 @@ class Rom {
         return $this;
     }
 
+    public function readLevels() : self {
+        $level[1][1] = $this->read(0x2502F, 0x25099-0x2502F);
+        $level[1][2] = $this->read(0x2562D, 0x256D1-0x2562D);
+        $this->writeArray(0x2502F, $level[1][2]);
+
+        return $this;
+    }
     /**
      * destructor
      *
