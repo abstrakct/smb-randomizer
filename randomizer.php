@@ -99,12 +99,45 @@ class Randomizer {
         return $this;
     }
 
-    public function shuffleLevels() {
+    /*
+     * Shuffle levels, but castles can appear anywhere, except the 8-4 which is 8-4
+     */
+    public function shuffleAllLevels() {
+        $this->log->write("Shuffling ALL levels\n");
+        $shuffledlevels  = mt_shuffle($_SESSION['all_levels']);
+
+        $levelindex = 1;
+        $castleindex = 0;
+        if($this->options['Remove Pipe Transitions'] == 'true') {
+            for($i = 0; $i < 32; $i++) {
+                $this->level[$levelindex] = $shuffledlevels[$i];
+                $levelindex++;
+            }
+
+            $this->level[31] = 0x65;
+
+            for($i = 1; $i <= 32; $i++) {
+                $this->rom->write(0x1ccb + $i, pack('C*', $this->level[$i]));
+            }
+
+            $p = 0;
+            for($i = 0; $i < 8; $i++) {
+                $this->rom->write(0x1cc4 + $i, pack('C*', $p));
+                $p += 4;
+            }
+        } else {
+            print("not implemented\n");
+        }
+    }
+    /*
+     * Shuffle levels, but make sure each -4 is a castle.
+     * Castles are also shuffled, except the 8-4 which is 8-4
+     */
+    public function shuffleLevelsWithCastlesLast() {
         $this->log->write("Shuffling levels\n");
         $shuffledlevels  = mt_shuffle($_SESSION['levels']);
         $shuffledcastles = mt_shuffle($_SESSION['castles']);
 
-        // TODO: something better than this! 
         $levelindex = 1;
         $castleindex = 0;
         if($this->options['Remove Pipe Transitions'] == 'true') {
@@ -180,27 +213,13 @@ class Randomizer {
         $this->setLuigiColorScheme($this->options['Luigi Color Scheme']);
         $this->setFireColorScheme($this->options['Fire Color Scheme']);
 
-        /*
-        $shuffledlevels = mt_shuffle($_SESSION['levels']); 
-        $outputlevels = [];
-        $j = 0;
-        for($i = 0; $i < 24; $i++) {
-            $outputlevels[$j] = $shuffledlevels[$i];
-            $j++;
-            if(($j % 3) == 0) $j++;
+        if($this->options['Randomize Levels'] == "true") {
+            if($this->options['Castles Last'] == "true") {
+                $this->shuffleLevelsWithCastlesLast();
+            } else {
+                $this->shuffleAllLevels();
+            }
         }
-        $shuffledcastles = mt_shuffle($_SESSION['castles']);
-        $j = 0;
-        for($i = 3; $i < 28; $i += 4) {
-            $outputlevels[$i] = $shuffledcastles[$j];
-            $j++; 
-        }
-        foreach($outputlevels as $l => $v) {
-            print("Level $l set to $v\n");
-        }
-        */
-
-        $this->shuffleLevels();
     }
 }
 

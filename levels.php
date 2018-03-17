@@ -86,5 +86,6 @@ $enemieslength[1][1] = 0x1f2e - $enemiesoffset[1][1] + 1;
 if(!session_id()) session_start();
 if(!isset($_SESSION['levels'])) $_SESSION['levels'] = $levels;
 if(!isset($_SESSION['castles'])) $_SESSION['castles'] = $castles;
+if(!isset($_SESSION['all_levels'])) $_SESSION['all_levels'] = $all_levels;
 
 ?>

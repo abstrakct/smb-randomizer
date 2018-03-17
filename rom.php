@@ -7,8 +7,6 @@
  *
  * inspired by alttp randomizer
  *
- * Sources used:
- * https://github.com/justinmichaud/rust-nes-emulator/blob/master/SMAS%20SMB1%20Level%20Data/Level%20Data.pdf
  *
  * TODO: Allow changing text?
  */
