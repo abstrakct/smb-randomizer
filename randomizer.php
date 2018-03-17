@@ -90,7 +90,7 @@ class Randomizer {
         }
         if($colorscheme == "random") {
             $outer = mt_rand(0, 255);
-            $skin = mt_rand(0, 255);
+            $skin  = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
             $this->rom->setLuigiInnerColor($inner);
             $this->rom->setLuigiSkinColor($skin);
@@ -108,7 +108,7 @@ class Randomizer {
 
         $levelindex = 1;
         $castleindex = 0;
-        if($this->options['Remove Pipe Transitions'] == 'true') {
+        if($this->options['Pipe Transitions'] == 'remove') {
             for($i = 0; $i < 32; $i++) {
                 $this->level[$levelindex] = $shuffledlevels[$i];
                 $levelindex++;
@@ -140,19 +140,19 @@ class Randomizer {
 
         $levelindex = 1;
         $castleindex = 0;
-        if($this->options['Remove Pipe Transitions'] == 'true') {
-            for($i = 0; $i < 23; $i++) {
+        if($this->options['Pipe Transitions'] == 'remove') {
+            for($i = 0; $i <= 23; $i++) {
                 $this->level[$levelindex] = $shuffledlevels[$i];
                 $levelindex++;
                 if(($levelindex % 4) == 0) $levelindex++;
             }
 
-            for($i = 4; $i < 28; $i += 4) {
+            for($i = 4; $i <= 28; $i += 4) {
                 $this->level[$i] = $shuffledcastles[$castleindex];
                 $castleindex++;
             }
 
-            $this->level[31] = 0x65;
+            $this->level[32] = 0x65;
 
             for($i = 1; $i <= 32; $i++) {
                 $this->rom->write(0x1ccb + $i, pack('C*', $this->level[$i]));
