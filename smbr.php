@@ -30,6 +30,7 @@ require_once "logger.php";
 require_once "dump.php";
 require_once "colorscheme.php";
 require_once "text.php";
+require_once "enemies.php";
 
 $options['Mario Color Scheme'] = "random";
 $options['Luigi Color Scheme'] = "random";
@@ -66,7 +67,7 @@ $options['Castles Last'] = "true";
  * Also, maybe make some enemies more rare than others.. and don't shuffle some, like Bowser. Or add option to do so...
  * TODO: LIFTS ARE ENEMIES!!! Don't shuffle in a game-breaking way!!!
  */
-$options['Shuffle Enemies'] = "false";
+$options['Shuffle Enemies'] = "true";
 // rewrite table at 0x1cc4 if removing pipe transitions!
 
 //$options['debugdump'] = "false";
@@ -123,8 +124,8 @@ if($randomseed) {
     $rando = new Randomizer($chosenseed, $options, $rom);
 }
 $rando->setSeed($rando->getSeed());
-$outfilename = "SMBR-" . $rando->getSeed() . ".nes";
-$logfilename = "SMBR-" . $rando->getSeed() . ".log";
+$outfilename = "smb-rando-" . $rando->getSeed() . ".nes";
+$logfilename = "smb-rando-" . $rando->getSeed() . ".log";
 $log = new Logger($logfilename);
 $rom->setLogger($log);
 if(!isset($_SESSION['log'])) $_SESSION['log'] = $log;

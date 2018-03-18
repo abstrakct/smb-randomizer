@@ -27,9 +27,14 @@ class Randomizer {
     protected $rom;
     private $level = [];
     private $log;
-    private $fullenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x14, 0x15, 0x16, 0x17, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x2D, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E ];
-    private $testenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ];
+    private $fullenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x14, 0x15, 0x16, 0x17, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x2D, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E ];
+    //private $testenemypool = [ 0x05 ];
+    private $restrictedenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x14, 0x15, 0x17, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E ];
+    // enemies that should never be randomized
+    // TODO: add bowser? option?
+    private $dontrandomizetheseenemies = [ 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x34 ];
     private $trans;
+    private $testenemypool;
 
     /**
      * Create a new randomizer.
@@ -55,6 +60,7 @@ class Randomizer {
             'Pale Ninja' => new Colorscheme(0xce, 0xd0, 0x1e),
             'All Black' => new Colorscheme(0x8d, 0x8d, 0x8d),
         ];
+        $this->testenemypool = [ new Enemy("Goomba"), new Enemy("Podoboo") ];
     }
 
     public function outputOptions() {
@@ -122,6 +128,7 @@ class Randomizer {
 
     public function shuffleEnemiesOnLevel(string $level) {
         $offset = $_SESSION['enemydataoffsets'][$level];
+        $nope = $this->dontrandomizetheseenemies;
         $end = 0;
         $data = $this->rom->read($offset, 100);
         foreach ($data as $byte) {
@@ -142,7 +149,12 @@ class Randomizer {
                     $p = $data[$i+1] & 0x80;
                     $h = $data[$i+1] & 0x40;
                     $o = $data[$i+1] & 0x3f;  // this is the enemy
-                    $newo = $this->testenemypool[mt_rand(0, count($this->testenemypool) - 1)];
+                    /* Some enemies can't be randomized, so let's check for those */
+                    if(in_array($o, $nope)) {
+                        $this->log->write("Found un-randomizable enemy!\n");
+                        continue;
+                    }
+                    $newo = $this->testenemypool[mt_rand(0, count($this->testenemypool) - 1)]->num;
                     $newdata = (($data[$i+1] & 0x80) | ($data[$i+1] & 0x40)) | $newo;
                     $data[$i+1] = $newdata;
                     $this->rom->write($offset + $i + 1, pack('C*', $newdata));
