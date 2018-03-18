@@ -1,4 +1,6 @@
-<?php
+<?php namespace SMBR;
+
+use SMBR\Colorscheme;
 
 /*
  * The main randomizer class!
@@ -15,6 +17,9 @@
 if(!session_id()) session_start();
 
 class Randomizer {
+    public $flags;
+    public $seedhash;
+    public $colorschemes;
     protected $rng_seed;
     protected $seed;
     protected $options;
@@ -22,6 +27,7 @@ class Randomizer {
     private $level = [];
     private $log;
     private $fullenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x14, 0x15, 0x16, 0x17, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x2D, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E ];
+    private $testenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ];
 
     /**
      * Create a new randomizer.
@@ -38,6 +44,14 @@ class Randomizer {
         $this->rng_seed = $seed;
         $this->options = $opt;
         $this->rom = $rom;
+        $this->colorschemes = [
+            'random' => new Colorscheme(0, 0, 0),
+            'Mario' => new Colorscheme(0x16, 0x27, 0x18),
+            'Luigi' => new Colorscheme(0x30, 0x27, 0x19),
+            'Vanilla Fire' => new Colorscheme(0x37, 0x27, 0x16),
+            'Pale Ninja' => new Colorscheme(0xce, 0xd0, 0x1e),
+            'All Black' => new Colorscheme(0x8d, 0x8d, 0x8d),
+        ];
     }
 
     public function outputOptions() {
@@ -54,55 +68,57 @@ class Randomizer {
 
     public function setMarioColorScheme(string $colorscheme) : self {
         $this->log->write("Mario Color Scheme: " . $colorscheme . "\n");
-        if($colorscheme == "normal") {
-            return $this;
-        }
         if($colorscheme == "random") {
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
-            $this->rom->setMarioInnerColor($inner);
-            $this->rom->setMarioSkinColor($skin);
-            $this->rom->setMarioOuterColor($outer);
+        } else {
+            $outer = $this->colorschemes[$colorscheme]->outer;
+            $skin  = $this->colorschemes[$colorscheme]->skin;
+            $inner = $this->colorschemes[$colorscheme]->inner;
         }
+        $this->rom->setMarioInnerColor($inner);
+        $this->rom->setMarioSkinColor($skin);
+        $this->rom->setMarioOuterColor($outer);
         return $this;
     }
 
     public function setFireColorScheme(string $colorscheme) : self {
         $this->log->write("Fire Mario/Luigi Color Scheme: " . $colorscheme . "\n");
-        if($colorscheme == "normal") {
-            return $this;
-        }
         if($colorscheme == "random") {
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
-            $this->rom->setFireInnerColor($inner);
-            $this->rom->setFireSkinColor($skin);
-            $this->rom->setFireOuterColor($outer);
+        } else {
+            $outer = $this->colorschemes[$colorscheme]->outer;
+            $skin  = $this->colorschemes[$colorscheme]->skin;
+            $inner = $this->colorschemes[$colorscheme]->inner;
         }
+        $this->rom->setFireInnerColor($inner);
+        $this->rom->setFireSkinColor($skin);
+        $this->rom->setFireOuterColor($outer);
         return $this;
     }
 
     public function setLuigiColorScheme(string $colorscheme) : self {
         $this->log->write("Luigi Color Scheme: " . $colorscheme . "\n");
-        if($colorscheme == "normal") {
-            return $this;
-        }
         if($colorscheme == "random") {
             $outer = mt_rand(0, 255);
-            $skin  = mt_rand(0, 255);
+            $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
-            $this->rom->setLuigiInnerColor($inner);
-            $this->rom->setLuigiSkinColor($skin);
-            $this->rom->setLuigiOuterColor($outer);
+        } else {
+            $outer = $this->colorschemes[$colorscheme]->outer;
+            $skin  = $this->colorschemes[$colorscheme]->skin;
+            $inner = $this->colorschemes[$colorscheme]->inner;
         }
+        $this->rom->setLuigiInnerColor($inner);
+        $this->rom->setLuigiSkinColor($skin);
+        $this->rom->setLuigiOuterColor($outer);
         return $this;
     }
 
-    public function shuffleEnemies() {
-        // test on 1-1 for now
-        $offset = $_SESSION['enemydataoffsets']['1-1'];
+    public function shuffleEnemiesOnLevel(string $level) {
+        $offset = $_SESSION['enemydataoffsets'][$level];
         $end = 0;
         $data = $this->rom->read($offset, 100);
         foreach ($data as $byte) {
@@ -123,7 +139,7 @@ class Randomizer {
                     $p = $data[$i+1] & 0x80;
                     $h = $data[$i+1] & 0x40;
                     $o = $data[$i+1] & 0x3f;  // this is the enemy
-                    $newo = $this->fullenemypool[mt_rand(0, count($this->fullenemypool))];
+                    $newo = $this->testenemypool[mt_rand(0, count($this->testenemypool) - 1)];
                     $newdata = (($data[$i+1] & 0x80) | ($data[$i+1] & 0x40)) | $newo;
                     $data[$i+1] = $newdata;
                     $this->rom->write($offset + $i + 1, pack('C*', $newdata));
@@ -131,7 +147,16 @@ class Randomizer {
                 }
             }
         }
-        //$this->rom->writeArray($offset, $data);
+    }
+
+    public function shuffleEnemies() {
+        foreach ($_SESSION['enemydataoffsets'] as $key => $value) {
+            $this->shuffleEnemiesOnLevel($key);
+        }
+        //$this->shuffleEnemiesOnLevel('1-1');
+        //$this->shuffleEnemiesOnLevel('1-2');
+        //$this->shuffleEnemiesOnLevel('1-3');
+        //$this->shuffleEnemiesOnLevel('1-4');
     }
 
     /*
@@ -233,6 +258,22 @@ class Randomizer {
         }
     }
 
+    public function makeFlags() {
+        $this->flags[0] = $this->options['Pipe Transitions'][0];
+        $this->flags[1] = $this->options['Shuffle Levels'][0];
+        $this->flags[2] = $this->options['Castles Last'][0];
+        $this->flags[3] = $this->options['Shuffle Enemies'][0];
+        $s = implode("", $this->flags);
+        print("Flags: $s\n");
+        $this->makeSeedHash();
+    }
+
+    public function makeSeedHash() {
+        $hashbase = implode("", $this->flags) . strval($this->getSeed());
+        $this->seedhash = md5($hashbase);
+        print("SeedHash: $this->seedhash\n");
+    }
+
     public function setSeed(int $rng_seed = null) {
         $rng_seed = $rng_seed ?: random_int(1, 999999999); // cryptographic pRNG for seeding
 		$this->rng_seed = $rng_seed % 1000000000;
@@ -241,6 +282,7 @@ class Randomizer {
 
     // Here we go!
     public function makeSeed() {
+        $this->makeFlags();
         print("\nOK - making randomized SMB ROM with seed $this->rng_seed\n");
         $this->log = $_SESSION['log'];
 
@@ -274,4 +316,3 @@ function mt_shuffle(array $array) {
 }
 
 
-?>

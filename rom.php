@@ -1,4 +1,4 @@
-<?php
+<?php namespace SMBR;
 
 /**
  * ROM class
@@ -51,7 +51,7 @@ class Rom {
     }
 
     /**
-     * Check the MD5 hashof current file
+     * Check the MD5 hash of current file
      *
      * @return bool
      */
@@ -156,7 +156,7 @@ class Rom {
         return $this;
     }
 
-    public function setFireInnerColor(int $color) : self {
+    public function setFireOuterColor(int $color) : self {
         $this->write(0x005F0, pack('C*', $color));
         return $this;
     }
@@ -166,7 +166,7 @@ class Rom {
         return $this;
     }
 
-    public function setFireOuterColor(int $color) : self {
+    public function setFireInnerColor(int $color) : self {
         $this->write(0x005F2, pack('C*', $color));
         return $this;
     }
@@ -192,4 +192,3 @@ class Rom {
 }
 
 
-?>

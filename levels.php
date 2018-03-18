@@ -1,4 +1,4 @@
-<?php
+<?php namespace SMBR;
 
 // TODO: search ROM for leveldata instead of using hardcoded offsets/numbers?!
 
@@ -177,4 +177,3 @@ if(!isset($_SESSION['castles'])) $_SESSION['castles'] = $castles;
 if(!isset($_SESSION['all_levels'])) $_SESSION['all_levels'] = $all_levels;
 if(!isset($_SESSION['enemydataoffsets'])) $_SESSION['enemydataoffsets'] = $enemydataoffsets;
 
-?>

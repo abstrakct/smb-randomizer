@@ -1,4 +1,4 @@
-<?php
+<?php namespace SMBR;
 
 class Logger {
     private $fp, $logfile;
@@ -16,5 +16,3 @@ class Logger {
         fclose($this->fp);
     }
 }
-
-?>
