@@ -29,10 +29,11 @@ require_once "randomizer.php";
 require_once "logger.php";
 require_once "dump.php";
 require_once "colorscheme.php";
+require_once "text.php";
 
 $options['Mario Color Scheme'] = "random";
 $options['Luigi Color Scheme'] = "random";
-$options['Fire Color Scheme']  = "Vanilla Fire";
+$options['Fire Color Scheme']  = "random";
 /*
  * Pipe Transitions (like between 1-1 and 1-2) can be:
  * remove  - just remove them entirely
@@ -99,7 +100,7 @@ $rom = new Rom($filename);
 $checksum = $rom->getMD5();
 $ok = $rom->checkMD5();
 
-print("ROM filename: $filename\n");
+print("\n\nSMB RANDOMIZER\n\nROM filename: $filename\n");
 print("MD5 checksum: $checksum");
 if($ok) {
     print(" [OK]\n");

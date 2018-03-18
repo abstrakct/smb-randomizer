@@ -1,6 +1,7 @@
 <?php namespace SMBR;
 
 use SMBR\Colorscheme;
+use SMBR\Translator;
 
 /*
  * The main randomizer class!
@@ -28,6 +29,7 @@ class Randomizer {
     private $log;
     private $fullenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x14, 0x15, 0x16, 0x17, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x2D, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E ];
     private $testenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ];
+    private $trans;
 
     /**
      * Create a new randomizer.
@@ -44,6 +46,7 @@ class Randomizer {
         $this->rng_seed = $seed;
         $this->options = $opt;
         $this->rom = $rom;
+        $this->trans = new Translator();
         $this->colorschemes = [
             'random' => new Colorscheme(0, 0, 0),
             'Mario' => new Colorscheme(0x16, 0x27, 0x18),
@@ -258,6 +261,23 @@ class Randomizer {
         }
     }
 
+    public function setTextRando() {
+        $this->rom->write(0x09fb5, pack('C*', $this->trans->asciitosmb('R')));
+        $this->rom->write(0x09fb6, pack('C*', $this->trans->asciitosmb('A')));
+        $this->rom->write(0x09fb7, pack('C*', $this->trans->asciitosmb('N')));
+        $this->rom->write(0x09fb8, pack('C*', $this->trans->asciitosmb('D')));
+        $this->rom->write(0x09fb9, pack('C*', $this->trans->asciitosmb('O')));
+    }
+
+    public function setTextSeedhash(string $text) {
+        /*
+         * Replace "NINTENDO" in "(C)1985 NINTENDO" on the title screen with the first 8 characters of the seedhash
+         */
+        for($i = 0; $i < 8; $i++) {
+            $this->rom->write(0x09fbb + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
+        }
+    }
+
     public function makeFlags() {
         $this->flags[0] = $this->options['Pipe Transitions'][0];
         $this->flags[1] = $this->options['Shuffle Levels'][0];
@@ -283,6 +303,8 @@ class Randomizer {
     // Here we go!
     public function makeSeed() {
         $this->makeFlags();
+        $this->setTextRando();
+        $this->setTextSeedhash($this->seedhash);
         print("\nOK - making randomized SMB ROM with seed $this->rng_seed\n");
         $this->log = $_SESSION['log'];
 
