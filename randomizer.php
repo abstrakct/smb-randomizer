@@ -21,6 +21,7 @@ class Randomizer {
     protected $rom;
     private $level = [];
     private $log;
+    private $fullenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x14, 0x15, 0x16, 0x17, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x2D, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E ];
 
     /**
      * Create a new randomizer.
@@ -97,6 +98,40 @@ class Randomizer {
             $this->rom->setLuigiOuterColor($outer);
         }
         return $this;
+    }
+
+    public function shuffleEnemies() {
+        // test on 1-1 for now
+        $offset = $_SESSION['enemydataoffsets']['1-1'];
+        $end = 0;
+        $data = $this->rom->read($offset, 100);
+        foreach ($data as $byte) {
+            $end++;
+            if($byte == 0xFF) {
+                break;
+            }
+        }
+        for($i = 0; $i < $end; $i+=2) {
+            $x = $data[$i] & 0xf0;
+            $y = $data[$i] & 0x0f;
+            if($y == 0xE) {
+                $i++;
+            } else if ($y > 0x0e) {
+                continue;
+            } else {
+                if($data[$i] != 0xFF) {
+                    $p = $data[$i+1] & 0x80;
+                    $h = $data[$i+1] & 0x40;
+                    $o = $data[$i+1] & 0x3f;  // this is the enemy
+                    $newo = $this->fullenemypool[mt_rand(0, count($this->fullenemypool))];
+                    $newdata = (($data[$i+1] & 0x80) | ($data[$i+1] & 0x40)) | $newo;
+                    $data[$i+1] = $newdata;
+                    $this->rom->write($offset + $i + 1, pack('C*', $newdata));
+                    //printf("x: %02x  y: %02x  p: %02x  h: %02x  o: %02x (%s)\n", $x, $y, $p, $h, $o, getenemyname($newo));
+                }
+            }
+        }
+        //$this->rom->writeArray($offset, $data);
     }
 
     /*
@@ -213,12 +248,15 @@ class Randomizer {
         $this->setLuigiColorScheme($this->options['Luigi Color Scheme']);
         $this->setFireColorScheme($this->options['Fire Color Scheme']);
 
-        if($this->options['Randomize Levels'] == "true") {
+        if($this->options['Shuffle Levels'] == "true") {
             if($this->options['Castles Last'] == "true") {
                 $this->shuffleLevelsWithCastlesLast();
             } else {
                 $this->shuffleAllLevels();
             }
+        }
+        if($this->options['Shuffle Enemies'] == "true") {
+            $this->shuffleEnemies();
         }
     }
 }

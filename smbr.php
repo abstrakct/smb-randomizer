@@ -51,7 +51,8 @@ $options['Mario Color Scheme'] = "random";
 $options['Luigi Color Scheme'] = "random";
 $options['Fire Color Scheme'] = "random";
 $options['Pipe Transitions'] = "remove";  // remove "pipe transitions" between levels, like between 1-1 and 1-2 in vanilla.
-$options['Randomize Levels'] = "true";
+$options['Shuffle Levels'] = "false";
+$options['Shuffle Enemies'] = "true";
 $options['Castles Last'] = "true";  // make sure the last level (x-4) of each world is a castle. If set to false, castles can appear anywhere and will take you to the next world when beaten
 // rewrite table at 0x1cc4 if removing pipe transitions!
 
@@ -117,12 +118,14 @@ $rando->outputOptions();
 //levelenemydump($offset, $rom);
 //
 
+/*
 print("dumping enemies\n\n");
 
 foreach ($enemydataoffsets as $name => $offset) {
     print("$name");
     levelenemydump($offset, $rom);
 }
+ */
 
 // so this kinda works, at least as proof of concept......
 //$pipebyte3 = $rom->read($offset + 2 + 2, 1);

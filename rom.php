@@ -111,6 +111,15 @@ class Rom {
 	}
 
     public function writeArray(int $offset, array $adata, bool $log = true) : self {
+        // log the write...
+        $d = array_values($adata);
+        $m = sprintf("rom::write addr: %04x ", $offset);
+        $this->log->write($m);
+        foreach($d as $value) {
+            $this->log->write(sprintf("%02x ", $value));
+        }
+        $this->log->write("\n");
+
         $data = pack('C*', $adata);
         fseek($this->rom, $offset);
         fwrite($this->rom, $data);

@@ -175,5 +175,6 @@ if(!session_id()) session_start();
 if(!isset($_SESSION['levels'])) $_SESSION['levels'] = $levels;
 if(!isset($_SESSION['castles'])) $_SESSION['castles'] = $castles;
 if(!isset($_SESSION['all_levels'])) $_SESSION['all_levels'] = $all_levels;
+if(!isset($_SESSION['enemydataoffsets'])) $_SESSION['enemydataoffsets'] = $enemydataoffsets;
 
 ?>
