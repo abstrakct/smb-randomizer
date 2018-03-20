@@ -14,8 +14,14 @@ use SMBR\Translator;
  * http://php.net/manual/en/migration72.incompatible.php#migration72.incompatible.rand-mt_rand-output
  */
 
+// TODO: SEPARATE RNG FOR COLORSCHEME! --- or --- do the colors last
 //include "levels.php";
+
+use SMBR\Enemy;
+use SMBR\Levels;
+
 if(!session_id()) session_start();
+
 
 class Randomizer {
     public $flags;
@@ -26,15 +32,7 @@ class Randomizer {
     protected $options;
     protected $rom;
     private $level = [];
-    private $log;
-    private $fullenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x14, 0x15, 0x16, 0x17, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x2D, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E ];
-    //private $testenemypool = [ 0x05 ];
-    private $restrictedenemypool = [ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x14, 0x15, 0x17, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E ];
-    // enemies that should never be randomized
-    // TODO: add bowser? option?
-    private $dontrandomizetheseenemies = [ 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x34 ];
     private $trans;
-    private $testenemypool;
 
     /**
      * Create a new randomizer.
@@ -59,8 +57,8 @@ class Randomizer {
             'Vanilla Fire' => new Colorscheme(0x37, 0x27, 0x16),
             'Pale Ninja' => new Colorscheme(0xce, 0xd0, 0x1e),
             'All Black' => new Colorscheme(0x8d, 0x8d, 0x8d),
+            'Black & Blue' => new Colorscheme(0xcc, 0x18, 0x2f),
         ];
-        $this->testenemypool = [ new Enemy("Goomba"), new Enemy("Podoboo") ];
     }
 
     public function outputOptions() {
@@ -76,8 +74,11 @@ class Randomizer {
     }
 
     public function setMarioColorScheme(string $colorscheme) : self {
-        $this->log->write("Mario Color Scheme: " . $colorscheme . "\n");
+        global $log;
+        $log->write("Mario Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
+            // make colors random, independent of the game seed
+            $this->setSeed();
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
@@ -93,8 +94,10 @@ class Randomizer {
     }
 
     public function setFireColorScheme(string $colorscheme) : self {
-        $this->log->write("Fire Mario/Luigi Color Scheme: " . $colorscheme . "\n");
+        global $log;
+        $log->write("Fire Mario/Luigi Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
+            $this->setSeed();
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
@@ -110,8 +113,10 @@ class Randomizer {
     }
 
     public function setLuigiColorScheme(string $colorscheme) : self {
-        $this->log->write("Luigi Color Scheme: " . $colorscheme . "\n");
+        global $log;
+        $log->write("Luigi Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
+            $this->setSeed();
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
@@ -127,10 +132,20 @@ class Randomizer {
     }
 
     public function shuffleEnemiesOnLevel(string $level) {
-        $offset = $_SESSION['enemydataoffsets'][$level];
-        $nope = $this->dontrandomizetheseenemies;
+        global $dont_randomize;
+        global $full_enemy_pool;
+        global $reasonable_enemy_pool;
+        global $toad_pool;
+        global $generator_pool;
+        global $enemydataoffsets;
+        global $enemy;
+        global $log;
+
         $end = 0;
-        $data = $this->rom->read($offset, 100);
+        $percentage = 100;  // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
+        // TODO: change percentage based on settings/flags/something.
+
+        $data = $this->rom->read($enemydataoffsets[$level], 100);
         foreach ($data as $byte) {
             $end++;
             if($byte == 0xFF) {
@@ -138,6 +153,7 @@ class Randomizer {
             }
         }
         for($i = 0; $i < $end; $i+=2) {
+            $do_randomize = true;
             $x = $data[$i] & 0xf0;
             $y = $data[$i] & 0x0f;
             if($y == 0xE) {
@@ -150,35 +166,48 @@ class Randomizer {
                     $h = $data[$i+1] & 0x40;
                     $o = $data[$i+1] & 0x3f;  // this is the enemy
                     /* Some enemies can't be randomized, so let's check for those */
-                    if(in_array($o, $nope)) {
-                        $this->log->write("Found un-randomizable enemy!\n");
-                        continue;
+                    foreach($dont_randomize as $nope) {
+                        if($o == $nope->num) {
+                            $log->write("Found un-randomizable enemy object!\n");
+                            $do_randomize = false;
+                        }
                     }
-                    $newo = $this->testenemypool[mt_rand(0, count($this->testenemypool) - 1)]->num;
-                    $newdata = (($data[$i+1] & 0x80) | ($data[$i+1] & 0x40)) | $newo;
-                    $data[$i+1] = $newdata;
-                    $this->rom->write($offset + $i + 1, pack('C*', $newdata));
-                    //printf("x: %02x  y: %02x  p: %02x  h: %02x  o: %02x (%s)\n", $x, $y, $p, $h, $o, getenemyname($newo));
+                    if ($do_randomize) {
+                        if(mt_rand(1, 100) <= $percentage) {
+                            if($o == $enemy['Toad']) {
+                                $newo = $toad_pool[mt_rand(0, count($toad_pool) - 1)]->num;
+                                print("Toad randomized to $newo\n");
+                            } else if ($o == $enemy['Bowser Fire Generator'] or $o == $enemy['Red Flying Cheep-Cheep Generator'] or $o == $enemy['Bullet Bill/Cheep-Cheep Generator']) {
+                                $newo = $generator_pool[mt_rand(0, count($generator_pool) - 1)]->num;
+                                print("randomized generator\n");
+                            } else {
+                                $newo = $reasonable_enemy_pool[mt_rand(0, count($reasonable_enemy_pool) - 1)]->num;
+                            }
+                            //TODO replace hex with binary!!!!!!
+                            $newdata = (($data[$i+1] & 0x80) | ($data[$i+1] & 0x40)) | $newo;
+                            $data[$i+1] = $newdata;
+                            $this->rom->write($enemydataoffsets[$level] + $i + 1, pack('C*', $newdata));
+                            //printf("x: %02x  y: %02x  p: %02x  h: %02x  o: %02x (%s)\n", $x, $y, $p, $h, $o, getenemyname($newo));
+                        }
+                    }
                 }
             }
         }
     }
 
     public function shuffleEnemies() {
-        foreach ($_SESSION['enemydataoffsets'] as $key => $value) {
+        global $enemydataoffsets;
+        foreach ($enemydataoffsets as $key => $value) {
             $this->shuffleEnemiesOnLevel($key);
         }
-        //$this->shuffleEnemiesOnLevel('1-1');
-        //$this->shuffleEnemiesOnLevel('1-2');
-        //$this->shuffleEnemiesOnLevel('1-3');
-        //$this->shuffleEnemiesOnLevel('1-4');
     }
 
     /*
      * Shuffle levels, but castles can appear anywhere, except the 8-4 which is 8-4
      */
     public function shuffleAllLevels() {
-        $this->log->write("Shuffling ALL levels\n");
+        global $log;
+        $log->write("Shuffling ALL levels\n");
         $shuffledlevels  = mt_shuffle($_SESSION['all_levels']);
 
         $levelindex = 1;
@@ -189,7 +218,7 @@ class Randomizer {
                 $levelindex++;
             }
 
-            $this->level[31] = 0x65;
+            $this->level[32] = 0x65;
 
             for($i = 1; $i <= 32; $i++) {
                 $this->rom->write(0x1ccb + $i, pack('C*', $this->level[$i]));
@@ -209,7 +238,8 @@ class Randomizer {
      * Castles are also shuffled, except the 8-4 which is 8-4
      */
     public function shuffleLevelsWithCastlesLast() {
-        $this->log->write("Shuffling levels\n");
+        global $log;
+        $log->write("Shuffling levels\n");
         $shuffledlevels  = mt_shuffle($_SESSION['levels']);
         $shuffledcastles = mt_shuffle($_SESSION['castles']);
 
@@ -293,17 +323,25 @@ class Randomizer {
     public function makeFlags() {
         $this->flags[0] = $this->options['Pipe Transitions'][0];
         $this->flags[1] = $this->options['Shuffle Levels'][0];
-        $this->flags[2] = $this->options['Castles Last'][0];
-        $this->flags[3] = $this->options['Shuffle Enemies'][0];
+        $this->flags[2] = $this->options['Castles Last'][1];
+        $this->flags[3] = $this->options['Shuffle Enemies'][2];
         $s = implode("", $this->flags);
         print("Flags: $s\n");
         $this->makeSeedHash();
+    }
+
+    public function getFlags() {
+        return implode("", $this->flags);
     }
 
     public function makeSeedHash() {
         $hashbase = implode("", $this->flags) . strval($this->getSeed());
         $this->seedhash = md5($hashbase);
         print("SeedHash: $this->seedhash\n");
+    }
+
+    public function getSeedHash() {
+        return $this->seedhash;
     }
 
     public function setSeed(int $rng_seed = null) {
@@ -314,16 +352,9 @@ class Randomizer {
 
     // Here we go!
     public function makeSeed() {
-        $this->makeFlags();
-        $this->setTextRando();
-        $this->setTextSeedhash($this->seedhash);
         print("\nOK - making randomized SMB ROM with seed $this->rng_seed\n");
-        $this->log = $_SESSION['log'];
 
-        $this->setMarioColorScheme($this->options['Mario Color Scheme']);
-        $this->setLuigiColorScheme($this->options['Luigi Color Scheme']);
-        $this->setFireColorScheme($this->options['Fire Color Scheme']);
-
+        //  Shuffle Levels
         if($this->options['Shuffle Levels'] == "true") {
             if($this->options['Castles Last'] == "true") {
                 $this->shuffleLevelsWithCastlesLast();
@@ -331,9 +362,20 @@ class Randomizer {
                 $this->shuffleAllLevels();
             }
         }
+
+        //  Shuffle Enemies
         if($this->options['Shuffle Enemies'] == "true") {
             $this->shuffleEnemies();
         }
+
+        // Set texts
+        $this->setTextRando();
+        $this->setTextSeedhash($this->seedhash);
+
+        // Set colorschemes
+        $this->setMarioColorScheme($this->options['Mario Color Scheme']);
+        $this->setLuigiColorScheme($this->options['Luigi Color Scheme']);
+        $this->setFireColorScheme($this->options['Fire Color Scheme']);
     }
 }
 

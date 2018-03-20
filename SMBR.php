@@ -1,5 +1,7 @@
 <?php namespace SMBR;
 
+use SMBR\Game;
+
 /*
  *
  * Sources used:
@@ -23,14 +25,16 @@
  * - color schemes
  */
 
-require_once "rom.php";
-require_once "levels.php";
-require_once "randomizer.php";
-require_once "logger.php";
-require_once "dump.php";
-require_once "colorscheme.php";
-require_once "text.php";
-require_once "enemies.php";
+require_once "Enemy.php";
+require_once "Game.php";
+require_once "Rom.php";
+require_once "Levels.php";
+require_once "Randomizer.php";
+require_once "Logger.php";
+require_once "Dump.php";
+require_once "Colorscheme.php";
+require_once "Text.php";
+
 
 $options['Mario Color Scheme'] = "random";
 $options['Luigi Color Scheme'] = "random";
@@ -55,7 +59,7 @@ $options['Shuffle Levels'] = "true";
  *
  * 8-4 will always be last though, and will probably have to stay that way.
  */
-$options['Castles Last'] = "true";
+$options['Castles Last'] = "false";
 /*
  * Shuffle Enemies can be
  * true  - shuffle enemies
@@ -96,6 +100,11 @@ if($argc > 2) {
     $randomseed = false;
 }
 
+//$yo = new Game();
+//$yo->structtest();
+//global $dont_randomize;
+//print_r($dont_randomize);
+
 $filename = $argv[1];
 $rom = new Rom($filename);
 $checksum = $rom->getMD5();
@@ -124,8 +133,9 @@ if($randomseed) {
     $rando = new Randomizer($chosenseed, $options, $rom);
 }
 $rando->setSeed($rando->getSeed());
-$outfilename = "smb-rando-" . $rando->getSeed() . ".nes";
-$logfilename = "smb-rando-" . $rando->getSeed() . ".log";
+$rando->makeFlags();
+$outfilename = "roms/smb-rando-" . strtoupper($rando->getFlags()) . "-" . $rando->getSeed() . ".nes";
+$logfilename = "logs/smb-rando-" . strtoupper($rando->getFlags()) . "-" . $rando->getSeed() . ".log";
 $log = new Logger($logfilename);
 $rom->setLogger($log);
 if(!isset($_SESSION['log'])) $_SESSION['log'] = $log;
