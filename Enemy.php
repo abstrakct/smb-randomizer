@@ -11,8 +11,8 @@ $enemy = [
     'Blooper' => 0x07,
     'Bullet Bill' => 0x08,
     'Yellow Koopa Paratroopa (does not move)' => 0x09,
-    'Green Cheep Cheep (slow)' => 0x0A,
-    'Red Cheep Cheep (fast)' => 0x0B,
+    'Green Cheep-Cheep (slow)' => 0x0A,
+    'Red Cheep-Cheep (fast)' => 0x0B,
     'Podoboo' => 0x0C,
     'Pirhana Plant' => 0x0D,
     'Green Koopa Paratroopa (leaping)' => 0x0E,
@@ -66,6 +66,13 @@ $enemydataoffsets = [
     'underground-bonus' => 0x2143,
 ];
 
+$enemy_data_offsets_for_shuffling = [
+    '1-4 6-4' => 0x1d80, '4-4' => 0x1da7, '2-4 5-4' => 0x1dc0, '3-4' => 0x1def, '7-4' => 0x1e1a, '8-4' => 0x1e2f,
+    '3-3' => 0x1e69, '8-3' => 0x1e8e, '4-1' => 0x1eab, '6-2' => 0x1eb9, '3-1' => 0x1ee0, '1-1' => 0x1f11, '1-3 5-3' => 0x1f2f,
+    '2-3 7-3' => 0x1f4c, '2-1' => 0x1f61, '5-1' => 0x1f8c, '4-3' => 0x1fb9, '6-3' => 0x1fde, '6-1' => 0x2001, '8-1' => 0x200b,
+    '5-2' => 0x2045, '8-2' => 0x2070, '7-1' => 0x209e, '3-2' => 0x20c3, '1-2' => 0x20e8, '4-2' => 0x2115, '2-2 7-2' => 0x2181,
+];
+
 $dont_randomize = [
     new Enemy('Bowser'),
     //new Enemy('Toad'),
@@ -91,8 +98,8 @@ $full_enemy_pool = [
     new Enemy('Blooper'),
     new Enemy('Bullet Bill'),
     new Enemy('Yellow Koopa Paratroopa (does not move)'),
-    new Enemy('Green Cheep Cheep (slow)'),
-    new Enemy('Red Cheep Cheep (fast)'),
+    new Enemy('Green Cheep-Cheep (slow)'),
+    new Enemy('Red Cheep-Cheep (fast)'),
     new Enemy('Podoboo'),
     new Enemy('Pirhana Plant'),
     new Enemy('Green Koopa Paratroopa (leaping)'),
@@ -129,8 +136,8 @@ $reasonable_enemy_pool = [
     new Enemy('Blooper'),
     new Enemy('Bullet Bill'),
     new Enemy('Yellow Koopa Paratroopa (does not move)'),
-    new Enemy('Green Cheep Cheep (slow)'),
-    new Enemy('Red Cheep Cheep (fast)'),
+    new Enemy('Green Cheep-Cheep (slow)'),
+    new Enemy('Red Cheep-Cheep (fast)'),
     new Enemy('Podoboo'),
     new Enemy('Pirhana Plant'),
     new Enemy('Green Koopa Paratroopa (leaping)'),
@@ -156,10 +163,12 @@ $reasonable_enemy_pool = [
 ];
 
 $toad_pool = [
-    new Enemy('Fireworks Generator'),
+    new Enemy('Toad'),
+    new Enemy('Lakitu'),
     new Enemy('Podoboo'),
-    new Enemy('Pirhana Plant'),
-    new Enemy('Yellow Koopa Paratroopa (does not move)'),
+    new Enemy('Hammer Bro'),
+    //new Enemy('Pirhana Plant'), coord = 0x9B
+    //new Enemy('Green Cheep-Cheep (slow)'), coord = 0x98
 ];
 
 $generator_pool = [

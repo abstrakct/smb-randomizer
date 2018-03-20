@@ -97,6 +97,8 @@ class Rom {
 		//if ($log) {
 		//	$this->write_log[] = [$offset => array_values(unpack('C*', $data))];
 		//}
+        //printf("ROM WRITE AT 0x%04x - 0x%02x\n", $offset, $data[0]);
+        //print_r($data . "\n");
 		fseek($this->rom, $offset);
 		fwrite($this->rom, $data);
 

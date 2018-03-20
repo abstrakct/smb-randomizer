@@ -87,7 +87,6 @@ $options['Shuffle Enemies'] = "true";
 
 //levelenemydump(0x2143, 0x216f - 0x2143, $rom);
 
-if(!session_id()) session_start();
 
 if($argc <= 1) {
     print "Please provide ROM filename.\n";
@@ -138,7 +137,6 @@ $outfilename = "roms/smb-rando-" . strtoupper($rando->getFlags()) . "-" . $rando
 $logfilename = "logs/smb-rando-" . strtoupper($rando->getFlags()) . "-" . $rando->getSeed() . ".log";
 $log = new Logger($logfilename);
 $rom->setLogger($log);
-if(!isset($_SESSION['log'])) $_SESSION['log'] = $log;
 
 
 $rando->makeSeed();

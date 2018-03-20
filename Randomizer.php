@@ -20,9 +20,6 @@ use SMBR\Translator;
 use SMBR\Enemy;
 use SMBR\Levels;
 
-if(!session_id()) session_start();
-
-
 class Randomizer {
     public $flags;
     public $seedhash;
@@ -137,7 +134,7 @@ class Randomizer {
         global $reasonable_enemy_pool;
         global $toad_pool;
         global $generator_pool;
-        global $enemydataoffsets;
+        global $enemy_data_offsets_for_shuffling;
         global $enemy;
         global $log;
 
@@ -145,7 +142,7 @@ class Randomizer {
         $percentage = 100;  // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
         // TODO: change percentage based on settings/flags/something.
 
-        $data = $this->rom->read($enemydataoffsets[$level], 100);
+        $data = $this->rom->read($enemy_data_offsets_for_shuffling[$level], 100);
         foreach ($data as $byte) {
             $end++;
             if($byte == 0xFF) {
@@ -158,13 +155,13 @@ class Randomizer {
             $y = $data[$i] & 0x0f;
             if($y == 0xE) {
                 $i++;
-            } else if ($y > 0x0e) {
+            } else if ($y > 0xE) {
                 continue;
             } else {
                 if($data[$i] != 0xFF) {
-                    $p = $data[$i+1] & 0x80;
-                    $h = $data[$i+1] & 0x40;
-                    $o = $data[$i+1] & 0x3f;  // this is the enemy
+                    $p = $data[$i+1] & 0b10000000;
+                    $h = $data[$i+1] & 0b01000000;
+                    $o = $data[$i+1] & 0b00111111;  // this is the enemy
                     /* Some enemies can't be randomized, so let's check for those */
                     foreach($dont_randomize as $nope) {
                         if($o == $nope->num) {
@@ -173,20 +170,25 @@ class Randomizer {
                         }
                     }
                     if ($do_randomize) {
+                        $newdata = 0;
                         if(mt_rand(1, 100) <= $percentage) {
                             if($o == $enemy['Toad']) {
+                                $z = count($toad_pool);
                                 $newo = $toad_pool[mt_rand(0, count($toad_pool) - 1)]->num;
-                                print("Toad randomized to $newo\n");
+                                $newcoord = 0x98;
+                                $this->rom->write($enemy_data_offsets_for_shuffling[$level] + $i, pack('C*', $newcoord));
                             } else if ($o == $enemy['Bowser Fire Generator'] or $o == $enemy['Red Flying Cheep-Cheep Generator'] or $o == $enemy['Bullet Bill/Cheep-Cheep Generator']) {
                                 $newo = $generator_pool[mt_rand(0, count($generator_pool) - 1)]->num;
-                                print("randomized generator\n");
                             } else {
-                                $newo = $reasonable_enemy_pool[mt_rand(0, count($reasonable_enemy_pool) - 1)]->num;
+                                //$newo = $reasonable_enemy_pool[mt_rand(0, count($reasonable_enemy_pool) - 1)]->num;
+                                $newo = 0x07;
                             }
-                            //TODO replace hex with binary!!!!!!
-                            $newdata = (($data[$i+1] & 0x80) | ($data[$i+1] & 0x40)) | $newo;
-                            $data[$i+1] = $newdata;
-                            $this->rom->write($enemydataoffsets[$level] + $i + 1, pack('C*', $newdata));
+                            //printf("i = %d data[%d] = %02x data[%d+1] = %02x newo = %02x\n", $i, $i, $data[$i], $i, $data[$i+1], $newo);
+                            $newdata = (($data[$i+1] & 0b10000000) | ($data[$i+1] & 0b01000000)) | $newo;
+                            //$data[$i+1] = $newdata;
+                            //printf("i = %d  newdata: 0x%02x\n", $i, $newdata);
+                            //print_r($newdata . "\n");
+                            $this->rom->write($enemy_data_offsets_for_shuffling[$level] + $i + 1, pack('C*', $newdata));
                             //printf("x: %02x  y: %02x  p: %02x  h: %02x  o: %02x (%s)\n", $x, $y, $p, $h, $o, getenemyname($newo));
                         }
                     }
@@ -196,8 +198,11 @@ class Randomizer {
     }
 
     public function shuffleEnemies() {
-        global $enemydataoffsets;
-        foreach ($enemydataoffsets as $key => $value) {
+        global $enemy_data_offsets_for_shuffling;
+        global $log;
+        foreach ($enemy_data_offsets_for_shuffling as $key => $value) {
+            $m = "Shuffling enemies on level " . $key . "\n";
+            $log->write($m);
             $this->shuffleEnemiesOnLevel($key);
         }
     }
@@ -207,8 +212,9 @@ class Randomizer {
      */
     public function shuffleAllLevels() {
         global $log;
+        global $all_levels;
         $log->write("Shuffling ALL levels\n");
-        $shuffledlevels  = mt_shuffle($_SESSION['all_levels']);
+        $shuffledlevels = mt_shuffle($all_levels);
 
         $levelindex = 1;
         $castleindex = 0;
@@ -239,9 +245,10 @@ class Randomizer {
      */
     public function shuffleLevelsWithCastlesLast() {
         global $log;
+        global $levels, $castles;
         $log->write("Shuffling levels\n");
-        $shuffledlevels  = mt_shuffle($_SESSION['levels']);
-        $shuffledcastles = mt_shuffle($_SESSION['castles']);
+        $shuffledlevels  = mt_shuffle($levels);
+        $shuffledcastles = mt_shuffle($castles);
 
         $levelindex = 1;
         $castleindex = 0;
