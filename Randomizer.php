@@ -1,7 +1,5 @@
 <?php namespace SMBR;
 
-use SMBR\Colorscheme;
-use SMBR\Translator;
 
 /*
  * The main randomizer class!
@@ -17,8 +15,12 @@ use SMBR\Translator;
 // TODO: SEPARATE RNG FOR COLORSCHEME! --- or --- do the colors last
 //include "levels.php";
 
+use SMBR\Game;
+use SMBR\Colorscheme;
+use SMBR\Translator;
 use SMBR\Enemy;
 use SMBR\Levels;
+use SMBR\Level;
 
 class Randomizer {
     public $flags;
@@ -180,8 +182,7 @@ class Randomizer {
                             } else if ($o == $enemy['Bowser Fire Generator'] or $o == $enemy['Red Flying Cheep-Cheep Generator'] or $o == $enemy['Bullet Bill/Cheep-Cheep Generator']) {
                                 $newo = $generator_pool[mt_rand(0, count($generator_pool) - 1)]->num;
                             } else {
-                                //$newo = $reasonable_enemy_pool[mt_rand(0, count($reasonable_enemy_pool) - 1)]->num;
-                                $newo = 0x07;
+                                $newo = $reasonable_enemy_pool[mt_rand(0, count($reasonable_enemy_pool) - 1)]->num;
                             }
                             //printf("i = %d data[%d] = %02x data[%d+1] = %02x newo = %02x\n", $i, $i, $data[$i], $i, $data[$i+1], $newo);
                             $newdata = (($data[$i+1] & 0b10000000) | ($data[$i+1] & 0b01000000)) | $newo;
@@ -208,114 +209,140 @@ class Randomizer {
     }
 
     /*
-     * Shuffle levels, but castles can appear anywhere, except the 8-4 which is 8-4
+     * Shuffle levels, but castles can appear anywhere, except 8-4 which is 8-4
+     * Each castle represents the end of a world, but currently there are no restrictions on how
+     * many levels can be in a world, except that there will be no more than 32 levels total like in vanilla.
      */
-    public function shuffleAllLevels() {
+    public function shuffleAllLevels(&$game) {
         global $log;
-        global $all_levels;
+        global $vanilla_level;
+        $all_levels = [ '1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4', '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3' ];
+
         $log->write("Shuffling ALL levels\n");
         $shuffledlevels = mt_shuffle($all_levels);
+        print_r($shuffledlevels);
 
+        $lastlevelindex = 0;
         $levelindex = 1;
-        $castleindex = 0;
-        if($this->options['Pipe Transitions'] == 'remove') {
-            for($i = 0; $i < 32; $i++) {
-                $this->level[$levelindex] = $shuffledlevels[$i];
+        $worldindex = 1;
+        $shuffleindex = 0;
+
+        // TODO: reduce code duplication!
+        if ($this->options['Pipe Transitions'] == 'remove') {
+            for ($i = 0; $i < count($shuffledlevels); $i++) {
+                $game->worlds[$worldindex]->levels[$levelindex] = $vanilla_level[$shuffledlevels[$shuffleindex]];
+                if ($vanilla_level[$shuffledlevels[$shuffleindex]]->map >= 0x60) {
+                    // it's a castle, so increase the world index and reset the level index
+                    $worldindex++;
+                    if ($worldindex > 8)
+                        $worldindex = 8;
+                    $lastlevelindex = $levelindex;
+                    $levelindex = 0;
+                }
                 $levelindex++;
+                $shuffleindex++;
             }
+            $game->worlds[8]->levels[$lastlevelindex+2] = $vanilla_level['8-4'];
+            print_r($game);
+        } else if ($this->options['Pipe Transitions'] == 'keep') {
+            for ($i = 0; $i < count($shuffledlevels); $i++) {
+                $game->worlds[$worldindex]->levels[$levelindex] = $vanilla_level[$shuffledlevels[$shuffleindex]];
+                $levelindex++;
 
-            $this->level[32] = 0x65;
+                if ($vanilla_level[$shuffledlevels[$shuffleindex]]->map >= 0x60 and $vanilla_level[$shuffledlevels[$shuffleindex]]->map <= 0x65) {
+                    // it's a castle, so increase the world index and reset the level index
+                    $worldindex++;
+                    if ($worldindex > 8) $worldindex = 8;
+                    $levelindex = 0;
+                }
 
-            for($i = 1; $i <= 32; $i++) {
-                $this->rom->write(0x1ccb + $i, pack('C*', $this->level[$i]));
+                if($shuffleindex < 30) {
+                    if (in_array($vanilla_level[$shuffledlevels[$shuffleindex+1]]->map, [ $vanilla_level['1-2']->map, $vanilla_level['2-2']->map, $vanilla_level['4-2']->map ])) {
+                        $game->worlds[$worldindex]->levels[$levelindex] = $vanilla_level['Pipe Transition'];
+                    }
+                }
+
+                $levelindex++;
+                $shuffleindex++;
             }
-
-            $p = 0;
-            for($i = 0; $i < 8; $i++) {
-                $this->rom->write(0x1cc4 + $i, pack('C*', $p));
-                $p += 4;
-            }
-        } else {
-            print("not implemented\n");
+            $lastlevelindex  = count($game->worlds[8]->levels) + 2;
+            $game->worlds[8]->levels[$lastlevelindex] = $vanilla_level['8-4'];
+            print_r($game);
         }
     }
     /*
      * Shuffle levels, but make sure each -4 is a castle.
      * Castles are also shuffled, except the 8-4 which is 8-4
      */
-    public function shuffleLevelsWithCastlesLast() {
+    public function shuffleLevelsWithCastlesLast(&$game) {
         global $log;
-        global $levels, $castles;
-        $log->write("Shuffling levels\n");
+        global $vanilla_level;
+        $levels = [ '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3' ];
+        $castles = [ '1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4' ];
+
+        $log->write("Shuffling levels (castles last)\n");
+
         $shuffledlevels  = mt_shuffle($levels);
         $shuffledcastles = mt_shuffle($castles);
 
-        $levelindex = 1;
+        $levelindex = 0;
         $castleindex = 0;
+
         if($this->options['Pipe Transitions'] == 'remove') {
-            for($i = 0; $i <= 23; $i++) {
-                $this->level[$levelindex] = $shuffledlevels[$i];
-                $levelindex++;
-                if(($levelindex % 4) == 0) $levelindex++;
-            }
-
-            for($i = 4; $i <= 28; $i += 4) {
-                $this->level[$i] = $shuffledcastles[$castleindex];
-                $castleindex++;
-            }
-
-            $this->level[32] = 0x65;
-
-            for($i = 1; $i <= 32; $i++) {
-                $this->rom->write(0x1ccb + $i, pack('C*', $this->level[$i]));
-            }
-
-            $p = 0;
-            for($i = 0; $i < 8; $i++) {
-                $this->rom->write(0x1cc4 + $i, pack('C*', $p));
-                $p += 4;
-            }
-        } else {
-            /*
-             * https://github.com/Coolcord/Level-Headed/blob/master/SMB1/Research_Docs/Room%20Order%20Table.csv
-            for($i = 0; $i < 23; $i++) {
-                $this->level[$levelindex] = $shuffledlevels[$i];
-                if($shuffledlevels[$i] == 0x25 or $shuffledlevels[$i] == 0x28 or $shuffledlevels[$i] == 0x22 or $shuffledlevels[$i] = 0x33) {
-                    // then next level is pipe transition
+            for ($w = 1; $w <= 8; $w++) {
+                for ($i = 0; $i < 3; $i++) {
+                    $game->worlds[$w]->levels[$i] = $vanilla_level[$shuffledlevels[$levelindex]];
                     $levelindex++;
-                    $this->level[$levelindex] = 0x29;
                 }
-                $levelindex++;
-                if(($levelindex % 4) == 0) $levelindex++;
-            }
-
-            for($i = 4; $i < 28; $i += 4) {
-                $this->level[$i] = $shuffledcastles[$castleindex];
+                $game->worlds[$w]->levels[3] = $vanilla_level[$shuffledcastles[$castleindex]];
                 $castleindex++;
             }
+            $game->worlds[8]->levels[3] = $vanilla_level['8-4'];
+            print_r($game);
+        } else if($this->options['Pipe Transitions'] == 'keep') {
+            print("shuffle levels, castles last, keep pipe transitions NOT IMPLEMENTED!\n");
+        }
+    }
 
-            $this->level[31] = 0x65;
+    public function fixPipes(Game &$game) {
+        global $log;
+        //$levels = ['4-1', '6-2', '3-1', '1-1', '2-1', '5-1', '8-1', '5-2', '8-2', '7-1', '1-2', '4-2', '2-2', '7-2' ];
+        $levels = ['4-1', '1-2'];
+        $log->write("Fixing Pipes\n");
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                if (in_array($level->name, $levels)) {
+                    if ($level->pipe_pointers) {
+                        foreach ($level->pipe_pointers as list($entry, $exit)) {
+                            $log->write("Fixing pipe in " . $level->name . " - new world is " . $world->num . "\n");
+                            $new_world = $world->num - 1;
 
-            for($i = 1; $i <= 32; $i++) {
-                $this->rom->write(0x1ccb + $i, pack('C*', $this->level[$i]));
+                            // entry
+                            $entry_data = $this->rom->read($entry, 1);
+                            $new_entry_data = (($new_world << 5) | ($entry_data & 0b00011111));
+                            $this->rom->write($entry, pack('C*', $new_entry_data));
+                            // exit
+                            if ($exit != null) {
+                                $exit_data = $this->rom->read($exit, 1);
+                                $new_exit_data =  (($new_world << 5) | ($exit_data  & 0b00011111));
+                                $this->rom->write($exit, pack('C*', $new_exit_data));
+                            }
+                        }
+                    }
+                }
             }
-
-            $p = 0;
-            for($i = 0; $i < 8; $i++) {
-                $this->rom->write(0x1cc4 + $i, pack('C*', $p));
-                $p += 4;
-            }
-             */
-            print("not implemented\n");
         }
     }
 
     public function setTextRando() {
+        global $log;
+        $log->write("Changing Texts\n");
         $this->rom->write(0x09fb5, pack('C*', $this->trans->asciitosmb('R')));
         $this->rom->write(0x09fb6, pack('C*', $this->trans->asciitosmb('A')));
         $this->rom->write(0x09fb7, pack('C*', $this->trans->asciitosmb('N')));
         $this->rom->write(0x09fb8, pack('C*', $this->trans->asciitosmb('D')));
         $this->rom->write(0x09fb9, pack('C*', $this->trans->asciitosmb('O')));
+        $this->rom->write(0x09fba, pack('C*', $this->trans->asciitosmb('×')));
     }
 
     public function setTextSeedhash(string $text) {
@@ -342,8 +369,14 @@ class Randomizer {
     }
 
     public function makeSeedHash() {
-        $hashbase = implode("", $this->flags) . strval($this->getSeed());
-        $this->seedhash = md5($hashbase);
+        // TODO: add md5 of input ROM to hashstring?!
+        global $smbr_version;
+        $hashstring = implode("", $this->flags) . strval($this->getSeed() . $smbr_version);
+        $this->seedhash = hash("crc32b", $hashstring);
+        //print("makeSeedHash()\n
+        //          md5: " . hash("md5", $hashstring) . "\n
+        //          crc: " . $this->seedhash . "\n
+        //       md5crc: " . hash("crc32b", hash("md5", $hashstring)) . "\n");
         print("SeedHash: $this->seedhash\n");
     }
 
@@ -359,14 +392,15 @@ class Randomizer {
 
     // Here we go!
     public function makeSeed() {
+        $game = new Game();
         print("\nOK - making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
         if($this->options['Shuffle Levels'] == "true") {
             if($this->options['Castles Last'] == "true") {
-                $this->shuffleLevelsWithCastlesLast();
+                $this->shuffleLevelsWithCastlesLast($game);
             } else {
-                $this->shuffleAllLevels();
+                $this->shuffleAllLevels($game);
             }
         }
 
@@ -374,6 +408,9 @@ class Randomizer {
         if($this->options['Shuffle Enemies'] == "true") {
             $this->shuffleEnemies();
         }
+
+        // Fix Pipes
+        $this->fixPipes($game);
 
         // Set texts
         $this->setTextRando();
@@ -383,6 +420,8 @@ class Randomizer {
         $this->setMarioColorScheme($this->options['Mario Color Scheme']);
         $this->setLuigiColorScheme($this->options['Luigi Color Scheme']);
         $this->setFireColorScheme($this->options['Fire Color Scheme']);
+
+        return $game;
     }
 }
 

@@ -128,6 +128,29 @@ class Rom {
         return $this;
     }
 
+    public function writeGame(Game $game) {
+        $offset = 0x1ccc;
+        $index = 0;
+
+        // Write all maps
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                $this->write($offset + $index, pack('C*', $level->map));
+                $index++;
+            }
+        }
+
+        // Write the table with how many levels are in each world
+        $offset = 0x1cc4;
+        $data = 0;
+        $index = 0;
+        foreach ($game->worlds as $world) {
+            $this->write($offset + $index, pack('C*', $data));
+            $data += count($world->levels);
+            $index++;
+        }
+    }
+
     public function setMarioOuterColor(int $color) : self {
         $this->write(0x005E8, pack('C*', $color));
         return $this;

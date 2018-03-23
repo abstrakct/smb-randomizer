@@ -21,9 +21,12 @@ use SMBR\Game;
  * disasm line 4771+++ = area object data
  *
  *
- * - FLAGS
- * - color schemes
+ * Randomize where pipes lead to?
+ *
  */
+
+$smbr_version = "0.1";
+
 
 require_once "Enemy.php";
 require_once "Game.php";
@@ -42,8 +45,8 @@ $options['Fire Color Scheme']  = "random";
 /*
  * Pipe Transitions (like between 1-1 and 1-2) can be:
  * remove  - just remove them entirely
- * vanilla - keep them in vanilla locations, e.g. one would come after 1-1 independent of what level 1-1 actually is
- * keep    - add pipe transitions after levels that have them in vanilla. so you'd get a pipe transition after playing vanilla 1-1, independent of what level comes next
+ * vanilla - [NOT IMPLEMENTED] keep them in vanilla locations, e.g. one would come after 1-1 independent of what level 1-1 or 1-2 actually is
+ * keep    - add pipe transitions before levels that have them in vanilla - i.e. you'd get a pipe transition before playing vanilla 1-2
  */
 $options['Pipe Transitions'] = "remove";
 /*
@@ -59,7 +62,7 @@ $options['Shuffle Levels'] = "true";
  *
  * 8-4 will always be last though, and will probably have to stay that way.
  */
-$options['Castles Last'] = "false";
+$options['Castles Last'] = "true";
 /*
  * Shuffle Enemies can be
  * true  - shuffle enemies
@@ -100,9 +103,16 @@ if($argc > 2) {
 }
 
 //$yo = new Game();
-//$yo->structtest();
 //global $dont_randomize;
 //print_r($dont_randomize);
+
+$vanilla = new Game();
+$vanilla->setVanilla();
+//print_r($vanilla);
+//print(count($vanilla->worlds[1]->levels));
+
+
+
 
 $filename = $argv[1];
 $rom = new Rom($filename);
@@ -115,7 +125,8 @@ if($ok) {
     print(" [OK]\n");
 } else {
     print(" [FAILED!]\n");
-    exit(1);
+    print("trying anyway, results may vary....\n");
+    //exit(1);
 }
 
 //print("Reading ROM data...");
@@ -133,14 +144,20 @@ if($randomseed) {
 }
 $rando->setSeed($rando->getSeed());
 $rando->makeFlags();
-$outfilename = "roms/smb-rando-" . strtoupper($rando->getFlags()) . "-" . $rando->getSeed() . ".nes";
-$logfilename = "logs/smb-rando-" . strtoupper($rando->getFlags()) . "-" . $rando->getSeed() . ".log";
+$outfilename = "roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
+$logfilename = "logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
 $log = new Logger($logfilename);
 $rom->setLogger($log);
 
 
-$rando->makeSeed();
+$randomized_game = $rando->makeSeed();
 $rando->outputOptions();
+
+$rom->writeGame($randomized_game);
+$rom->save($outfilename);
+$log->close();
+
+print("\nFinished!\nFilename: $outfilename\n");
 
 //$rom->write(0x1ccc, pack('C*', 0x62));
 //
@@ -175,9 +192,4 @@ foreach ($enemydataoffsets as $name => $offset) {
 //$newworld = 4;
 //$newpipebyte = (($newworld << 5) | ($pipebyte3 & 0x1f));
 //$rom->write($offset + 2 + 5, pack('C*', $newpipebyte));
-
-$rom->save($outfilename);
-$log->close();
-
-print("\nFinished!\nFilename: $outfilename\n");
 

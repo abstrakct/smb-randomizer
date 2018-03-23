@@ -75,7 +75,6 @@ $enemy_data_offsets_for_shuffling = [
 
 $dont_randomize = [
     new Enemy('Bowser'),
-    //new Enemy('Toad'),
     new Enemy('Lift (Balance)'),
     new Enemy('Lift (Down Up)'),
     new Enemy('Lift (Up)'),
@@ -144,7 +143,6 @@ $reasonable_enemy_pool = [
     new Enemy('Red Koopa Troopa (down then up)'),
     new Enemy('Green Koopa Troopa (left then right)'),
     new Enemy('Lakitu'),
-    new Enemy('Red Flying Cheep-Cheep Generator'),
     new Enemy('Bowser Fire Generator'),
     new Enemy('Bullet Bill/Cheep-Cheep Generator'),
     new Enemy('Fire Bar (Clockwise)'),
@@ -169,6 +167,7 @@ $toad_pool = [
     new Enemy('Hammer Bro'),
     //new Enemy('Pirhana Plant'), coord = 0x9B
     //new Enemy('Green Cheep-Cheep (slow)'), coord = 0x98
+    //new Enemy('Red Cheep-Cheep (fast)'), coord 0x98
 ];
 
 $generator_pool = [
