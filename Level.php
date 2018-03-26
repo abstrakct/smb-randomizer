@@ -30,7 +30,7 @@ $vanilla_level = [
     //                 name   map   enemy  $world   pipes  dupe  twin
     '1-1' => new Level('1-1', 0x25, 0x1f11, null, [ 'offsets' => [ 0x1f11 + 2, 0x2143 + 2 ] ]),
                                                                             //TODO FIXXXX
-    '1-2' => new Level('1-2', 0xc0, 0x20e8, null, [ 'offsets' => [ 0x20e8 + 8, 0x2143 + 2, 0x20e8 + 41, 0x2143 + 13 ] ]),
+    '1-2' => new Level('1-2', 0xc0, 0x20e8, null, [ 'offsets' => [ 0x20e8 + 8, 0x2143 + 13, 0x20e8 + 41, null ] ]),
     '1-3' => new Level('1-3', 0x26, 0x1f2f, null,   null, true, '5-3'),
     '1-4' => new Level('1-4', 0x60, 0x1d80, null,   null, true, '6-4'),
     '2-1' => new Level('2-1', 0x28, 0x1f61, null, [ 'offsets' => [ 0x1f61 + 14, 0x1fb0 + 4, 0x1f61 + 25, 0x2143 + 5 ] ]),
