@@ -47,17 +47,19 @@ function levelobjectdump($leveloffset, $levellength, $rom) {
     }
 }
 
-function levelenemydump($leveloffset, $rom) {
+function dumpLevelEnemies($leveloffset, $rom) {
     print("\n ENEMY DATA DUMP \n");
+    if ($leveloffset == null) return;
+
     $area = $rom->read($leveloffset, 1000);
-    for($i = 0; $i < 1000; $i+=2) {
-        if($area[$i] == 0xFF) {
+    for ($i = 0; $i < 1000; $i+=2) {
+        if ($area[$i] == 0xFF) {
             print("END OF LEVEL ENEMY DATA\n\n");
             break;
         }
         $x = $area[$i] & 0xf0;
         $y = $area[$i] & 0x0f;
-        if($y == 0xE) {
+        if ($y == 0xE) {
             print("  pipepointer - offset = $i\n");
             $byte1 = $area[$i];
             $byte2 = $area[$i+1];
@@ -69,7 +71,7 @@ function levelenemydump($leveloffset, $rom) {
         } else if ($y > 0x0e) {
             continue;
         } else {
-            if(area[$i] != 0xFF) {
+            if($area[$i] != 0xFF) {
                 $p = $area[$i+1] & 0x80;
                 $h = $area[$i+1] & 0x40;
                 $o = $area[$i+1] & 0x3f;
@@ -79,3 +81,24 @@ function levelenemydump($leveloffset, $rom) {
     }
 }
 
+// TODO: support various world lengths
+function dumpRomInfoActualOrder($rom) {
+    global $vanilla_level;
+    $data = $rom->read(0x1ccc, 32);
+    for ($world = 0; $world < 8; $world++) {
+        for ($level = 0; $level < 4; $level++) {
+            $i = ($world * 4) + $level;
+            $levelname = mapToName($data[$i]);
+            printf("Dumping %d-%d (vanilla %s) (map = %02x)\n", $world + 1, $level + 1, $levelname, $data[$i]);
+            dumpLevelEnemies($vanilla_level[$levelname]->enemy_data_offset, $rom);
+        }
+    }    
+}
+
+function dumpRomInfoVanillaOrder($rom) {
+    global $vanilla_level;
+    foreach ($vanilla_level as $l) {
+        printf("Dumping vanilla %s (map = %02x)\n", $l->name, $l->map);
+        dumpLevelEnemies($l->enemy_data_offset, $rom);
+    }
+}

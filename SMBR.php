@@ -91,13 +91,20 @@ $options['Shuffle Enemies'] = "true";
 //levelenemydump(0x2143, 0x216f - 0x2143, $rom);
 
 
-if($argc <= 1) {
+if ($argc <= 1) {
     print "Please provide ROM filename.\n";
     exit(1);
 }
 
+if ($argv[1] == "-d") {
+    $filename = $argv[2];
+    $rom = new Rom($filename);
+    dumpRomInfoActualOrder($rom);
+    exit(0);
+}
+
 $randomseed = true;
-if($argc > 2) {
+if ($argc > 2) {
     $chosenseed = $argv[2];
     $randomseed = false;
 }

@@ -307,7 +307,7 @@ class Randomizer {
     public function fixPipes(Game &$game) {
         global $log;
         //$levels = ['4-1', '6-2', '3-1', '1-1', '2-1', '5-1', '8-1', '5-2', '8-2', '7-1', '1-2', '4-2', '2-2', '7-2' ];
-        $levels = ['4-1', '1-2'];
+        $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
         $log->write("Fixing Pipes\n");
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
@@ -318,9 +318,11 @@ class Randomizer {
                             $new_world = $world->num - 1;
 
                             // entry
-                            $entry_data = $this->rom->read($entry, 1);
-                            $new_entry_data = (($new_world << 5) | ($entry_data & 0b00011111));
-                            $this->rom->write($entry, pack('C*', $new_entry_data));
+                            if ($entry != null) {
+                                $entry_data = $this->rom->read($entry, 1);
+                                $new_entry_data = (($new_world << 5) | ($entry_data & 0b00011111));
+                                $this->rom->write($entry, pack('C*', $new_entry_data));
+                            }
                             // exit
                             if ($exit != null) {
                                 $exit_data = $this->rom->read($exit, 1);

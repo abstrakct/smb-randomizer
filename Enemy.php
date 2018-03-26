@@ -39,6 +39,7 @@ $enemy = [
     'Short Lift (Up)' => 0x2B,
     'Short Lift (Down)' => 0x2C,
     'Bowser' => 0x2D,
+    'Warp Zone' => 0x34,
     'Toad' => 0x35,
     '2 Goombas V10' => 0x37,
     '3 Goombas V10' => 0x38,
@@ -84,6 +85,7 @@ $dont_randomize = [
     new Enemy('Lift (Right)'),
     new Enemy('Short Lift (Up)'),
     new Enemy('Short Lift (Down)'),
+    new Enemy('Warp Zone'),
 ];
 
 $full_enemy_pool = [
