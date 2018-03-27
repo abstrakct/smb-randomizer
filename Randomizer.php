@@ -12,8 +12,8 @@
  * http://php.net/manual/en/migration72.incompatible.php#migration72.incompatible.rand-mt_rand-output
  */
 
-// TODO: SEPARATE RNG FOR COLORSCHEME! --- or --- do the colors last
-//include "levels.php";
+// TODO: CHECK WARP ZONES!!!!!! Do they work?
+
 
 use SMBR\Game;
 use SMBR\Colorscheme;
@@ -57,6 +57,7 @@ class Randomizer {
             'Pale Ninja' => new Colorscheme(0xce, 0xd0, 0x1e),
             'All Black' => new Colorscheme(0x8d, 0x8d, 0x8d),
             'Black & Blue' => new Colorscheme(0xcc, 0x18, 0x2f),
+            'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
         ];
     }
 

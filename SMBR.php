@@ -133,6 +133,7 @@ if($ok) {
 } else {
     print(" [FAILED!]\n");
     print("trying anyway, results may vary....\n");
+    //TODO: Add checks to see if ROM is usable (check data in various offsets).
     //exit(1);
 }
 
