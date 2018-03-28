@@ -61,7 +61,7 @@ class Randomizer {
         ];
     }
 
-    public function outputOptions() {
+    public function printOptions() {
         print("\n\n*** SETTINGS ***\nSeed: $this->rng_seed\n");
 
         foreach ($this->options as $key => $value) {
@@ -77,7 +77,6 @@ class Randomizer {
         global $log;
         $log->write("Mario Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
-            // make colors random, independent of the game seed
             $this->setSeed();
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
@@ -210,7 +209,7 @@ class Randomizer {
     }
 
     /*
-     * Shuffle levels, but castles can appear anywhere, except 8-4 which is 8-4
+     * Shuffle levels, but castles can appear anywhere, except 8-4 which is always last.
      * Each castle represents the end of a world, but currently there are no restrictions on how
      * many levels can be in a world, except that there will be no more than 32 levels total like in vanilla.
      */
@@ -232,18 +231,18 @@ class Randomizer {
         if ($this->options['Pipe Transitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = $vanilla_level[$shuffledlevels[$shuffleindex]];
-                if ($vanilla_level[$shuffledlevels[$shuffleindex]]->map >= 0x60) {
+                if ($vanilla_level[$shuffledlevels[$shuffleindex]]->map >= 0x60 and $vanilla_level[$shuffledlevels[$shuffleindex]]->map <= 0x65) {
                     // it's a castle, so increase the world index and reset the level index
                     $worldindex++;
                     if ($worldindex > 8)
                         $worldindex = 8;
-                    $lastlevelindex = $levelindex;
                     $levelindex = 0;
                 }
+                $lastlevelindex = $levelindex;
                 $levelindex++;
                 $shuffleindex++;
             }
-            $game->worlds[8]->levels[$lastlevelindex+2] = $vanilla_level['8-4'];
+            $game->worlds[8]->levels[$lastlevelindex+1] = $vanilla_level['8-4'];
             print_r($game);
         } else if ($this->options['Pipe Transitions'] == 'keep') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
@@ -253,7 +252,8 @@ class Randomizer {
                 if ($vanilla_level[$shuffledlevels[$shuffleindex]]->map >= 0x60 and $vanilla_level[$shuffledlevels[$shuffleindex]]->map <= 0x65) {
                     // it's a castle, so increase the world index and reset the level index
                     $worldindex++;
-                    if ($worldindex > 8) $worldindex = 8;
+                    if ($worldindex > 8)
+                        $worldindex = 8;
                     $levelindex = 0;
                 }
 
@@ -274,6 +274,7 @@ class Randomizer {
     /*
      * Shuffle levels, but make sure each -4 is a castle.
      * Castles are also shuffled, except the 8-4 which is 8-4
+     * TODO: add keeping pipe transitions in place.
      */
     public function shuffleLevelsWithCastlesLast(&$game) {
         global $log;
@@ -307,7 +308,6 @@ class Randomizer {
 
     public function fixPipes(Game &$game) {
         global $log;
-        //$levels = ['4-1', '6-2', '3-1', '1-1', '2-1', '5-1', '8-1', '5-2', '8-2', '7-1', '1-2', '4-2', '2-2', '7-2' ];
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
         $log->write("Fixing Pipes\n");
         foreach ($game->worlds as $world) {

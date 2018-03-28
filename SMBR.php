@@ -10,18 +10,12 @@ use SMBR\Game;
  */
 
 /*
- * TODO:
- * pipe pointers! probably the "active world" part.
- * disassembly: line 8030
  *
- * randomize bowser's abilities? like hammers etc.?
- * see disasm lines 10218 - 10240 and around there.
- *
- * disasm line 4522+++ = enemy data
- * disasm line 4771+++ = area object data
- *
- *
- * Randomize where pipes lead to?
+ * TODO: Randomize where pipes lead to?
+ * TODO: Randomize Bowser's abilities? like hammers etc.?
+ * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
+ * TODO: when mario dies and start in the middle of a level it is sometimes in a very wrong spot - potential soft lock / nothing you can do but game over
+ * TODO: disappearing trampolines
  *
  */
 
@@ -45,10 +39,9 @@ $options['Fire Color Scheme']  = "random";
 /*
  * Pipe Transitions (like between 1-1 and 1-2) can be:
  * remove  - just remove them entirely
- * vanilla - [NOT IMPLEMENTED] keep them in vanilla locations, e.g. one would come after 1-1 independent of what level 1-1 or 1-2 actually is
  * keep    - add pipe transitions before levels that have them in vanilla - i.e. you'd get a pipe transition before playing vanilla 1-2
  */
-$options['Pipe Transitions'] = "remove";
+$options['Pipe Transitions'] = "keep";
 /*
  * Shuffle Levels can be
  * true  - shuffle levels
@@ -62,7 +55,7 @@ $options['Shuffle Levels'] = "true";
  *
  * 8-4 will always be last though, and will probably have to stay that way.
  */
-$options['Castles Last'] = "true";
+$options['Castles Last'] = "false";
 /*
  * Shuffle Enemies can be
  * true  - shuffle enemies
@@ -159,45 +152,12 @@ $rom->setLogger($log);
 
 
 $randomized_game = $rando->makeSeed();
-$rando->outputOptions();
+
+$rando->printOptions();
 
 $rom->writeGame($randomized_game);
 $rom->save($outfilename);
 $log->close();
 
 print("\nFinished!\nFilename: $outfilename\n");
-
-//$rom->write(0x1ccc, pack('C*', 0x62));
-//
-
-// this doesn't really work
-//$rom->write(0x424a, pack('C*', 0xea));
-//$rom->write(0x424b, pack('C*', 0xea));
-//$rom->write(0x424c, pack('C*', 0xea));
-//$rom->write(0x424d, pack('C*', 0xea));
-//$rom->write(0x424e, pack('C*', 0xea));
-
-//$offset = $enemydataoffsets['2-2'];
-//levelenemydump($offset, $rom);
-//
-
-/*
-print("dumping enemies\n\n");
-
-foreach ($enemydataoffsets as $name => $offset) {
-    print("$name");
-    levelenemydump($offset, $rom);
-}
- */
-
-// so this kinda works, at least as proof of concept......
-//$pipebyte3 = $rom->read($offset + 2 + 2, 1);
-//$newworld = 0;
-//$newpipebyte = (($newworld << 5) | ($pipebyte3 & 0x1f));
-//$rom->write($offset + 2 + 2, pack('C*', $newpipebyte));
-//
-//$pipebyte3 = $rom->read($offset + 2 + 5, 1);
-//$newworld = 4;
-//$newpipebyte = (($newworld << 5) | ($pipebyte3 & 0x1f));
-//$rom->write($offset + 2 + 5, pack('C*', $newpipebyte));
 
