@@ -25,7 +25,9 @@ use SMBR\Game;
  *
  *
  * TODO: disappearing trampolines
- * TODO: check that table at 0x1cc4 is correct in all situations.
+ * TODO: check that table at 0x1cc4 is correct in all situations. (I'm pretty sure it is, but check it.)
+ * TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
+ *
  *
  * NOTES
  * - Once a piranha plant was hiding behind a tree in 8-1
@@ -56,7 +58,7 @@ $options['Fire Color Scheme']  = "random";
  *
  * third possibility: shuffle pipe transitions in with normal levels, so that they can appear anywhere (but only as many times as in vanilla)
  */
-$options['Pipe Transitions'] = "keep";
+$options['Pipe Transitions'] = "remove";
 /*
  * Shuffle Levels can be
  * true  - shuffle levels
@@ -64,13 +66,14 @@ $options['Pipe Transitions'] = "keep";
  */
 $options['Shuffle Levels'] = "true";
 /*
- * Castles Last can be
- * true  - make sure the last level (x-4) of each world is a castle.
- * false - castles can appear anywhere and will take you to the next world when beaten
+ * Normal World Length can be
+ * true  - make sure each world has 4 levels, last level of each world is a castle.
+ * false - castles can appear anywhere and will take you to the next world when beaten. Worlds can be 1 - 25 levels long.....
+ *         total number of levels will still be 32, like in vanilla.
  *
- * 8-4 will always be last though, and will probably have to stay that way.
+ * 8-4 will always be last.
  */
-$options['Castles Last'] = "false";
+$options['Normal World Length'] = "true";
 /*
  * Shuffle Enemies can be
  * true  - shuffle enemies
@@ -83,20 +86,8 @@ $options['Castles Last'] = "false";
  * TODO: LIFTS ARE ENEMIES!!! Don't shuffle in a game-breaking way!!!
  */
 $options['Shuffle Enemies'] = "true";
-// rewrite table at 0x1cc4 if removing pipe transitions!
 
-//$options['debugdump'] = "false";
-//if($options['debugdump'] == "true") {
-//    // 1-1
-//    //levelenemydump(0x1f11, 0x1f2e - 0x1f11 + 1, $rom);
-//    //levelobjectdump(0x269e, 0x2702 - 0x269e + 1, $rom);
-//    // 1-2
-//    //levelobjectdump(0x2c45, 0x2ce7 - 0x2c45 + 1, $rom);
-//    levelenemydump(0x20e8, 0x2114 - 0x20e8 + 1, $rom);
-//    exit(0);
-//}
 
-//levelenemydump(0x2143, 0x216f - 0x2143, $rom);
 
 
 if ($argc <= 1) {
@@ -116,10 +107,6 @@ if ($argc > 2) {
     $chosenseed = $argv[2];
     $randomseed = false;
 }
-
-//$yo = new Game();
-//global $dont_randomize;
-//print_r($dont_randomize);
 
 $vanilla = new Game();
 $vanilla->setVanilla();
@@ -158,6 +145,7 @@ if($randomseed) {
     // user has provided a wanted seed, so use that one.
     $rando = new Randomizer($chosenseed, $options, $rom);
 }
+
 $rando->setSeed($rando->getSeed());
 $rando->makeFlags();
 $outfilename = "roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
@@ -165,18 +153,21 @@ $logfilename = "logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->
 $log = new Logger($logfilename);
 $rom->setLogger($log);
 
+// Print out the selected options and relevant information
+$rando->printOptions();
 
+// Make the seed a.k.a. this performs the actual randomization!
 $randomized_game = $rando->makeSeed();
 
-$rando->printOptions();
+$gamejson = json_encode($randomized_game, JSON_PRETTY_PRINT);
+print $gamejson;
+//print_r($randomized_game);
+
 
 $rom->writeGame($randomized_game);
 
-for ($i = 0; $i < 0xF; $i++) {
-    $rom->write(0x11cd + $i, pack('C*', 0x00));
-}
-
 $rom->save($outfilename);
+
 $log->close();
 
 print("\nFinished!\nFilename: $outfilename\n");

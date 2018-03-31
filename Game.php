@@ -5,6 +5,7 @@ require_once "Level.php";
 
 class Game {
     public $worlds = [];
+    public $midway_points = [];
 
     public function __construct() {
         $this->worlds = [

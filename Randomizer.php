@@ -130,6 +130,7 @@ class Randomizer {
         return $this;
     }
 
+        // TODO: store data in Game object and do the actual writing in rom->writeGame() ?!?!?!?!?
     public function shuffleEnemiesOnLevel(string $level) {
         global $dont_randomize;
         global $full_enemy_pool;
@@ -220,7 +221,7 @@ class Randomizer {
 
         $log->write("Shuffling ALL levels\n");
         $shuffledlevels = mt_shuffle($all_levels);
-        print_r($shuffledlevels);
+        //print_r($shuffledlevels);
 
         $lastlevelindex = 0;
         $levelindex = 1;
@@ -243,7 +244,6 @@ class Randomizer {
                 $shuffleindex++;
             }
             $game->worlds[8]->levels[$lastlevelindex+1] = $vanilla_level['8-4'];
-            print_r($game);
         } else if ($this->options['Pipe Transitions'] == 'keep') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = $vanilla_level[$shuffledlevels[$shuffleindex]];
@@ -268,7 +268,6 @@ class Randomizer {
             }
             $lastlevelindex  = count($game->worlds[8]->levels) + 2;
             $game->worlds[8]->levels[$lastlevelindex] = $vanilla_level['8-4'];
-            print_r($game);
         }
     }
     /*
@@ -276,7 +275,7 @@ class Randomizer {
      * Castles are also shuffled, except the 8-4 which is 8-4
      * TODO: add keeping pipe transitions in place.
      */
-    public function shuffleLevelsWithCastlesLast(&$game) {
+    public function shuffleLevelsWithNormalWorldLength(&$game) {
         global $log;
         global $vanilla_level;
         $levels = [ '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3' ];
@@ -296,17 +295,18 @@ class Randomizer {
                     $game->worlds[$w]->levels[$i] = $vanilla_level[$shuffledlevels[$levelindex]];
                     $levelindex++;
                 }
-                $game->worlds[$w]->levels[3] = $vanilla_level[$shuffledcastles[$castleindex]];
+                if($castleindex < 7)
+                    $game->worlds[$w]->levels[3] = $vanilla_level[$shuffledcastles[$castleindex]];
                 $castleindex++;
             }
             $game->worlds[8]->levels[3] = $vanilla_level['8-4'];
-            print_r($game);
         } else if($this->options['Pipe Transitions'] == 'keep') {
             print("shuffle levels, castles last, keep pipe transitions NOT IMPLEMENTED!\n");
         }
     }
 
     public function fixPipes(Game &$game) {
+        // TODO: store data in Game object and do the actual writing in rom->writeGame() ?!?!?!?!?
         global $log;
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
         $log->write("Fixing Pipes\n");
@@ -337,6 +337,31 @@ class Randomizer {
         }
     }
 
+    public function fixMidwayPoints(Game &$game) {
+        global $log;
+        $log->write("Fixing midway points:\n");
+
+        if ($this->options['Shuffle Levels'] == 'true' and $this->options['Normal World Length'] == 'false') {
+            // Remove midway points
+            $log->write("Removing all midway points!\n");
+            for ($i = 0; $i < 0xF; $i++) {
+                $game->midway_points[$i] = 0x00;
+            }
+        }
+
+        if ($this->options['Shuffle Levels'] == 'true' and $this->options['Normal World Length'] == 'true') {
+            // Fix midway points
+            $log->write("Moving midway points around to correct positions!\n");
+            $mpindex = 0;
+            foreach ($game->worlds as $world) {
+                $game->midway_points[$mpindex] = ($world->levels[0]->midway_point << 4) | ($world->levels[1]->midway_point);
+                $mpindex++;
+                $game->midway_points[$mpindex] = ($world->levels[2]->midway_point << 4) | ($world->levels[3]->midway_point);
+                $mpindex++;
+            }
+        }
+    }
+
     public function setTextRando() {
         global $log;
         $log->write("Changing Texts\n");
@@ -351,6 +376,7 @@ class Randomizer {
     public function setTextSeedhash(string $text) {
         /*
          * Replace "NINTENDO" in "(C)1985 NINTENDO" on the title screen with the first 8 characters of the seedhash
+         * TODO: see if there's a way to draw some sprites instead!
          */
         for($i = 0; $i < 8; $i++) {
             $this->rom->write(0x09fbb + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
@@ -358,9 +384,9 @@ class Randomizer {
     }
 
     public function makeFlags() {
-        $this->flags[0] = $this->options['Pipe Transitions'][0];
+        $this->flags[0] = $this->options['Pipe Transitions'][2];
         $this->flags[1] = $this->options['Shuffle Levels'][0];
-        $this->flags[2] = $this->options['Castles Last'][1];
+        $this->flags[2] = $this->options['Normal World Length'][1];
         $this->flags[3] = $this->options['Shuffle Enemies'][2];
         $s = implode("", $this->flags);
         print("Flags: $s\n");
@@ -372,11 +398,11 @@ class Randomizer {
     }
 
     public function makeSeedHash() {
-        // TODO: add md5 of input ROM to hashstring?!
+        // TODO: add md5 of input ROM to hashstring?! yes!
         global $smbr_version;
-        $hashstring = implode("", $this->flags) . strval($this->getSeed() . $smbr_version);
+        $hashstring = implode("", $this->flags) . strval($this->getSeed() . $smbr_version . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
-        //print("makeSeedHash()\n
+        //print("makkSeedHash()\n
         //          md5: " . hash("md5", $hashstring) . "\n
         //          crc: " . $this->seedhash . "\n
         //       md5crc: " . hash("crc32b", hash("md5", $hashstring)) . "\n");
@@ -400,8 +426,8 @@ class Randomizer {
 
         //  Shuffle Levels
         if($this->options['Shuffle Levels'] == "true") {
-            if($this->options['Castles Last'] == "true") {
-                $this->shuffleLevelsWithCastlesLast($game);
+            if($this->options['Normal World Length'] == "true") {
+                $this->shuffleLevelsWithNormalWorldLength($game);
             } else {
                 $this->shuffleAllLevels($game);
             }
@@ -414,6 +440,9 @@ class Randomizer {
 
         // Fix Pipes
         $this->fixPipes($game);
+
+        // Fix Midway Points
+        $this->fixMidwayPoints($game);
 
         // Set texts
         $this->setTextRando();

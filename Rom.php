@@ -113,6 +113,8 @@ class Rom {
 	}
 
     public function writeGame(Game $game) {
+        global $options;
+
         $offset = 0x1ccc;
         $index = 0;
 
@@ -132,6 +134,12 @@ class Rom {
             $this->write($offset + $index, pack('C*', $data));
             $data += count($world->levels);
             $index++;
+        }
+
+        // Write midway points
+        $offset = 0x11cd;
+        for ($i = 0; $i < 0xF; $i++) {
+            $this->write($offset + $i, pack('C*', $game->midway_points[$i]));
         }
     }
 
