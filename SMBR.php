@@ -13,28 +13,29 @@ use SMBR\Game;
  *
  * TODO: Randomize where pipes lead to?
  * TODO: Randomize Bowser's abilities? like hammers etc.?
- * TODO: Randomize power ups
+ *       - we could change the code which selects bowser's abilities based on which world you're in
  *
  * BUGS:
  * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
- * TODO: when mario dies and start in the middle of a level it is sometimes in a very wrong spot - potential soft lock / nothing you can do but game over
- * ----> see disasm lines 4351, 7787 and on
- * ----> also level data pdf!!!
- *
- * offset: 0x11cd <- this is where we write the new midway points.
  *
  *
  * TODO: disappearing trampolines
  * TODO: check that table at 0x1cc4 is correct in all situations. (I'm pretty sure it is, but check it.)
  * TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
+ * TODO: option to randomize music?
  *
+ * TODO:
+ * for power up shuffling - options:
+ * DONE - only power ups are random (flower, star, 1 up)
+ * DONE - add coins to that pool
+ * - shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
  *
  * NOTES
  * - Once a piranha plant was hiding behind a tree in 8-1
  *
  */
 
-$smbr_version = "0.1";
+$smbr_version = "0.5";
 
 
 require_once "Enemy.php";
@@ -46,7 +47,7 @@ require_once "Logger.php";
 require_once "Dump.php";
 require_once "Colorscheme.php";
 require_once "Text.php";
-
+require_once "Item.php";
 
 $options['Mario Color Scheme'] = "random";
 $options['Luigi Color Scheme'] = "random";
@@ -64,7 +65,7 @@ $options['Pipe Transitions'] = "remove";
  * true  - shuffle levels
  * false - don't shuffle levels
  */
-$options['Shuffle Levels'] = "true";
+$options['Shuffle Levels'] = "false";
 /*
  * Normal World Length can be
  * true  - make sure each world has 4 levels, last level of each world is a castle.
@@ -82,11 +83,21 @@ $options['Normal World Length'] = "true";
  * Future features: add options to choose between "full" shuffle (any enemy can appear anywhere an enemy normally is)
  * and more sensible shuffling (divide enemies into different pools of enemies to shuffle).
  * Some restrictions has to be applied anyway, since full randomization can break the game in certain cases.
- * Also, maybe make some enemies more rare than others.. and don't shuffle some, like Bowser. Or add option to do so...
- * TODO: LIFTS ARE ENEMIES!!! Don't shuffle in a game-breaking way!!!
+ * Also, maybe make some enemies more rare than others?
  */
 $options['Shuffle Enemies'] = "true";
-
+/*
+ * Shuffle Blocks can be
+ * all        - randomize all blocks that normally contain a coin, powerup, star or 1-UP.
+ *              Exception: rows of e.g. question blocks are special objects, those are not randomized, and probably can't be anyway.
+ * powerups   - only randomize blocks containing a powerup (mushroom/flower, star or 1-UP), leave coins out of the equation.
+ * grouped    - randomize blocks in sensible groups, e.g. all hidden blocks are shuffled amongst themselves, all bricks with items
+ *              are shuffled amongst themselves, etc. In other words: where you would normally expect a brick containing a mushroom,
+ *              that brick will now contain a random item (powerup, star, 1up, coin).
+ * coins      - all powerups are replaced with coins! no more mushrooms, 1ups or stars!
+ * none       - no randomization of blocks
+ */
+$options['Shuffle Blocks'] = "none";
 
 
 
@@ -160,8 +171,8 @@ $rando->printOptions();
 $randomized_game = $rando->makeSeed();
 
 $gamejson = json_encode($randomized_game, JSON_PRETTY_PRINT);
-print $gamejson;
-//print_r($randomized_game);
+//print $gamejson;
+print_r($randomized_game);
 
 
 $rom->writeGame($randomized_game);

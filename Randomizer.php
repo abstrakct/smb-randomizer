@@ -21,6 +21,7 @@ use SMBR\Translator;
 use SMBR\Enemy;
 use SMBR\Levels;
 use SMBR\Level;
+use SMBR\Item;
 
 class Randomizer {
     public $flags;
@@ -57,6 +58,7 @@ class Randomizer {
             'Pale Ninja' => new Colorscheme(0xce, 0xd0, 0x1e),
             'All Black' => new Colorscheme(0x8d, 0x8d, 0x8d),
             'Black & Blue' => new Colorscheme(0xcc, 0x18, 0x2f),
+            'Black & Blue 2' => new Colorscheme(0x51, 0xf8, 0x6e),
             'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
         ];
     }
@@ -131,6 +133,7 @@ class Randomizer {
     }
 
         // TODO: store data in Game object and do the actual writing in rom->writeGame() ?!?!?!?!?
+        // also improve this - we have enemy data offsets in the level data! 
     public function shuffleEnemiesOnLevel(string $level) {
         global $dont_randomize;
         global $full_enemy_pool;
@@ -209,6 +212,48 @@ class Randomizer {
         }
     }
 
+    public function randomizeBlocks(Game &$game, $frompool, $topool) {
+        global $log;
+        $log->write("Randomizing blocks!\n");
+
+        // 0xFD signifies end of level object data!
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                if ($level->level_data_offset == 0x0000)
+                    break;
+                $end = 0;
+                printf("0x%02x\n", $level->level_data_offset);
+                $data = $this->rom->read($level->level_data_offset, 200);
+                foreach ($data as $byte) {
+                    $end++;
+                    if($byte == 0xFD) {
+                        break;
+                    }
+                }
+
+                for($i = 2; $i < $end; $i+=2) {
+                    $do_randomize = true;
+                    $y = $data[$i] & 0b00001111;
+                    if ($y > 0x0B)
+                        $do_randomize = false;
+
+                    if ($do_randomize) {
+                        $p = $data[$i+1] & 0b10000000;
+                        $object = $data[$i+1] & 0b01111111;
+                        $newdata = 0x99;
+                        // change to add write data to Game object
+                        if (in_array($object, $frompool))  {
+                            $pull_key = mt_rand(0, count($topool) - 1);
+                            $newdata = $topool[$pull_key];
+                            $new_object = $p | $newdata;
+                            $this->rom->write($level->level_data_offset + $i + 1, pack('C*', $new_object));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /*
      * Shuffle levels, but castles can appear anywhere, except 8-4 which is always last.
      * Each castle represents the end of a world, but currently there are no restrictions on how
@@ -281,15 +326,15 @@ class Randomizer {
         $levels = [ '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3' ];
         $castles = [ '1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4' ];
 
-        $log->write("Shuffling levels (castles last)\n");
+        $log->write("Shuffling levels (normal world length)\n");
 
         $shuffledlevels  = mt_shuffle($levels);
         $shuffledcastles = mt_shuffle($castles);
 
-        $levelindex = 0;
-        $castleindex = 0;
-
         if($this->options['Pipe Transitions'] == 'remove') {
+            $log->write("Removing pipe transitions\n");
+            $levelindex = 0;
+            $castleindex = 0;
             for ($w = 1; $w <= 8; $w++) {
                 for ($i = 0; $i < 3; $i++) {
                     $game->worlds[$w]->levels[$i] = $vanilla_level[$shuffledlevels[$levelindex]];
@@ -301,7 +346,65 @@ class Randomizer {
             }
             $game->worlds[8]->levels[3] = $vanilla_level['8-4'];
         } else if($this->options['Pipe Transitions'] == 'keep') {
-            print("shuffle levels, castles last, keep pipe transitions NOT IMPLEMENTED!\n");
+            // TODO: implement this. 
+            // Probably needs a better structure where we can insert a level in between others!
+            // fixMidwayPoints must also be changed for this to work.
+            // - or maybe fix midway points before inserting pipe transitions
+            print("Sorry, normal world length + keeping pipe transitions is NOT IMPLEMENTED YET!\n\n");
+            exit(0);
+            
+            //$levelindex = 0;
+            //$castleindex = 0;
+            //for ($w = 1; $w <= 8; $w++) {
+            //    for ($i = 0; $i < 3; $i++) {
+            //        $game->worlds[$w]->levels[$i] = $vanilla_level[$shuffledlevels[$levelindex]];
+            //        $levelindex++;
+            //    }
+            //    if($castleindex < 7)
+            //        $game->worlds[$w]->levels[3] = $vanilla_level[$shuffledcastles[$castleindex]];
+            //    $castleindex++;
+            //}
+            //$game->worlds[8]->levels[3] = $vanilla_level['8-4'];
+
+            //for ($w = 1; $w <= 8; $w++) {
+            //    for ($l = 0; $l < 3; $l++) {
+            //        if (in_array($game->worlds[$w]->levels[$l]->map, [ $vanilla_level['1-2']->map, $vanilla_level['2-2']->map, $vanilla_level['4-2']->map ])) {
+            //            $position = $l - 1;
+            //            if ($position < 0)
+            //                $position = 0;
+            //            array_splice($game->worlds[$w]->levels, $position, 0, [ $vanilla_level['Pipe Transition'] ]);
+            //        }
+            //    }
+            //}
+
+
+
+
+            //$log->write("Keeping pipe transitions\n");
+            //$levelindex = 0;
+            //$shuffleindex = 0;
+            //$castleindex = 0;
+            //for ($w = 1; $w <= 8; $w++) {
+            //    while (!in_array($vanilla_level[$shuffledlevels[$shuffleindex]]->map, [ 0x60, 0x61, 0x62, 0x63, 0x64, 0x65 ])) {
+            //        if (in_array($vanilla_level[$shuffledlevels[$shuffleindex]]->map, [ $vanilla_level['1-2']->map, $vanilla_level['2-2']->map, $vanilla_level['4-2']->map ])) {
+            //            $game->worlds[$w]->levels[$levelindex] = $vanilla_level['Pipe Transition'];
+            //            $levelindex++;
+            //        }
+
+            //        $game->worlds[$w]->levels[$levelindex] = $vanilla_level[$shuffledlevels[$shuffleindex]];
+
+            //        $levelindex++;
+            //        $shuffleindex++;
+            //    }
+
+            //    $levelindex = 0;
+
+            //    if($castleindex < 7)
+            //        $game->worlds[$w]->levels[$levelindex] = $vanilla_level[$shuffledcastles[$castleindex]];
+            //    $castleindex++;
+            //}
+            //$game->worlds[8]->levels[4] = $vanilla_level['8-4'];
+            
         }
     }
 
@@ -421,7 +524,10 @@ class Randomizer {
 
     // Here we go!
     public function makeSeed() {
+        global $log;
+
         $game = new Game();
+        $game->setVanilla();
         print("\nOK - making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
@@ -436,6 +542,25 @@ class Randomizer {
         //  Shuffle Enemies
         if($this->options['Shuffle Enemies'] == "true") {
             $this->shuffleEnemies();
+        }
+
+        // Shuffle Blocks
+        if($this->options['Shuffle Blocks'] == "all") {
+            global $all_items;
+            $this->randomizeBlocks($game, $all_items, $all_items);
+        } else if($this->options['Shuffle Blocks'] == "powerups") {
+            global $powerups;
+            $this->randomizeBlocks($game, $powerups, $powerups);
+        } else if($this->options['Shuffle Blocks'] == "grouped") {
+            global $all_question_blocks, $all_hidden_blocks, $all_brick_blocks;
+            $this->randomizeBlocks($game, $all_question_blocks, $all_question_blocks);
+            $this->randomizeBlocks($game, $all_hidden_blocks, $all_hidden_blocks);
+            $this->randomizeBlocks($game, $all_brick_blocks, $all_brick_blocks);
+        } else if($this->options['Shuffle Blocks'] == "coins") {
+            global $all_items, $all_coins;
+            $this->randomizeBlocks($game, $all_items, $all_coins);
+        } else if($this->options['Shuffle Blocks'] == "none") {
+            $log->write("No randomization of blocks!\n");
         }
 
         // Fix Pipes
