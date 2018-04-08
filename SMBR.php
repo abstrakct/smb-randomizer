@@ -65,7 +65,7 @@ $options['Pipe Transitions'] = "remove";
  * true  - shuffle levels
  * false - don't shuffle levels
  */
-$options['Shuffle Levels'] = "false";
+$options['Shuffle Levels'] = "true";
 /*
  * Normal World Length can be
  * true  - make sure each world has 4 levels, last level of each world is a castle.
@@ -74,7 +74,7 @@ $options['Shuffle Levels'] = "false";
  *
  * 8-4 will always be last.
  */
-$options['Normal World Length'] = "true";
+$options['Normal World Length'] = "false";
 /*
  * Shuffle Enemies can be
  * true  - shuffle enemies
@@ -97,7 +97,7 @@ $options['Shuffle Enemies'] = "true";
  * coins      - all powerups are replaced with coins! no more mushrooms, 1ups or stars!
  * none       - no randomization of blocks
  */
-$options['Shuffle Blocks'] = "none";
+$options['Shuffle Blocks'] = "all";
 
 
 

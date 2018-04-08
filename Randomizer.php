@@ -210,7 +210,7 @@ class Randomizer {
                 if ($level->level_data_offset == 0x0000)
                     break;
                 $end = 0;
-                printf("0x%02x\n", $level->level_data_offset);
+                //printf("0x%02x\n", $level->level_data_offset);
                 $data = $this->rom->read($level->level_data_offset, 200);
                 foreach ($data as $byte) {
                     $end++;
@@ -479,6 +479,7 @@ class Randomizer {
         $this->flags[1] = $this->options['Shuffle Levels'][0];
         $this->flags[2] = $this->options['Normal World Length'][1];
         $this->flags[3] = $this->options['Shuffle Enemies'][2];
+        $this->flags[4] = $this->options['Shuffle Blocks'][2];
         $s = implode("", $this->flags);
         print("Flags: $s\n");
         $this->makeSeedHash();
@@ -515,7 +516,7 @@ class Randomizer {
         global $log;
 
         $game = new Game();
-        $game->setVanilla();
+
         print("\nOK - making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
