@@ -104,87 +104,83 @@ $options['Shuffle Enemies'] = "pools";
  */
 $options['Shuffle Blocks'] = "all";
 
+$log = null;
 
-
-if ($argc <= 1) {
-    print "Please provide ROM filename.\n";
-    exit(1);
+function smbrMain($filename, $seed = null) {
+    global $options, $log;
+    //$vanilla = new Game();
+    //$vanilla->setVanilla();
+    //print_r($vanilla);
+    //print(count($vanilla->worlds[1]->levels));
+    
+    $rom = new Rom($filename);
+    $checksum = $rom->getMD5();
+    $ok = $rom->checkMD5();
+    
+    print("\n\nSMB RANDOMIZER\n\nROM filename: $filename\n");
+    print("MD5 checksum: $checksum");
+    if($ok) {
+        print(" [OK]\n");
+    } else {
+        print(" [FAILED!]\n");
+        print("Trying to use this ROM anyway, not guaranteed to work, results may vary...\n");
+        //TODO: Add checks to see if ROM is usable (check data in various offsets).
+        //exit(1);
+    }
+    
+    print("\n");
+    
+    // if seed == null a random seed will be chosen, else it will use the user's chosen seed.
+    $rando  = new Randomizer($seed, $options, $rom);
+    
+    $rando->setSeed($rando->getSeed());
+    $rando->makeFlags();
+    $outfilename = "roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
+    $logfilename = "logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
+    $log = new Logger($logfilename);
+    $rom->setLogger($log);
+    
+    // Print out the selected options and relevant information
+    $rando->printOptions();
+    
+    // Make the seed a.k.a. this performs the actual randomization!
+    $randomized_game = $rando->makeSeed();
+    
+    $gamejson = json_encode($randomized_game, JSON_PRETTY_PRINT);
+    //print $gamejson;
+    print_r($randomized_game);
+    
+    
+    $rom->writeGame($randomized_game);
+    
+    $rom->save($outfilename);
+    
+    $log->close();
+    
+    print("\nFinished!\nFilename: $outfilename\n");
 }
 
-if ($argv[1] == "-d") {
-    $filename = $argv[2];
-    $rom = new Rom($filename);
-    dumpRomInfoActualOrder($rom);
+if (php_sapi_name() == "cli") {
+    if ($argc <= 1) {
+        print "Please provide ROM filename.\n";
+        exit(1);
+    }
+    
+    if ($argv[1] == "-d") {
+        $filename = $argv[2];
+        $rom = new Rom($filename);
+        dumpRomInfoActualOrder($rom);
+        exit(0);
+    }
+
+    $filename = $argv[1];    
+    if ($argc > 2) {
+        $chosenseed = $argv[2];
+        smbrMain($filename, $chosenseed);
+    } else {
+        smbrMain($filename);
+    }
+} else {
+    // browser - not implemented yet
     exit(0);
 }
-
-$randomseed = true;
-if ($argc > 2) {
-    $chosenseed = $argv[2];
-    $randomseed = false;
-}
-
-$vanilla = new Game();
-$vanilla->setVanilla();
-//print_r($vanilla);
-//print(count($vanilla->worlds[1]->levels));
-
-
-
-
-$filename = $argv[1];
-$rom = new Rom($filename);
-$checksum = $rom->getMD5();
-$ok = $rom->checkMD5();
-
-print("\n\nSMB RANDOMIZER\n\nROM filename: $filename\n");
-print("MD5 checksum: $checksum");
-if($ok) {
-    print(" [OK]\n");
-} else {
-    print(" [FAILED!]\n");
-    print("trying anyway, results may vary....\n");
-    //TODO: Add checks to see if ROM is usable (check data in various offsets).
-    //exit(1);
-}
-
-//print("Reading ROM data...");
-//$romdata = $rom->read(0, Rom::SIZE);
-//print("OK\n");
-
-print("\n");
-
-if($randomseed) {
-    // pick a random number to be used as the seed
-    $rando = new Randomizer(null, $options, $rom);
-} else {
-    // user has provided a wanted seed, so use that one.
-    $rando = new Randomizer($chosenseed, $options, $rom);
-}
-
-$rando->setSeed($rando->getSeed());
-$rando->makeFlags();
-$outfilename = "roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
-$logfilename = "logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
-$log = new Logger($logfilename);
-$rom->setLogger($log);
-
-// Print out the selected options and relevant information
-$rando->printOptions();
-
-// Make the seed a.k.a. this performs the actual randomization!
-$randomized_game = $rando->makeSeed();
-
-$gamejson = json_encode($randomized_game, JSON_PRETTY_PRINT);
-//print $gamejson;
-print_r($randomized_game);
-
-
-$rom->writeGame($randomized_game);
-
-$rom->save($outfilename);
-
-$log->close();
-
-print("\nFinished!\nFilename: $outfilename\n");
-
