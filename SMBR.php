@@ -89,7 +89,7 @@ $options['Normal World Length'] = "false";
  * Some restrictions has to be applied anyway, since full randomization can break the game in certain cases.
  * Also, maybe make some enemies more rare than others?
  */
-$options['Shuffle Enemies'] = "pools";
+$options['Shuffle Enemies'] = "full";
 
 /*
  * Shuffle Blocks can be
@@ -106,7 +106,13 @@ $options['Shuffle Blocks'] = "all";
 
 $log = null;
 
-function smbrMain($filename, $seed = null) {
+function printVersion() {
+    global $smbr_version;
+
+    return "version " . $smbr_version;
+}
+
+function smbrMain($filename, $seed = null, $webmode = false) {
     global $options, $log;
     //$vanilla = new Game();
     //$vanilla->setVanilla();
@@ -117,15 +123,26 @@ function smbrMain($filename, $seed = null) {
     $checksum = $rom->getMD5();
     $ok = $rom->checkMD5();
     
-    print("\n\nSMB RANDOMIZER\n\nROM filename: $filename\n");
-    print("MD5 checksum: $checksum");
-    if($ok) {
-        print(" [OK]\n");
+    if ($webmode) {
+        print("<br><br>SMB RANDOMIZER " . printVersion() . "<br><br>ROM filename: $filename<br>");
+        print("MD5 checksum: $checksum");
+        if ($ok) {
+            print(" <b>[OK]</b><br>");
+        } else {
+            print(" <b>[FAILED!]</b><br>");
+            print("Trying to use this ROM anyway, <b>not guaranteed to work,</b> results may vary...<br>");
+            //TODO: Add checks to see if ROM is usable (check data in various offsets).
+        }
     } else {
-        print(" [FAILED!]\n");
-        print("Trying to use this ROM anyway, not guaranteed to work, results may vary...\n");
-        //TODO: Add checks to see if ROM is usable (check data in various offsets).
-        //exit(1);
+        print("\n\nSMB RANDOMIZER " . printVersion() . "\n\nROM filename: $filename\n");
+        print("MD5 checksum: $checksum");
+        if ($ok) {
+            print(" [OK]\n");
+        } else {
+            print(" [FAILED!]\n");
+            print("Trying to use this ROM anyway, not guaranteed to work, results may vary...\n");
+            //TODO: Add checks to see if ROM is usable (check data in various offsets).
+        }
     }
     
     print("\n");
@@ -135,8 +152,18 @@ function smbrMain($filename, $seed = null) {
     
     $rando->setSeed($rando->getSeed());
     $rando->makeFlags();
-    $outfilename = "roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
-    $logfilename = "logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
+
+    if ($webmode) {
+        $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());
+        if (!file_exists($dir))
+            mkdir($dir, 0744);
+        $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
+        $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
+    } else {
+        $outfilename = "roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
+        $logfilename = "logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
+    }
+
     $log = new Logger($logfilename);
     $rom->setLogger($log);
     
@@ -148,7 +175,7 @@ function smbrMain($filename, $seed = null) {
     
     $gamejson = json_encode($randomized_game, JSON_PRETTY_PRINT);
     //print $gamejson;
-    print_r($randomized_game);
+    //print_r($randomized_game);
     
     
     $rom->writeGame($randomized_game);
@@ -157,7 +184,10 @@ function smbrMain($filename, $seed = null) {
     
     $log->close();
     
-    print("\nFinished!\nFilename: $outfilename\n");
+    if ($options["webmode"])
+        print('<br><br><b>Finished!</b><br><a href="' . $outfilename. '">Click here to download randomized ROM!</a>');
+    else
+        print("\nFinished!\nFilename: $outfilename\n");
 }
 
 if (php_sapi_name() == "cli") {
@@ -181,6 +211,60 @@ if (php_sapi_name() == "cli") {
         smbrMain($filename);
     }
 } else {
-    // browser - not implemented yet
-    exit(0);
+    global $options;
+    ini_set('display_errors',1); 
+    error_reporting(E_ALL);
+
+    echo "<html><body>";
+    echo "Starting randomizationing...<br>";
+
+    if ($_POST["shufflelevels"] == "yes")
+        $options['Shuffle Levels'] = "true";
+    else if ($_POST["shufflelevels"] == "no")
+        $options['Shuffle Levels'] = "false";
+
+    if ($_POST["normalworldlength"] == "yes")
+        $options['Normal World Length'] = "true";
+    else if ($_POST["normalworldlength"] == "no")
+        $options['Normal World Length'] = "false";
+
+    // this part could probably be done simpler, but at the same time I want
+    // to make sure the input is exactly what it should be.
+    if ($_POST["pipetransitions"] == "keep")
+        $options['Pipe Transitions'] = "keep";
+    else if($_POST["pipetransitions"] == "remove")
+        $options['Pipe Transitions'] = "remove";
+
+    if ($_POST["shuffleenemies"] == "full")
+        $options['Shuffle Enemies'] = "full";
+    else if($_POST["shuffleenemies"] == "pools")
+        $options['Shuffle Enemies'] = "pools";
+    else if($_POST["shuffleenemies"] == "none")
+        $options['Shuffle Enemies'] = "none";
+
+    if ($_POST["shuffleblocks"] == "all")
+        $options['Shuffle Blocks'] = "all";
+    else if ($_POST["shuffleblocks"] == "powerups")
+        $options['Shuffle Blocks'] = "powerups";
+    else if ($_POST["shuffleblocks"] == "grouped")
+        $options['Shuffle Blocks'] = "grouped";
+    else if ($_POST["shuffleblocks"] == "coins")
+        $options['Shuffle Blocks'] = "coins";
+    else if ($_POST["shuffleblocks"] == "none")
+        $options['Shuffle Blocks'] = "none";
+
+    $options["Mario Color Scheme"] = $_POST["mariocolor"];
+    $options["Luigi Color Scheme"] = $_POST["luigicolor"];
+    $options["Fire Color Scheme"]  = $_POST["firecolor"];
+
+    $filename = "smb.nes";
+    if ($_POST["seed"])
+        $seed = $_POST["seed"];
+    else
+        $seed = null;
+
+    $options["webmode"] = true;
+    smbrMain($filename, $seed, true);
+
+    echo "</body></html>";
 }

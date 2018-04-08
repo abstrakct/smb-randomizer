@@ -62,10 +62,18 @@ class Randomizer {
     }
 
     public function printOptions() {
-        print("\n\n*** SETTINGS ***\nSeed: $this->rng_seed\n");
+        if ($this->options["webmode"])
+            print("<br>*** OPTIONS ***<br>Seed: $this->rng_seed<br>");
+        else
+            print("\n\n*** OPTIONS ***\nSeed: $this->rng_seed\n");
 
         foreach ($this->options as $key => $value) {
-            print("$key: $value\n");
+            if ($this->options["webmode"]) {
+                if ($key != "webmode")
+                    print("$key: $value<br>");
+            } else {
+                print("$key: $value\n");
+            }
         }
     }
 
@@ -274,7 +282,7 @@ class Randomizer {
                                         $newo = $koopa_pool[mt_rand(0, count($koopa_pool) - 1)]->num;
                                     } else if (enemyIsInPool($o, $firebar_pool)) {
                                         $newo = $firebar_pool[mt_rand(0, count($firebar_pool) - 1)]->num;
-                                    } else if ($o == enemy["Lakitu"]) {
+                                    } else if ($o == $enemy["Lakitu"]) {
                                         $newo = $lakitu_pool[mt_rand(0, count($lakitu_pool) - 1)]->num;
                                     }
 
@@ -564,6 +572,10 @@ class Randomizer {
         }
     }
 
+    public function getFlags() {
+        return implode("", $this->flags);
+    }
+
     public function makeFlags() {
         $this->flags[0] = $this->options['Pipe Transitions'][2];
         $this->flags[1] = $this->options['Shuffle Levels'][0];
@@ -571,16 +583,15 @@ class Randomizer {
         $this->flags[3] = $this->options['Shuffle Enemies'][1];
         $this->flags[4] = $this->options['Shuffle Blocks'][2];
         $s = implode("", $this->flags);
-        print("Flags: $s\n");
+        $f = strtoupper($s);
+        if ($this->options["webmode"])
+            print("Flags: $f <br>");
+        else
+            print("Flags: $f\n");
         $this->makeSeedHash();
     }
 
-    public function getFlags() {
-        return implode("", $this->flags);
-    }
-
     public function makeSeedHash() {
-        // TODO: add md5 of input ROM to hashstring?! yes!
         global $smbr_version;
         $hashstring = implode("", $this->flags) . strval($this->getSeed() . $smbr_version . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
@@ -588,7 +599,11 @@ class Randomizer {
         //          md5: " . hash("md5", $hashstring) . "\n
         //          crc: " . $this->seedhash . "\n
         //       md5crc: " . hash("crc32b", hash("md5", $hashstring)) . "\n");
-        print("SeedHash: $this->seedhash\n");
+
+        if ($this->options["webmode"])
+            print("SeedHash: $this->seedhash <br>");
+        else
+            print("SeedHash: $this->seedhash\n");
     }
 
     public function getSeedHash() {
