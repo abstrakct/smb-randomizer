@@ -184,6 +184,7 @@ $firebar_pool = [
     new Enemy('Fire Bar (Counter-Clockwise)'),
     new Enemy('Fast Fire Bar (Counter-Clockwise)'),
     new Enemy('Long Fire Bar (Clockwise)'),
+    new Enemy('Podoboo'),
 ];
 
 $koopa_pool = [
@@ -199,6 +200,9 @@ $koopa_pool = [
     new Enemy('3 Green Koopa Troopas V10'),
     new Enemy('2 Green Koopa Troopas V6'),
     new Enemy('3 Green Koopa Troopas V6'),
+    new Enemy('Buzzy Beetle'),
+    new Enemy('Hammer Bro'),
+    new Enemy('Blooper'),
 ];
 
 $goomba_pool = [
@@ -207,6 +211,23 @@ $goomba_pool = [
     new Enemy('3 Goombas V10'),
     new Enemy('2 Goombas V6'),
     new Enemy('3 Goombas V6'),
+    new Enemy('Buzzy Beetle'),
+    new Enemy('Hammer Bro'),
+    new Enemy('Blooper'),
+];
+
+$lakitu_pool = [
+    new Enemy('Lakitu'),
+    new Enemy('Lakitu'),
+    new Enemy('Podoboo'),
+    new Enemy('Green Koopa Paratroopa (leaping)'),
+    new Enemy('Green Koopa Troopa (left then right)'),
+    new Enemy('Lakitu'),
+    new Enemy('2 Green Koopa Troopas V10'),
+    new Enemy('3 Green Koopa Troopas V10'),
+    new Enemy('2 Green Koopa Troopas V6'),
+    new Enemy('3 Green Koopa Troopas V6'),
+    new Enemy('Lakitu'),
 ];
 
 $dont_use = [ new Enemy('Spiny') ];

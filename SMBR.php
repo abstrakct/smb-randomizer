@@ -35,7 +35,7 @@ use SMBR\Game;
  *
  */
 
-$smbr_version = "0.5";
+$smbr_version = "0.6";
 
 
 require_once "Enemy.php";
@@ -60,12 +60,14 @@ $options['Fire Color Scheme']  = "random";
  * third possibility: shuffle pipe transitions in with normal levels, so that they can appear anywhere (but only as many times as in vanilla)
  */
 $options['Pipe Transitions'] = "remove";
+
 /*
  * Shuffle Levels can be
  * true  - shuffle levels
  * false - don't shuffle levels
  */
 $options['Shuffle Levels'] = "true";
+
 /*
  * Normal World Length can be
  * true  - make sure each world has 4 levels, last level of each world is a castle.
@@ -75,9 +77,11 @@ $options['Shuffle Levels'] = "true";
  * 8-4 will always be last.
  */
 $options['Normal World Length'] = "false";
+
 /*
  * Shuffle Enemies can be
- * true  - shuffle enemies
+ * full  - shuffle enemies (within reason)
+ * pools - shuffle enemies within pools of related/similar enemies
  * false - don't shuffle enemies
  *
  * Future features: add options to choose between "full" shuffle (any enemy can appear anywhere an enemy normally is)
@@ -85,7 +89,8 @@ $options['Normal World Length'] = "false";
  * Some restrictions has to be applied anyway, since full randomization can break the game in certain cases.
  * Also, maybe make some enemies more rare than others?
  */
-$options['Shuffle Enemies'] = "true";
+$options['Shuffle Enemies'] = "pools";
+
 /*
  * Shuffle Blocks can be
  * all        - randomize all blocks that normally contain a coin, powerup, star or 1-UP.

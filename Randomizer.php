@@ -23,6 +23,16 @@ use SMBR\Levels;
 use SMBR\Level;
 use SMBR\Item;
 
+function enemyIsInPool($o, $pool) {
+    foreach ($pool as $p) {
+        if ($o == $p->num) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 class Randomizer {
     public $flags;
     public $seedhash;
@@ -135,6 +145,7 @@ class Randomizer {
         $end = 0;
         $percentage = 100;  // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
         // TODO: change percentage based on settings/flags/something.
+        // TODO: or remove this percentage setting?
 
         $data = $this->rom->read($enemy_data_offsets_for_shuffling[$level], 100);
         foreach ($data as $byte) {
@@ -197,6 +208,85 @@ class Randomizer {
             $m = "Shuffling enemies on level " . $key . "\n";
             $log->write($m);
             $this->shuffleEnemiesOnLevel($key);
+        }
+    }
+
+    public function shuffleEnemiesInPools(&$game) {
+        global $dont_randomize;
+        global $toad_pool, $generator_pool;
+        global $koopa_pool, $goomba_pool, $firebar_pool, $lakitu_pool;
+        global $enemy;
+        global $log;
+
+        $log->write("Shuffling enemies in pools!\n");
+        $percentage = 100;  // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
+        // TODO: change percentage based on settings/flags/something.
+        // TODO: or remove this percentage setting?
+
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                $end = 0;
+                if ($level->enemy_data_offset == 0x0000)
+                    break;
+                $data = $this->rom->read($level->enemy_data_offset, 100);
+                foreach ($data as $byte) {
+                    $end++;
+                    if($byte == 0xFF) {
+                        break;
+                    }
+                }
+
+                for($i = 0; $i < $end; $i+=2) {
+                    $do_randomize = true;
+                    $x = $data[$i] & 0xf0;
+                    $y = $data[$i] & 0x0f;
+                    if($y == 0xE) {
+                        $i++;
+                    } else if ($y > 0xE) {
+                        continue;
+                    } else {
+                        if($data[$i] != 0xFF) {
+                            $p = $data[$i+1] & 0b10000000;
+                            $h = $data[$i+1] & 0b01000000;
+                            $o = $data[$i+1] & 0b00111111;  // this is the enemy
+
+                            /* Some enemies can't be randomized, so let's check for those */
+                            foreach($dont_randomize as $nope) {
+                                if($o == $nope->num) {
+                                    $log->write("Found un-randomizable enemy object!\n");
+                                    $do_randomize = false;
+                                }
+                            }
+
+                            if ($do_randomize) {
+                                $newdata = 0;
+                                if(mt_rand(1, 100) <= $percentage) {
+                                    if($o == $enemy['Toad']) {
+                                        $z = count($toad_pool);
+                                        $newo = $toad_pool[mt_rand(0, count($toad_pool) - 1)]->num;
+                                        $newcoord = 0x98;
+                                        $this->rom->write($level->enemy_data_offset + $i, pack('C*', $newcoord));
+                                    } else if (enemyIsInPool($o, $generator_pool)) {
+                                        $newo = $generator_pool[mt_rand(0, count($generator_pool) - 1)]->num;
+                                    } else if (enemyIsInPool($o, $goomba_pool)) {
+                                        $newo = $goomba_pool[mt_rand(0, count($goomba_pool) - 1)]->num;
+                                    } else if (enemyIsInPool($o, $koopa_pool)) {
+                                        $newo = $koopa_pool[mt_rand(0, count($koopa_pool) - 1)]->num;
+                                    } else if (enemyIsInPool($o, $firebar_pool)) {
+                                        $newo = $firebar_pool[mt_rand(0, count($firebar_pool) - 1)]->num;
+                                    } else if ($o == enemy["Lakitu"]) {
+                                        $newo = $lakitu_pool[mt_rand(0, count($lakitu_pool) - 1)]->num;
+                                    }
+
+
+                                    $newdata = (($data[$i+1] & 0b10000000) | ($data[$i+1] & 0b01000000)) | $newo;
+                                    $this->rom->write($level->enemy_data_offset + $i + 1, pack('C*', $newdata));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -478,7 +568,7 @@ class Randomizer {
         $this->flags[0] = $this->options['Pipe Transitions'][2];
         $this->flags[1] = $this->options['Shuffle Levels'][0];
         $this->flags[2] = $this->options['Normal World Length'][1];
-        $this->flags[3] = $this->options['Shuffle Enemies'][2];
+        $this->flags[3] = $this->options['Shuffle Enemies'][1];
         $this->flags[4] = $this->options['Shuffle Blocks'][2];
         $s = implode("", $this->flags);
         print("Flags: $s\n");
@@ -520,8 +610,8 @@ class Randomizer {
         print("\nOK - making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
-        if($this->options['Shuffle Levels'] == "true") {
-            if($this->options['Normal World Length'] == "true") {
+        if ($this->options['Shuffle Levels'] == "true") {
+            if ($this->options['Normal World Length'] == "true") {
                 $this->shuffleLevelsWithNormalWorldLength($game);
             } else {
                 $this->shuffleAllLevels($game);
@@ -529,26 +619,28 @@ class Randomizer {
         }
 
         //  Shuffle Enemies
-        if($this->options['Shuffle Enemies'] == "true") {
+        if ($this->options['Shuffle Enemies'] == "full") {
             $this->shuffleEnemies();
+        } else if ($this->options['Shuffle Enemies'] == "pools") {
+            $this->shuffleEnemiesInPools($game);
         }
 
         // Shuffle Blocks
-        if($this->options['Shuffle Blocks'] == "all") {
+        if ($this->options['Shuffle Blocks'] == "all") {
             global $all_items;
             $this->randomizeBlocks($game, $all_items, $all_items);
-        } else if($this->options['Shuffle Blocks'] == "powerups") {
+        } else if ($this->options['Shuffle Blocks'] == "powerups") {
             global $powerups;
             $this->randomizeBlocks($game, $powerups, $powerups);
-        } else if($this->options['Shuffle Blocks'] == "grouped") {
+        } else if ($this->options['Shuffle Blocks'] == "grouped") {
             global $all_question_blocks, $all_hidden_blocks, $all_brick_blocks;
             $this->randomizeBlocks($game, $all_question_blocks, $all_question_blocks);
             $this->randomizeBlocks($game, $all_hidden_blocks, $all_hidden_blocks);
             $this->randomizeBlocks($game, $all_brick_blocks, $all_brick_blocks);
-        } else if($this->options['Shuffle Blocks'] == "coins") {
+        } else if ($this->options['Shuffle Blocks'] == "coins") {
             global $all_items, $all_coins;
             $this->randomizeBlocks($game, $all_items, $all_coins);
-        } else if($this->options['Shuffle Blocks'] == "none") {
+        } else if ($this->options['Shuffle Blocks'] == "none") {
             $log->write("No randomization of blocks!\n");
         }
 
