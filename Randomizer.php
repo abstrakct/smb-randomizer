@@ -26,7 +26,6 @@ use SMBR\Item;
 class Randomizer {
     public $flags;
     public $seedhash;
-    public $colorschemes;
     protected $rng_seed;
     protected $seed;
     protected $options;
@@ -50,17 +49,6 @@ class Randomizer {
         $this->options = $opt;
         $this->rom = $rom;
         $this->trans = new Translator();
-        $this->colorschemes = [
-            'random' => new Colorscheme(0, 0, 0),
-            'Mario' => new Colorscheme(0x16, 0x27, 0x18),
-            'Luigi' => new Colorscheme(0x30, 0x27, 0x19),
-            'Vanilla Fire' => new Colorscheme(0x37, 0x27, 0x16),
-            'Pale Ninja' => new Colorscheme(0xce, 0xd0, 0x1e),
-            'All Black' => new Colorscheme(0x8d, 0x8d, 0x8d),
-            'Black & Blue' => new Colorscheme(0xcc, 0x18, 0x2f),
-            'Black & Blue 2' => new Colorscheme(0x51, 0xf8, 0x6e),
-            'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
-        ];
     }
 
     public function printOptions() {
@@ -76,7 +64,7 @@ class Randomizer {
     }
 
     public function setMarioColorScheme(string $colorscheme) : self {
-        global $log;
+        global $log, $colorschemes;
         $log->write("Mario Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
             $this->setSeed();
@@ -84,9 +72,9 @@ class Randomizer {
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
-            $outer = $this->colorschemes[$colorscheme]->outer;
-            $skin  = $this->colorschemes[$colorscheme]->skin;
-            $inner = $this->colorschemes[$colorscheme]->inner;
+            $outer = $colorschemes[$colorscheme]->outer;
+            $skin  = $colorschemes[$colorscheme]->skin;
+            $inner = $colorschemes[$colorscheme]->inner;
         }
         $this->rom->setMarioInnerColor($inner);
         $this->rom->setMarioSkinColor($skin);
@@ -95,7 +83,7 @@ class Randomizer {
     }
 
     public function setFireColorScheme(string $colorscheme) : self {
-        global $log;
+        global $log, $colorschemes;
         $log->write("Fire Mario/Luigi Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
             $this->setSeed();
@@ -103,9 +91,9 @@ class Randomizer {
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
-            $outer = $this->colorschemes[$colorscheme]->outer;
-            $skin  = $this->colorschemes[$colorscheme]->skin;
-            $inner = $this->colorschemes[$colorscheme]->inner;
+            $outer = $colorschemes[$colorscheme]->outer;
+            $skin  = $colorschemes[$colorscheme]->skin;
+            $inner = $colorschemes[$colorscheme]->inner;
         }
         $this->rom->setFireInnerColor($inner);
         $this->rom->setFireSkinColor($skin);
@@ -114,7 +102,7 @@ class Randomizer {
     }
 
     public function setLuigiColorScheme(string $colorscheme) : self {
-        global $log;
+        global $log, $colorschemes;
         $log->write("Luigi Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
             $this->setSeed();
@@ -122,9 +110,9 @@ class Randomizer {
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
-            $outer = $this->colorschemes[$colorscheme]->outer;
-            $skin  = $this->colorschemes[$colorscheme]->skin;
-            $inner = $this->colorschemes[$colorscheme]->inner;
+            $outer = $colorschemes[$colorscheme]->outer;
+            $skin  = $colorschemes[$colorscheme]->skin;
+            $inner = $colorschemes[$colorscheme]->inner;
         }
         $this->rom->setLuigiInnerColor($inner);
         $this->rom->setLuigiSkinColor($skin);
