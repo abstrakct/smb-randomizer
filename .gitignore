@@ -1,3 +1,8 @@
 *.nes
 *.log
 *.asm
+archive/
+colors.txt
+dump*
+duuump
+smb.txt
