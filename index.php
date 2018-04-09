@@ -100,7 +100,7 @@ Select <i>no</i> if you want worlds to have a random number of levels. Each worl
 <b>Pipe Transitions:</b><br>
 Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the vanilla game.<br>
 Select <i>remove</i> if you want to remove these transitions.<br>
-Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before a level that normally has a pipe transition).
+Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before a level that normally has a pipe transition). <b>NOTE: does NOT work when Normal World Length is set to <i>yes</i></b>!
 <p>
 <b>Enemy Shuffle:</b><br>
 <i>Full</i> shuffles all enemies, within reasonable limits.<br>
@@ -113,6 +113,16 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <i>Grouped</i> shuffles blocks in groups - e.g. all bricks that contain an item will now contain a random item.<br>
 <i>Coins</i> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins! Probably quite hard!<br>
 <i>No block shuffle</i> means blocks are NOT shuffled in any way.<br>
+<p>
+<h3>TODO / Upcoming Features / Ideas</h3>
+<li>Randomize Bowser's abilities</li>
+<li>Randomize texts</li>
+<li>More error checking</li>
+<li>Improve backend</li>
+<li>More color schemes!</li>
+<li>Fix Warp Pipes (if possible)</li>
+<li>Option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are</li>
+<li>Randomize music?</li>
 
 <p>
 
