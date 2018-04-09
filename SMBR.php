@@ -35,7 +35,7 @@ use SMBR\Game;
  *
  */
 
-$smbr_version = "0.6";
+$smbr_version = "0.6.1";
 
 
 require_once "Enemy.php";

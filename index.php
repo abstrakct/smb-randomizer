@@ -127,6 +127,8 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <h2>Bugs / Known Limitations</h2>
 <li>The title screen will show whatever is set as the first level, and thus it's technically spoils what the first level is. I don't think there's an easy fix for this.</li>
 <li>Warp Pipes can be wonky. The ones that have a number above them seem to work correctly though. A pipe in a Warp Zone without a number above it will take you to level -1 and you'll be stuck there.</li>
+<li>Randomized enemies sometimes get stuck inside blocks/walls/pipes. I'm looking into a way to fix this.</li>
+<li>When "Block Shuffle" is set to <i>All</i> a small blocks seem to disappear completely. I haven't looked into why yet.</li>
 <li>Trampolines sometimes disappear. If you see that happen, DO NOT jump onto where the trampoline was - you will get stuck if yo do! Instead, look for an alternate way to progress.</li>
 <li>Shuffle Levels + Normal World Length + Keep Pipe Transitions = does not work! Can probably be fixed, if there is a high demand for this particular combination...</li>
 <li>If Normal World Length is <i>false</i>, there will be no midway points in any level! In other words: No matter where you die on a level, you will respawn at the beginning of the level! This is due to limitations in the original game code.</li> 
@@ -140,6 +142,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>Fix Warp Pipes (if possible)</li>
 <li>Option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are</li>
 <li>Randomize music?</li>
+<li>Better / more readable log</li>
 
 <p>
 
