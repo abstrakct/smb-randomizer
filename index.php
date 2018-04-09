@@ -106,7 +106,7 @@ Select <i>no</i> if you want worlds to have a random number of levels. Each worl
 <b>Pipe Transitions:</b><br>
 Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the vanilla game.<br>
 Select <i>remove</i> if you want to remove these transitions.<br>
-Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: does NOT work when Normal World Length is set to <i>yes</i></b>!
+Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: can NOT be combined with Shuffle Levels and Normal World Length set to <i>yes</i></b>!
 <p>
 <b>Enemy Shuffle:</b><br>
 <i>Full</i> shuffles all enemies, within reasonable limits.<br>
@@ -139,6 +139,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <p>
 <h2>TODO / Upcoming Features / Ideas</h2>
 <li>Require user to upload a ROM instead of providing one</li>
+<li>Improve web interface</li>
 <li>Randomize Bowser's abilities</li>
 <li>Randomize texts</li>
 <li>Add option to randomize what area a pipe takes you to</li>
