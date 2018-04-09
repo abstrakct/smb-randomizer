@@ -135,6 +135,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>If Normal World Length is <i>false</i>, there will be no midway points in any level! In other words: No matter where you die on a level, you will respawn at the beginning of the level! This is due to limitations in the original game code.</li> 
 <p>
 <h2>TODO / Upcoming Features / Ideas</h2>
+<li>Require user to upload a ROM instead of providing one</li>
 <li>Randomize Bowser's abilities</li>
 <li>Randomize texts</li>
 <li>Add option to randomize what area a pipe takes you to</li>
