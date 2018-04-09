@@ -123,6 +123,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>On the title screen, a "seedhash" is shown where the text "(C) 1985 Nintendo" is normally shown. In a race setting or similar, if all players have the same seedhash it guarantees that the ROMs were generated with the same seed, same settings, same vanilla ROM and same version of the randomizer.</li>
 <li>Toad sometimes gets randomized to an enemy - if this enemy kills you on the "Thank you Mario!" screen, don't worry. You don't actually lose a life and the game will progress as normal. You might lose Super/Fire status though, I'm not sure...</li>
 <li>Random Colors for Mario/Luigi is totally random, results can be anything from super cool to very weird.</li>
+<li>Underground bonus areas (when you go down a pipe) are not shuffled, but could be.</li>
 <p>
 <h2>Bugs / Known Limitations</h2>
 <li>The title screen will show whatever is set as the first level, and thus it's technically spoils what the first level is. I don't think there's an easy fix for this.</li>
@@ -136,6 +137,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <h2>TODO / Upcoming Features / Ideas</h2>
 <li>Randomize Bowser's abilities</li>
 <li>Randomize texts</li>
+<li>Add option to randomize what area a pipe takes you to</li>
 <li>More error checking</li>
 <li>Improve backend</li>
 <li>More color schemes!</li>
