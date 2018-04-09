@@ -54,6 +54,7 @@ Block shuffle type:<br>
   <option value="random">Totally Random Colors</option><br>
   <option value="Mario">Normal Mario</option><br>
   <option value="Luigi">Normal Luigi</option><br>
+  <option value="Vanilla Fire">Normal Fire Mario/Luigi</option><br>
   <option value="Pale Ninja">Pale Ninja</option><br>
   <option value="All Black">All Black</option><br>
   <option value="Black & Blue">Black &amp; Blue</option><br>
@@ -63,8 +64,9 @@ Block shuffle type:<br>
 <br>Color Scheme for Luigi:
 <select name="luigicolor">
   <option value="random">Totally Random Colors</option><br>
-  <option value="Luigi">Normal</option><br>
+  <option value="Luigi">Normal Luigi</option><br>
   <option value="Mario">Normal Mario</option><br>
+  <option value="Vanilla Fire">Normal Fire Mario/Luigi</option><br>
   <option value="Pale Ninja">Pale Ninja</option><br>
   <option value="All Black">All Black</option><br>
   <option value="Black & Blue">Black &amp; Blue</option><br>
@@ -133,6 +135,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>Trampolines sometimes disappear. If you see that happen, DO NOT jump onto where the trampoline was - you will get stuck if yo do! Instead, look for an alternate way to progress.</li>
 <li>Shuffle Levels + Normal World Length + Keep Pipe Transitions = does not work! Can probably be fixed, if there is a high demand for this particular combination...</li>
 <li>If Normal World Length is <i>false</i>, there will be no midway points in any level! In other words: No matter where you die on a level, you will respawn at the beginning of the level! This is due to limitations in the original game code.</li> 
+<li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too many other enemies on screen.</li>
 <p>
 <h2>TODO / Upcoming Features / Ideas</h2>
 <li>Require user to upload a ROM instead of providing one</li>
@@ -143,7 +146,8 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>Improve backend</li>
 <li>More color schemes!</li>
 <li>Fix Warp Pipes (if possible)</li>
-<li>Option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are</li>
+<li>Add option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are</li>
+<li>Add option to include continous Cheep-Cheeps/Bullet Bills in randomization pools.</li>
 <li>Randomize music?</li>
 <li>Better / more readable log</li>
 
