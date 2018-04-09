@@ -7,8 +7,8 @@ dump*
 duuump
 smb.txt
 webout*
-archive-logs/
-broken/
-cool/
-roms/
-logs/
+archive-logs*
+broken*
+cool*
+roms*
+logs*
