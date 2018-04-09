@@ -51,8 +51,9 @@ Block shuffle type:<br>
 <!-- TODO: generate from Colorscheme.php ! --!>
 <br>Color Scheme for Mario:
 <select name="mariocolor">
-  <option value="random">Random</option><br>
-  <option value="Mario">Normal</option><br>
+  <option value="random">Totally Random Colors</option><br>
+  <option value="Mario">Normal Mario</option><br>
+  <option value="Luigi">Normal Luigi</option><br>
   <option value="Pale Ninja">Pale Ninja</option><br>
   <option value="All Black">All Black</option><br>
   <option value="Black & Blue">Black &amp; Blue</option><br>
@@ -61,8 +62,9 @@ Block shuffle type:<br>
 </select>
 <br>Color Scheme for Luigi:
 <select name="luigicolor">
-  <option value="random">Random</option><br>
+  <option value="random">Totally Random Colors</option><br>
   <option value="Luigi">Normal</option><br>
+  <option value="Mario">Normal Mario</option><br>
   <option value="Pale Ninja">Pale Ninja</option><br>
   <option value="All Black">All Black</option><br>
   <option value="Black & Blue">Black &amp; Blue</option><br>
@@ -71,8 +73,10 @@ Block shuffle type:<br>
 </select>
 <br>Color Scheme for Fire Mario/Luigi:
 <select name="firecolor">
-  <option value="random">Random</option><br>
-  <option value="Vanilla Fire">Normal</option><br>
+  <option value="random">Totally Random Colors</option><br>
+  <option value="Vanilla Fire">Normal Fire Mario/Luigi</option><br>
+  <option value="Mario">Normal Mario</option><br>
+  <option value="Luigi">Normal Luigi</option><br>
   <option value="Pale Ninja">Pale Ninja</option><br>
   <option value="All Black">All Black</option><br>
   <option value="Black & Blue">Black &amp; Blue</option><br>
@@ -87,7 +91,7 @@ Block shuffle type:<br>
 <div>
 <h1>Guide</h1>
 <p>
-<b>seed</b> is self-explanatory: leave empty to get a random seed, or input a number you want to use as the seed.
+<b>Seed</b> is quite self-explanatory: leave empty to get a random seed, or input a number you want to use as the seed.
 <p>
 <b>Shuffle Levels:</b><br>
 Select <i>yes</i> if you want the order of the levels to be shuffled.<br>
@@ -100,7 +104,7 @@ Select <i>no</i> if you want worlds to have a random number of levels. Each worl
 <b>Pipe Transitions:</b><br>
 Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the vanilla game.<br>
 Select <i>remove</i> if you want to remove these transitions.<br>
-Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before a level that normally has a pipe transition). <b>NOTE: does NOT work when Normal World Length is set to <i>yes</i></b>!
+Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: does NOT work when Normal World Length is set to <i>yes</i></b>!
 <p>
 <b>Enemy Shuffle:</b><br>
 <i>Full</i> shuffles all enemies, within reasonable limits.<br>
@@ -114,7 +118,20 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <i>Coins</i> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins! Probably quite hard!<br>
 <i>No block shuffle</i> means blocks are NOT shuffled in any way.<br>
 <p>
-<h3>TODO / Upcoming Features / Ideas</h3>
+<h2>Notes</h2>
+<li>The seed you input will always produce the same result, making this randomizer suitable for a tournament/race setting. Random colors for Mario/Luigi is independent of this seed/randomization, and does not affect anything gameplay-wise.</li>
+<li>On the title screen, a "seedhash" is shown where the text "(C) 1985 Nintendo" is normally shown. In a race setting or similar, if all players have the same seedhash it guarantees that the ROMs were generated with the same seed, same settings, same vanilla ROM and same version of the randomizer.</li>
+<li>Toad sometimes gets randomized to an enemy - if this enemy kills you on the "Thank you Mario!" screen, don't worry. You don't actually lose a life and the game will progress as normal. You might lose Super/Fire status though, I'm not sure...</li>
+<li>Random Colors for Mario/Luigi is totally random, results can be anything from super cool to very weird.</li>
+<p>
+<h2>Bugs / Known Limitations</h2>
+<li>The title screen will show whatever is set as the first level, and thus it's technically spoils what the first level is. I don't think there's an easy fix for this.</li>
+<li>Warp Pipes can be wonky. The ones that have a number above them seem to work correctly though. A pipe in a Warp Zone without a number above it will take you to level -1 and you'll be stuck there.</li>
+<li>Trampolines sometimes disappear. If you see that happen, DO NOT jump onto where the trampoline was - you will get stuck if yo do! Instead, look for an alternate way to progress.</li>
+<li>Shuffle Levels + Normal World Length + Keep Pipe Transitions = does not work! Can probably be fixed, if there is a high demand for this particular combination...</li>
+<li>If Normal World Length is <i>false</i>, there will be no midway points in any level! In other words: No matter where you die on a level, you will respawn at the beginning of the level! This is due to limitations in the original game code.</li> 
+<p>
+<h2>TODO / Upcoming Features / Ideas</h2>
 <li>Randomize Bowser's abilities</li>
 <li>Randomize texts</li>
 <li>More error checking</li>

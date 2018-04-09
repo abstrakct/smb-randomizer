@@ -22,9 +22,6 @@ class World {
     }
 }
 
-/*
- * TODO: do we need this?? the setVanilla stuff
- */
 class World1 extends World {
     protected $name = "World 1";
 

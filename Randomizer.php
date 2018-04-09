@@ -634,6 +634,8 @@ class Randomizer {
             } else {
                 $this->shuffleAllLevels($game);
             }
+        } else {
+            $game->setVanilla();
         }
 
         //  Shuffle Enemies
