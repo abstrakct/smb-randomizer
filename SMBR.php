@@ -41,7 +41,7 @@ $smbr_version = "0.6";
 require_once "Enemy.php";
 require_once "Game.php";
 require_once "Rom.php";
-require_once "Levels.php";
+require_once "Level.php";
 require_once "Randomizer.php";
 require_once "Logger.php";
 require_once "Dump.php";
@@ -173,7 +173,7 @@ function smbrMain($filename, $seed = null, $webmode = false) {
     // Make the seed a.k.a. this performs the actual randomization!
     $randomized_game = $rando->makeSeed();
     
-    $gamejson = json_encode($randomized_game, JSON_PRETTY_PRINT);
+    $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
     //print $gamejson;
     //print_r($randomized_game);
     
@@ -182,15 +182,23 @@ function smbrMain($filename, $seed = null, $webmode = false) {
     
     $rom->save($outfilename);
     
+    $log->write("\nJSON:\n\n");
+    $log->write($game_json);
+
     $log->close();
     
-    if ($options["webmode"])
+    if ($options["webmode"]) {
         print('<br><br><b>Finished!</b><br><a href="' . $outfilename. '">Click here to download randomized ROM!</a>');
-    else
+        print('<br><a href="' . $logfilename. '">Click here to view the log (contains spoilers!)</a>');
+    } else {
         print("\nFinished!\nFilename: $outfilename\n");
+    }
 }
 
 if (php_sapi_name() == "cli") {
+    global $options;
+    $options["webmode"] = false;
+
     if ($argc <= 1) {
         print "Please provide ROM filename.\n";
         exit(1);
@@ -216,7 +224,7 @@ if (php_sapi_name() == "cli") {
     error_reporting(E_ALL);
 
     echo "<html><body>";
-    echo "Starting randomizationing...<br>";
+    echo "Starting the Randomizationing...<br>";
 
     if ($_POST["shufflelevels"] == "yes")
         $options['Shuffle Levels'] = "true";
@@ -257,7 +265,7 @@ if (php_sapi_name() == "cli") {
     $options["Luigi Color Scheme"] = $_POST["luigicolor"];
     $options["Fire Color Scheme"]  = $_POST["firecolor"];
 
-    $filename = "smb.nes";
+    $filename = "Super Mario Bros. (JU) [!].nes";
     if ($_POST["seed"])
         $seed = $_POST["seed"];
     else

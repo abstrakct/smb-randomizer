@@ -622,7 +622,10 @@ class Randomizer {
 
         $game = new Game();
 
-        print("\nOK - making randomized SMB ROM with seed $this->rng_seed\n");
+        if ($this->options["webmode"])
+            print("<br>Here we go! Making randomized SMB ROM with seed $this->rng_seed <br>");
+        else
+            print("\nHere we go! Making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
         if ($this->options['Shuffle Levels'] == "true") {
