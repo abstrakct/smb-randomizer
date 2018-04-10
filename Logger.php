@@ -9,7 +9,8 @@ class Logger {
     }
 
     public function write($text) {
-        fwrite($this->fp, $text);
+        if ($this->fp)
+            fwrite($this->fp, $text);
     }
 
     public function close() {
