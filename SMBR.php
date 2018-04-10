@@ -35,7 +35,7 @@ use SMBR\Game;
  *
  */
 
-$smbr_version = "0.6.1";
+$smbr_version = "0.6.5";
 
 
 require_once "Enemy.php";
@@ -177,14 +177,14 @@ function smbrMain($filename, $seed = null, $webmode = false) {
     //print $gamejson;
     //print_r($randomized_game);
     
+    $log->write("\nJSON:\n\n");
+    $log->write($game_json);
+    $log->write("\n\n");
     
     $rom->writeGame($randomized_game);
     
     $rom->save($outfilename);
     
-    $log->write("\nJSON:\n\n");
-    $log->write($game_json);
-
     $log->close();
     
     if ($options["webmode"]) {

@@ -3,9 +3,27 @@
 require_once "World.php";
 require_once "Level.php";
 
+class DataPacket {
+    private $offset, $data;
+
+    public function __construct($offset, $data) {
+        $this->offset = $offset;
+        $this->data = $data;
+    }
+
+    public function getData() {
+        return $this->data;
+    }
+
+    public function getOffset() {
+        return $this->offset;
+    }
+};
+
 class Game {
     public $worlds = [];
     public $midway_points = [];
+    private $data_packets = [];
 
     public function __construct() {
         $this->worlds = [
@@ -24,5 +42,13 @@ class Game {
         foreach ($this->worlds as $world) {
             $world->setVanilla();
         }
+    }
+
+    public function addData($offset, $data) {
+        $this->data_packets[] = new DataPacket($offset, $data);
+    }
+
+    public function getDataPackets() {
+        return $this->data_packets;
     }
 }

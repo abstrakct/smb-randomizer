@@ -143,51 +143,47 @@ class Rom {
                 $this->write($offset + $i, pack('C*', $game->midway_points[$i]));
             }
         }
+
+        // Write data packets
+        foreach ($game->getDataPackets() as $packet) {
+            $this->write($packet->getOffset(), $packet->getData());
+        }
     }
 
-    public function setMarioOuterColor(int $color) : self {
-        $this->write(0x005E8, pack('C*', $color));
-        return $this;
+    public function setMarioOuterColor(int $color, Game &$game) {
+        $game->addData(0x005E8, pack('C*', $color));
     }
 
-    public function setMarioSkinColor(int $color) : self {
-        $this->write(0x005E9, pack('C*', $color));
-        return $this;
+    public function setMarioSkinColor(int $color, Game &$game) {
+        $game->addData(0x005E9, pack('C*', $color));
     }
 
-    public function setMarioInnerColor(int $color) : self {
-        $this->write(0x005EA, pack('C*', $color));
-        return $this;
+    public function setMarioInnerColor(int $color, Game &$game) {
+        $game->addData(0x005EA, pack('C*', $color));
     }
 
-    public function setLuigiOuterColor(int $color) : self {
-        $this->write(0x005EC, pack('C*', $color));
-        return $this;
+    public function setLuigiOuterColor(int $color, Game &$game) {
+        $game->addData(0x005EC, pack('C*', $color));
     }
 
-    public function setLuigiSkinColor(int $color) : self {
-        $this->write(0x005ED, pack('C*', $color));
-        return $this;
+    public function setLuigiSkinColor(int $color, Game &$game) {
+        $game->addData(0x005ED, pack('C*', $color));
     }
 
-    public function setLuigiInnerColor(int $color) : self {
-        $this->write(0x005EE, pack('C*', $color));
-        return $this;
+    public function setLuigiInnerColor(int $color, Game &$game) {
+        $game->addData(0x005EE, pack('C*', $color));
     }
 
-    public function setFireOuterColor(int $color) : self {
-        $this->write(0x005F0, pack('C*', $color));
-        return $this;
+    public function setFireOuterColor(int $color, Game &$game) {
+        $game->addData(0x005F0, pack('C*', $color));
     }
 
-    public function setFireSkinColor(int $color) : self {
-        $this->write(0x005F1, pack('C*', $color));
-        return $this;
+    public function setFireSkinColor(int $color, Game &$game) {
+        $game->addData(0x005F1, pack('C*', $color));
     }
 
-    public function setFireInnerColor(int $color) : self {
-        $this->write(0x005F2, pack('C*', $color));
-        return $this;
+    public function setFireInnerColor(int $color, Game &$game) {
+        $game->addData(0x005F2, pack('C*', $color));
     }
 
     /**

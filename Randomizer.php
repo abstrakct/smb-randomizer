@@ -81,7 +81,7 @@ class Randomizer {
         return $this->rng_seed;
     }
 
-    public function setMarioColorScheme(string $colorscheme) : self {
+    public function setMarioColorScheme(string $colorscheme, Game &$game) : self {
         global $log, $colorschemes;
         $log->write("Mario Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
@@ -94,13 +94,13 @@ class Randomizer {
             $skin  = $colorschemes[$colorscheme]->skin;
             $inner = $colorschemes[$colorscheme]->inner;
         }
-        $this->rom->setMarioInnerColor($inner);
-        $this->rom->setMarioSkinColor($skin);
-        $this->rom->setMarioOuterColor($outer);
+        $this->rom->setMarioInnerColor($inner, $game);
+        $this->rom->setMarioSkinColor($skin, $game);
+        $this->rom->setMarioOuterColor($outer, $game);
         return $this;
     }
 
-    public function setFireColorScheme(string $colorscheme) : self {
+    public function setFireColorScheme(string $colorscheme, Game &$game) : self {
         global $log, $colorschemes;
         $log->write("Fire Mario/Luigi Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
@@ -113,13 +113,13 @@ class Randomizer {
             $skin  = $colorschemes[$colorscheme]->skin;
             $inner = $colorschemes[$colorscheme]->inner;
         }
-        $this->rom->setFireInnerColor($inner);
-        $this->rom->setFireSkinColor($skin);
-        $this->rom->setFireOuterColor($outer);
+        $this->rom->setFireInnerColor($inner, $game);
+        $this->rom->setFireSkinColor($skin, $game);
+        $this->rom->setFireOuterColor($outer, $game);
         return $this;
     }
 
-    public function setLuigiColorScheme(string $colorscheme) : self {
+    public function setLuigiColorScheme(string $colorscheme, Game &$game) : self {
         global $log, $colorschemes;
         $log->write("Luigi Color Scheme: " . $colorscheme . "\n");
         if($colorscheme == "random") {
@@ -132,15 +132,14 @@ class Randomizer {
             $skin  = $colorschemes[$colorscheme]->skin;
             $inner = $colorschemes[$colorscheme]->inner;
         }
-        $this->rom->setLuigiInnerColor($inner);
-        $this->rom->setLuigiSkinColor($skin);
-        $this->rom->setLuigiOuterColor($outer);
+        $this->rom->setLuigiInnerColor($inner, $game);
+        $this->rom->setLuigiSkinColor($skin, $game);
+        $this->rom->setLuigiOuterColor($outer, $game);
         return $this;
     }
 
-        // TODO: store data in Game object and do the actual writing in rom->writeGame() ?!?!?!?!?
-        // also improve this - we have enemy data offsets in the level data! 
-    public function shuffleEnemiesOnLevel(string $level) {
+        // improve this - we have enemy data offsets in the level data! 
+    public function shuffleEnemiesOnLevel(string $level, Game &$game) {
         global $dont_randomize;
         global $full_enemy_pool;
         global $reasonable_enemy_pool;
@@ -178,7 +177,6 @@ class Randomizer {
                     /* Some enemies can't be randomized, so let's check for those */
                     foreach($dont_randomize as $nope) {
                         if($o == $nope->num) {
-                            $log->write("Found un-randomizable enemy object!\n");
                             $do_randomize = false;
                         }
                     }
@@ -189,19 +187,15 @@ class Randomizer {
                                 $z = count($toad_pool);
                                 $newo = $toad_pool[mt_rand(0, count($toad_pool) - 1)]->num;
                                 $newcoord = 0x98;
-                                $this->rom->write($enemy_data_offsets_for_shuffling[$level] + $i, pack('C*', $newcoord));
+                                $game->addData($enemy_data_offsets_for_shuffling[$level] + $i, pack('C*', $newcoord));
                             } else if ($o == $enemy['Bowser Fire Generator'] or $o == $enemy['Red Flying Cheep-Cheep Generator'] or $o == $enemy['Bullet Bill/Cheep-Cheep Generator']) {
                                 $newo = $generator_pool[mt_rand(0, count($generator_pool) - 1)]->num;
                             } else {
                                 $newo = $reasonable_enemy_pool[mt_rand(0, count($reasonable_enemy_pool) - 1)]->num;
                             }
-                            //printf("i = %d data[%d] = %02x data[%d+1] = %02x newo = %02x\n", $i, $i, $data[$i], $i, $data[$i+1], $newo);
+
                             $newdata = (($data[$i+1] & 0b10000000) | ($data[$i+1] & 0b01000000)) | $newo;
-                            //$data[$i+1] = $newdata;
-                            //printf("i = %d  newdata: 0x%02x\n", $i, $newdata);
-                            //print_r($newdata . "\n");
-                            $this->rom->write($enemy_data_offsets_for_shuffling[$level] + $i + 1, pack('C*', $newdata));
-                            //printf("x: %02x  y: %02x  p: %02x  h: %02x  o: %02x (%s)\n", $x, $y, $p, $h, $o, getenemyname($newo));
+                            $game->addData($enemy_data_offsets_for_shuffling[$level] + $i + 1, pack('C*', $newdata));
                         }
                     }
                 }
@@ -209,13 +203,13 @@ class Randomizer {
         }
     }
 
-    public function shuffleEnemies() {
+    public function shuffleEnemies(&$game) {
         global $enemy_data_offsets_for_shuffling;
         global $log;
         foreach ($enemy_data_offsets_for_shuffling as $key => $value) {
             $m = "Shuffling enemies on level " . $key . "\n";
             $log->write($m);
-            $this->shuffleEnemiesOnLevel($key);
+            $this->shuffleEnemiesOnLevel($key, $game);
         }
     }
 
@@ -261,7 +255,6 @@ class Randomizer {
                             /* Some enemies can't be randomized, so let's check for those */
                             foreach($dont_randomize as $nope) {
                                 if($o == $nope->num) {
-                                    $log->write("Found un-randomizable enemy object!\n");
                                     $do_randomize = false;
                                 }
                             }
@@ -273,7 +266,7 @@ class Randomizer {
                                         $z = count($toad_pool);
                                         $newo = $toad_pool[mt_rand(0, count($toad_pool) - 1)]->num;
                                         $newcoord = 0x98;
-                                        $this->rom->write($level->enemy_data_offset + $i, pack('C*', $newcoord));
+                                        $game->addData($level->enemy_data_offset + $i, pack('C*', $newcoord));
                                     } else if (enemyIsInPool($o, $generator_pool)) {
                                         $newo = $generator_pool[mt_rand(0, count($generator_pool) - 1)]->num;
                                     } else if (enemyIsInPool($o, $goomba_pool)) {
@@ -288,7 +281,7 @@ class Randomizer {
 
 
                                     $newdata = (($data[$i+1] & 0b10000000) | ($data[$i+1] & 0b01000000)) | $newo;
-                                    $this->rom->write($level->enemy_data_offset + $i + 1, pack('C*', $newdata));
+                                    $game->addData($level->enemy_data_offset + $i + 1, pack('C*', $newdata));
                                 }
                             }
                         }
@@ -308,7 +301,6 @@ class Randomizer {
                 if ($level->level_data_offset == 0x0000)
                     break;
                 $end = 0;
-                //printf("0x%02x\n", $level->level_data_offset);
                 $data = $this->rom->read($level->level_data_offset, 200);
                 foreach ($data as $byte) {
                     $end++;
@@ -332,7 +324,7 @@ class Randomizer {
                             $pull_key = mt_rand(0, count($topool) - 1);
                             $newdata = $topool[$pull_key];
                             $new_object = $p | $newdata;
-                            $this->rom->write($level->level_data_offset + $i + 1, pack('C*', $new_object));
+                            $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_object));
                         }
                     }
                 }
@@ -495,7 +487,6 @@ class Randomizer {
     }
 
     public function fixPipes(Game &$game) {
-        // TODO: store data in Game object and do the actual writing in rom->writeGame() ?!?!?!?!?
         global $log;
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
         $log->write("Fixing Pipes\n");
@@ -511,13 +502,13 @@ class Randomizer {
                             if ($entry != null) {
                                 $entry_data = $this->rom->read($entry, 1);
                                 $new_entry_data = (($new_world << 5) | ($entry_data & 0b00011111));
-                                $this->rom->write($entry, pack('C*', $new_entry_data));
+                                $game->addData($entry, pack('C*', $new_entry_data));
                             }
                             // exit
                             if ($exit != null) {
                                 $exit_data = $this->rom->read($exit, 1);
                                 $new_exit_data =  (($new_world << 5) | ($exit_data  & 0b00011111));
-                                $this->rom->write($exit, pack('C*', $new_exit_data));
+                                $game->addData($exit, pack('C*', $new_exit_data));
                             }
                         }
                     }
@@ -551,24 +542,24 @@ class Randomizer {
         }
     }
 
-    public function setTextRando() {
+    public function setTextRando(Game &$game) {
         global $log;
         $log->write("Changing Texts\n");
-        $this->rom->write(0x09fb5, pack('C*', $this->trans->asciitosmb('R')));
-        $this->rom->write(0x09fb6, pack('C*', $this->trans->asciitosmb('A')));
-        $this->rom->write(0x09fb7, pack('C*', $this->trans->asciitosmb('N')));
-        $this->rom->write(0x09fb8, pack('C*', $this->trans->asciitosmb('D')));
-        $this->rom->write(0x09fb9, pack('C*', $this->trans->asciitosmb('O')));
-        $this->rom->write(0x09fba, pack('C*', $this->trans->asciitosmb('×')));
+        $game->addData(0x09fb5, pack('C*', $this->trans->asciitosmb('R')));
+        $game->addData(0x09fb6, pack('C*', $this->trans->asciitosmb('A')));
+        $game->addData(0x09fb7, pack('C*', $this->trans->asciitosmb('N')));
+        $game->addData(0x09fb8, pack('C*', $this->trans->asciitosmb('D')));
+        $game->addData(0x09fb9, pack('C*', $this->trans->asciitosmb('O')));
+        $game->addData(0x09fba, pack('C*', $this->trans->asciitosmb('×')));
     }
 
-    public function setTextSeedhash(string $text) {
+    public function setTextSeedhash(string $text, Game &$game) {
         /*
          * Replace "NINTENDO" in "(C)1985 NINTENDO" on the title screen with the first 8 characters of the seedhash
          * TODO: see if there's a way to draw some sprites instead!
          */
         for($i = 0; $i < 8; $i++) {
-            $this->rom->write(0x09fbb + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
+            $game->addData(0x09fbb + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
         }
     }
 
@@ -640,7 +631,7 @@ class Randomizer {
 
         //  Shuffle Enemies
         if ($this->options['Shuffle Enemies'] == "full") {
-            $this->shuffleEnemies();
+            $this->shuffleEnemies($game);
         } else if ($this->options['Shuffle Enemies'] == "pools") {
             $this->shuffleEnemiesInPools($game);
         }
@@ -671,13 +662,13 @@ class Randomizer {
         $this->fixMidwayPoints($game);
 
         // Set texts
-        $this->setTextRando();
-        $this->setTextSeedhash($this->seedhash);
+        $this->setTextRando($game);
+        $this->setTextSeedhash($this->seedhash, $game);
 
         // Set colorschemes
-        $this->setMarioColorScheme($this->options['Mario Color Scheme']);
-        $this->setLuigiColorScheme($this->options['Luigi Color Scheme']);
-        $this->setFireColorScheme($this->options['Fire Color Scheme']);
+        $this->setMarioColorScheme($this->options['Mario Color Scheme'], $game);
+        $this->setLuigiColorScheme($this->options['Luigi Color Scheme'], $game);
+        $this->setFireColorScheme($this->options['Fire Color Scheme'], $game);
 
         return $game;
     }
