@@ -22,6 +22,7 @@ use SMBR\Enemy;
 use SMBR\Levels;
 use SMBR\Level;
 use SMBR\Item;
+use SMBR\Text;
 
 function enemyIsInPool($o, $pool) {
     foreach ($pool as $p) {
@@ -563,6 +564,51 @@ class Randomizer {
         }
     }
 
+    //public function shuffleTextAnotherCastle(&$game) {
+    //    global $message, $another_castle_variations;
+
+    //    $variation = 1;
+    //    $offset = $message["AnotherCastle"][0] + 3;
+    //    $lastoffset = $message["AnotherCastle"][1];
+    //    for ($i = 0; $i < strlen($another_castle_variations[$variation]); $i++) {
+    //        if ($i + $offset > $lastoffset) {
+    //            print("ERROR WHILE CHANGING A TEXT!");
+    //            exit(1);
+    //        }
+
+    //        if ($another_castle_variations[$variation][$i] == '/') {
+    //            $offset += 2;
+    //            $i++;
+    //        }
+
+    //        $game->addData($offset + $i, pack('C*', $this->trans->asciitosmb($another_castle_variations[$variation][$i])));
+    //    }
+    //}
+
+    public function shuffleText(&$game, $text, $variations) {
+        global $message;
+
+        $this->setSeed();
+
+        $variation = mt_rand(0, count($variations) - 1);
+        
+        $offset = $message[$text][0] + 3;
+        $lastoffset = $message[$text][1];
+        for ($i = 0; $i < strlen($variations[$variation]); $i++) {
+            if ($i + $offset > $lastoffset) {
+                print("ERROR WHILE CHANGING A TEXT!");
+                exit(1);
+            }
+
+            if ($variations[$variation][$i] == '/') {
+                $offset += 2;
+                $i++;
+            }
+
+            $game->addData($offset + $i, pack('C*', $this->trans->asciitosmb($variations[$variation][$i])));
+        }
+    }
+
     public function getFlags() {
         return implode("", $this->flags);
     }
@@ -664,6 +710,13 @@ class Randomizer {
         // Set texts
         $this->setTextRando($game);
         $this->setTextSeedhash($this->seedhash, $game);
+
+        // Shuffle texts
+        //$this->shuffleTextAnotherCastle($game);
+        global $another_castle_variations, $thank_you_mario_variations, $thank_you_luigi_variations;
+        $this->shuffleText($game, "ThankYouMario", $thank_you_mario_variations);
+        $this->shuffleText($game, "ThankYouLuigi", $thank_you_luigi_variations);
+        $this->shuffleText($game, "AnotherCastle", $another_castle_variations);
 
         // Set colorschemes
         $this->setMarioColorScheme($this->options['Mario Color Scheme'], $game);

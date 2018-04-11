@@ -101,7 +101,7 @@ Select <i>no</i> if you want the order of the levels to be normal.
 <p>
 <b>Normal World Length:</b><br>
 Select <i>yes</i> if you want each world to have 4 levels.<br>
-Select <i>no</i> if you want worlds to have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting.
+Select <i>no</i> if you want worlds to have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting. Probably shouldn't go beyond 15 though.
 <p>
 <b>Pipe Transitions:</b><br>
 Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the vanilla game.<br>
@@ -115,22 +115,24 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <p>
 <b>Block Shuffle:</b><br>
 <i>All</i> shuffles all kinds of blocks that contain an item (mushroom/flower, star, 1-up, coin).<br>
-<i>Power-Ups</i> shuffles all blocks that contain a power-up (mushroom/flower, star, 1-up). Coins are not included in the randomzation.<br>
+<i>Power-Ups</i> shuffles all blocks that contain a power-up (mushroom/flower, star, 1-up). Coins are not included in the randomization.<br>
 <i>Grouped</i> shuffles blocks in groups - e.g. all bricks that contain an item will now contain a random item.<br>
 <i>Coins</i> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins! Probably quite hard!<br>
 <i>No block shuffle</i> means blocks are NOT shuffled in any way.<br>
 <p>
 <h2>Notes</h2>
-<li>The seed you input will always produce the same result, making this randomizer suitable for a tournament/race setting. Random colors for Mario/Luigi is independent of this seed/randomization, and does not affect anything gameplay-wise.</li>
+<li>The seed you input will always produce the same result, making this randomizer suitable for a tournament/race setting. Color schemes, random or not, for Mario/Luigi is independent of this seed/randomization, and does not affect anything gameplay-wise. The same goes for randomized changes of in-game texts.</li>
 <li>On the title screen, a "seedhash" is shown where the text "(C) 1985 Nintendo" is normally shown. In a race setting or similar, if all players have the same seedhash it guarantees that the ROMs were generated with the same seed, same settings, same vanilla ROM and same version of the randomizer.</li>
 <li>Toad sometimes gets randomized to an enemy - if this enemy kills you on the "Thank you Mario!" screen, don't worry. You don't actually lose a life and the game will progress as normal. You might lose Super/Fire status though, I'm not sure...</li>
 <li>Random Colors for Mario/Luigi is totally random, results can be anything from super cool to very weird.</li>
+<li>Some texts are now randomized. Like color schemes they are randomized independently of anything related to gameplay.</li>
 <li>Underground bonus areas (when you go down a pipe) are not shuffled, but could be.</li>
 <p>
 <h2>Bugs / Known Limitations</h2>
 <li>The title screen will show whatever is set as the first level, and thus it's technically spoils what the first level is. I don't think there's an easy fix for this.</li>
 <li>Warp Pipes can be wonky. The ones that have a number above them seem to work correctly though. A pipe in a Warp Zone without a number above it will take you to level -1 and you'll be stuck there.</li>
 <li>Randomized enemies sometimes get stuck inside blocks/walls/pipes. I'm looking into a way to fix this.</li>
+<li>Sometimes you get invisible enemies (probably stuck behing scenery).</li>
 <li>When "Block Shuffle" is set to <i>All</i> a small number of blocks seem to disappear completely. I haven't figured out why yet.</li>
 <li>Trampolines sometimes disappear. If you see that happen, DO NOT jump onto where the trampoline was - you will get stuck if yo do! Instead, look for an alternate way to progress.</li>
 <li>Shuffle Levels + Normal World Length + Keep Pipe Transitions = does not work! Can probably be fixed, if there is a high demand for this particular combination...</li>
@@ -141,10 +143,13 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>Require user to upload a ROM instead of providing one</li>
 <li>Improve web interface</li>
 <li>Randomize Bowser's abilities</li>
-<li>Randomize texts</li>
+<li>Randomize texts better - by 'texts' I mean strings like this: "thank you mario!" "but our princess is in another castle!" etc.</li>
+<li>Add option to not randomize texts.</li>
 <li>Add option to randomize what area a pipe takes you to</li>
+<li>Check that worlds have max 15 levels.</li>
 <li>More error checking</li>
 <li>Improve backend</li>
+<li>Custom color schemes!</li>
 <li>More color schemes!</li>
 <li>Fix Warp Pipes (if possible)</li>
 <li>Add option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are</li>
