@@ -21,7 +21,7 @@ include "Version.php";
 
 <div class="flex-container">
 
-<div>
+<div style="flex-basis: 600px">
 <h1>Super Mario Bros. Randomizer!</h1>
 <?php
 echo printVersion() . "<p>";
@@ -36,8 +36,8 @@ Shuffle levels?<br>
 <input type="radio" name="shufflelevels" value="no"> No<br>
 <br>
 Normal world length?<br>
-<input type="radio" name="normalworldlength" value="yes" checked> Yes<br>
-<input type="radio" name="normalworldlength" value="no"> No<br>
+<input type="radio" name="normalworldlength" value="yes"> Yes<br>
+<input type="radio" name="normalworldlength" value="no" checked> No<br>
 <br>
 Keep or remove pipe transitions?<br>
 <input type="radio" name="pipetransitions" value="keep"> Keep<br>
@@ -54,16 +54,19 @@ Block shuffle type:<br>
 <input type="radio" name="shuffleblocks" value="grouped"> Grouped<br>
 <input type="radio" name="shuffleblocks" value="coins"> Coins<br>
 <input type="radio" name="shuffleblocks" value="none"> No block shuffle<br>
+<br>
 Randomize Bowser's Abilities?<br>
 <input type="radio" name="bowserabilities" value="yes" checked> Yes<br>
-<input type="radio" name="bowserabilities" value="no" checked> No<br>
+<input type="radio" name="bowserabilities" value="no"> No<br>
+<br>
 Randomize Bowser's Hitpoints?<br>
-<input type="radio" name="bowserhitpoints" value="normal" checked> No<br>
-<input type="radio" name="bowserhitpoints" value="easy" checked> Easy<br>
-<input type="radio" name="bowserhitpoints" value="medium" checked> Medium<br>
-<input type="radio" name="bowserhitpoints" value="hard" checked> Hard<br>
+<input type="radio" name="bowserhitpoints" value="normal"> No<br>
+<input type="radio" name="bowserhitpoints" value="easy"> Easy<br>
+<input type="radio" name="bowserhitpoints" value="medium"checked> Medium<br>
+<input type="radio" name="bowserhitpoints" value="hard"> Hard<br>
+<br>
 <!-- TODO: generate from Colorscheme.php ! --!>
-<br>Color Scheme for Mario:
+Color Scheme for Mario:<br>
 <select name="mariocolor">
   <option value="random">Totally Random Colors</option><br>
   <option value="Mario">Normal Mario</option><br>
@@ -75,7 +78,7 @@ Randomize Bowser's Hitpoints?<br>
   <option value="Black & Blue 2">Black &amp; Blue 2</option><br>
   <option value="Denim">Denim</option><br>
 </select>
-<br>Color Scheme for Luigi:
+<br>Color Scheme for Luigi:<br>
 <select name="luigicolor">
   <option value="random">Totally Random Colors</option><br>
   <option value="Luigi">Normal Luigi</option><br>
@@ -87,7 +90,7 @@ Randomize Bowser's Hitpoints?<br>
   <option value="Black & Blue 2">Black &amp; Blue 2</option><br>
   <option value="Denim">Denim</option><br>
 </select>
-<br>Color Scheme for Fire Mario/Luigi:
+<br>Color Scheme for Fire Mario/Luigi:<br>
 <select name="firecolor">
   <option value="random">Totally Random Colors</option><br>
   <option value="Vanilla Fire">Normal Fire Mario/Luigi</option><br>
@@ -106,6 +109,13 @@ Randomize Bowser's Hitpoints?<br>
 </div>
 
 <div>
+<h1>What is this?</h1>
+Are you tired of playing the same old levels of Super Mario Bros. over and over again? Do you want a challenge while still playing the game you know and love? Well, look no further! This randomizer will take the original Super Mario
+Bros. game for the NES and shuffles the elements of the game around like a deck of cards, providing you with a new and (hopefully) exciting and challenging experience each time!
+<br><b>Goodbye muscle memory, hello SMB Rando!!!</b><br>
+<i>Please read the Guide, Notes and Bugs/Todo sections before playing for the first time. The randomizer is still in a beta stage, and
+although I haven't personally come across an unwinable seed at this point, I cannot guarantee 100% that every seed will produce a winable seed, and there is still room (and plans) for improvement.</i>
+<p>
 <h1>Guide</h1>
 <p>
 <b>Seed</b> is quite self-explanatory: leave empty to get a random seed, or input a number you want to use as the seed.
@@ -116,34 +126,34 @@ Select <i>no</i> if you want the order of the levels to be normal.
 <p>
 <b>Normal World Length:</b><br>
 Select <i>yes</i> if you want each world to have 4 levels.<br>
-Select <i>no</i> if you want worlds to have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting. Probably shouldn't go beyond 15 though.
+Select <i>no</i> if you want worlds to have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting.<br>
 <p>
 <b>Pipe Transitions:</b><br>
 Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the vanilla game.<br>
 Select <i>remove</i> if you want to remove these transitions.<br>
-Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: can NOT be combined with Shuffle Levels and Normal World Length set to <i>yes</i></b>!
+Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: can NOT be combined with Shuffle Levels and Normal World Length set to <i>yes</i></b>!<br>
 <p>
 <b>Enemy Shuffle:</b><br>
 <i>Full</i> shuffles all enemies, within reasonable limits.<br>
 <i>Pools</i> shuffles enemies within smaller pools of similar/related enemies.<br>
-<i>No enemy shuffle</i> means enemies are NOT shuffled in any way.
+<i>No enemy shuffle</i> means enemies are NOT shuffled in any way.<br>
 <p>
 <b>Block Shuffle:</b><br>
 <i>All</i> shuffles all kinds of single blocks that contain an item (mushroom/flower, star, 1-up, coin).<br>
 <i>Power-Ups</i> shuffles all single blocks that contain a power-up (mushroom/flower, star, 1-up). Coins are not included in the randomization.<br>
-<i>Grouped</i> shuffles single blocks in groups (bricks, question blocks, hidden blocks). 
+<i>Grouped</i> shuffles single blocks in groups (bricks, question blocks, hidden blocks). <br>
 <i>Coins</i> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins! Probably quite hard!<br>
 <i>No block shuffle</i> means blocks are NOT shuffled in any way.<br>
 <p>
-<b>Bowser's Abilities</b>
-<i>Yes</i> randomizes which world Bowser starts throwing hammers between 1 and 7.
-<i>No</i> leaves Bowser's abilities unchanged.
+<b>Bowser's Abilities:</b><br>
+<i>Yes</i> randomizes which world Bowser starts throwing hammers (between 1 and 7).<br>
+<i>No</i> leaves Bowser's abilities unchanged.<br>
 <p>
-<b>Bowser's Hitpoints</b> randomizes how many hitpoints Bowser has, i.e. how many fireballs it takes to kill him.
-<i>No</i> leaves Bowser's hitpoints unchanged at 5.
-<i>Easy</i> randomizes Bowser's hitpoints between 1 and 5.
-<i>Medium</i> randomizes Bowser's hitpoints between 5 and 10.
-<i>Hard</i> randomizes Bowser's hitpoints between 10 and 20.
+<b>Bowser's Hitpoints</b> randomizes how many hitpoints Bowser has, i.e. how many fireballs it takes to kill him:<br>
+<i>No</i> leaves Bowser's hitpoints unchanged at 5.<br>
+<i>Easy</i> randomizes Bowser's hitpoints between 1 and 5.<br>
+<i>Medium</i> randomizes Bowser's hitpoints between 5 and 10.<br>
+<i>Hard</i> randomizes Bowser's hitpoints between 10 and 20.<br>
 <p>
 <h2>Notes</h2>
 <li>The seed you input will always produce the same result, making this randomizer suitable for a tournament/race setting. Color schemes, random or not, for Mario/Luigi is independent of this seed/randomization, and does not affect anything gameplay-wise. The same goes for randomized changes of in-game texts.</li>
@@ -167,20 +177,19 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <h2>TODO / Upcoming Features / Ideas</h2>
 <li>Require user to upload a ROM instead of providing one</li>
 <li>Improve web interface</li>
-<li>Randomize Bowser's abilities</li>
+<del><li>Randomize Bowser's abilities</li></del>
 <li>Randomize texts better - by 'texts' I mean strings like this: "thank you mario!" "but our princess is in another castle!" etc.</li>
 <li>Add option to not randomize texts.</li>
 <li>Add option to randomize what area a pipe takes you to</li>
-<li>Check that worlds have max 15 levels.</li>
 <li>More error checking</li>
-<li>Improve backend</li>
+<li>[kinda done] Improve backend</li>
 <li>Custom color schemes!</li>
 <li>More color schemes!</li>
-<li>Fix Warp Pipes (if possible)</li>
+<li>Fix/Randomize Warp Pipes (if possible)</li>
 <li>Add option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are</li>
 <li>Add option to include continous Cheep-Cheeps/Bullet Bills in randomization pools.</li>
 <li>Randomize music?</li>
-<li>Better / more readable log</li>
+<li>[kinda done] Better / more readable log</li>
 
 <p>
 
