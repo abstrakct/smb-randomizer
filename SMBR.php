@@ -33,9 +33,9 @@ use SMBR\Game;
  *
  */
 
-$smbr_version = "0.7.5";
 
 
+require_once "Version.php";
 require_once "Enemy.php";
 require_once "Game.php";
 require_once "Rom.php";
@@ -120,12 +120,6 @@ $options['Bowser Abilities'] = "true";
 $options['Bowser Hitpoints'] = "easy";
 
 $log = null;
-
-function printVersion() {
-    global $smbr_version;
-
-    return "version " . $smbr_version;
-}
 
 function smbrMain($filename, $seed = null, $webmode = false) {
     global $options, $log;
@@ -275,6 +269,20 @@ if (php_sapi_name() == "cli") {
         $options['Shuffle Blocks'] = "coins";
     else if ($_POST["shuffleblocks"] == "none")
         $options['Shuffle Blocks'] = "none";
+
+    if ($_POST["bowserabilities"] == "yes")
+        $options['Bowser Abilities'] = "true";
+    else if ($_POST["bowserabilites"] == "no")
+        $options['Bowser Abilities'] = "false";
+
+    if ($_POST["bowserhitpoints"] == "normal")
+        $options['Bowser Hitpoints'] = "normal";
+    else if ($_POST["bowserhitpoints"] == "easy")
+        $options['Bowser Hitpoints'] = "easy";
+    else if ($_POST["bowserhitpoints"] == "medium")
+        $options['Bowser Hitpoints'] = "medium";
+    else if ($_POST["bowserhitpoints"] == "hard")
+        $options['Bowser Hitpoints'] = "hard";
 
     $options["Mario Color Scheme"] = $_POST["mariocolor"];
     $options["Luigi Color Scheme"] = $_POST["luigicolor"];

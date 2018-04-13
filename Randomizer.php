@@ -78,7 +78,8 @@ class Randomizer {
                 if ($key != "webmode")
                     print("$key: $value<br>");
             } else {
-                print("$key: $value\n");
+                if ($key != "webmode")
+                    print("$key: $value\n");
             }
         }
     }
@@ -522,7 +523,6 @@ class Randomizer {
         }
 
         $log->write("Bowser's hitpoints: " . $new_hitpoints . "\n");
-        print("B HP: $new_hitpoints \n");
         $game->addData(BowserHPOffset, pack('C*', $new_hitpoints));
     }
 
@@ -670,8 +670,7 @@ class Randomizer {
     }
 
     public function makeSeedHash() {
-        global $smbr_version;
-        $hashstring = implode("", $this->flags) . strval($this->getSeed() . $smbr_version . $this->rom->getMD5());
+        $hashstring = implode("", $this->flags) . strval($this->getSeed() . SMBRVersion . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
         //print("makkSeedHash()\n
         //          md5: " . hash("md5", $hashstring) . "\n

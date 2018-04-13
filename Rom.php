@@ -11,6 +11,9 @@
  * TODO: Allow changing text?
  */
 
+const LevelListOffset       = 0x1ccc;
+const LevelCountTableOffset = 0x1cc4;
+const MidwayPointsOffset    = 0x11cd;
 
 class Rom {
     const HASH = "811b027eaf99c2def7b933c5208636de";
@@ -115,7 +118,7 @@ class Rom {
     public function writeGame(Game $game) {
         global $options;
 
-        $offset = 0x1ccc;
+        $offset = LevelListOffset;
         $index = 0;
 
         // Write all maps
@@ -127,7 +130,7 @@ class Rom {
         }
 
         // Write the table with how many levels are in each world
-        $offset = 0x1cc4;
+        $offset = LevelCountTableOffset;
         $data = 0;
         $index = 0;
         foreach ($game->worlds as $world) {
@@ -138,7 +141,7 @@ class Rom {
 
         // Write midway points
         if ($options['Shuffle Levels'] == "true") {
-            $offset = 0x11cd;
+            $offset = MidwayPointsOffset;
             for ($i = 0; $i < 0xF; $i++) {
                 $this->write($offset + $i, pack('C*', $game->midway_points[$i]));
             }

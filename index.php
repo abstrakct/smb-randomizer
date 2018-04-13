@@ -6,6 +6,7 @@
 ini_set('display_errors',1); 
 error_reporting(E_ALL);
 
+include "Version.php";
 
 ?>
 
@@ -22,6 +23,10 @@ error_reporting(E_ALL);
 
 <div>
 <h1>Super Mario Bros. Randomizer!</h1>
+<?php
+echo printVersion() . "<p>";
+?>
+
 <form action="/SMBR.php" method="post">
 Seed (leave blank for random seed):<br>
 <input type="text" name="seed"><br>
@@ -49,6 +54,14 @@ Block shuffle type:<br>
 <input type="radio" name="shuffleblocks" value="grouped"> Grouped<br>
 <input type="radio" name="shuffleblocks" value="coins"> Coins<br>
 <input type="radio" name="shuffleblocks" value="none"> No block shuffle<br>
+Randomize Bowser's Abilities?<br>
+<input type="radio" name="bowserabilities" value="yes" checked> Yes<br>
+<input type="radio" name="bowserabilities" value="no" checked> No<br>
+Randomize Bowser's Hitpoints?<br>
+<input type="radio" name="bowserhitpoints" value="normal" checked> No<br>
+<input type="radio" name="bowserhitpoints" value="easy" checked> Easy<br>
+<input type="radio" name="bowserhitpoints" value="medium" checked> Medium<br>
+<input type="radio" name="bowserhitpoints" value="hard" checked> Hard<br>
 <!-- TODO: generate from Colorscheme.php ! --!>
 <br>Color Scheme for Mario:
 <select name="mariocolor">
@@ -121,6 +134,16 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <i>Grouped</i> shuffles single blocks in groups (bricks, question blocks, hidden blocks). 
 <i>Coins</i> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins! Probably quite hard!<br>
 <i>No block shuffle</i> means blocks are NOT shuffled in any way.<br>
+<p>
+<b>Bowser's Abilities</b>
+<i>Yes</i> randomizes which world Bowser starts throwing hammers between 1 and 7.
+<i>No</i> leaves Bowser's abilities unchanged.
+<p>
+<b>Bowser's Hitpoints</b> randomizes how many hitpoints Bowser has, i.e. how many fireballs it takes to kill him.
+<i>No</i> leaves Bowser's hitpoints unchanged at 5.
+<i>Easy</i> randomizes Bowser's hitpoints between 1 and 5.
+<i>Medium</i> randomizes Bowser's hitpoints between 5 and 10.
+<i>Hard</i> randomizes Bowser's hitpoints between 10 and 20.
 <p>
 <h2>Notes</h2>
 <li>The seed you input will always produce the same result, making this randomizer suitable for a tournament/race setting. Color schemes, random or not, for Mario/Luigi is independent of this seed/randomization, and does not affect anything gameplay-wise. The same goes for randomized changes of in-game texts.</li>
