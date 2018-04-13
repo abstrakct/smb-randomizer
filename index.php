@@ -19,6 +19,7 @@ error_reporting(E_ALL);
 
 
 <div class="flex-container">
+
 <div>
 <h1>Super Mario Bros. Randomizer!</h1>
 <form action="/SMBR.php" method="post">
@@ -90,6 +91,7 @@ Block shuffle type:<br>
 </form>
 <p>
 </div>
+
 <div>
 <h1>Guide</h1>
 <p>
@@ -114,9 +116,9 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <i>No enemy shuffle</i> means enemies are NOT shuffled in any way.
 <p>
 <b>Block Shuffle:</b><br>
-<i>All</i> shuffles all kinds of blocks that contain an item (mushroom/flower, star, 1-up, coin).<br>
-<i>Power-Ups</i> shuffles all blocks that contain a power-up (mushroom/flower, star, 1-up). Coins are not included in the randomization.<br>
-<i>Grouped</i> shuffles blocks in groups - e.g. all bricks that contain an item will now contain a random item.<br>
+<i>All</i> shuffles all kinds of single blocks that contain an item (mushroom/flower, star, 1-up, coin).<br>
+<i>Power-Ups</i> shuffles all single blocks that contain a power-up (mushroom/flower, star, 1-up). Coins are not included in the randomization.<br>
+<i>Grouped</i> shuffles single blocks in groups (bricks, question blocks, hidden blocks). 
 <i>Coins</i> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins! Probably quite hard!<br>
 <i>No block shuffle</i> means blocks are NOT shuffled in any way.<br>
 <p>

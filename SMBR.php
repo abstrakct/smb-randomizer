@@ -12,30 +12,28 @@ use SMBR\Game;
 /*
  *
  * TODO: Randomize where pipes lead to?
- * TODO: Randomize Bowser's abilities? like hammers etc.?
+ * DONE: Randomize Bowser's abilities? like hammers etc.?
  *       - we could change the code which selects bowser's abilities based on which world you're in
+ * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
  *
- * BUGS:
  * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
  *
- *
  * TODO: disappearing trampolines
- * TODO: check that table at 0x1cc4 is correct in all situations. (I'm pretty sure it is, but check it.)
  * TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
+ * TODO: randomize x pos of Toad/substitute Toad? To prevent Mario getting hit by a hammer bro or something after defeating Bowser.
  * TODO: option to randomize music?
  *
- * TODO:
  * for power up shuffling - options:
  * DONE - only power ups are random (flower, star, 1 up)
  * DONE - add coins to that pool
  * - shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
  *
  * NOTES
- * - Once a piranha plant was hiding behind a tree in 8-1
+ * - Sometimes enemies "hide" behind scenery.
  *
  */
 
-$smbr_version = "0.6.6";
+$smbr_version = "0.7.5";
 
 
 require_once "Enemy.php";
@@ -103,6 +101,23 @@ $options['Shuffle Enemies'] = "full";
  * none       - no randomization of blocks
  */
 $options['Shuffle Blocks'] = "all";
+
+/*
+ * Bowser Abilities can be
+ * true  - randomly change which world Bowser starts throwing hammers and breathing fire
+ * false - don't change Bowser's abilities.
+ */
+$options['Bowser Abilities'] = "true";
+
+/*
+ * Bowser Hitpoints lets Bowser have a random number of hitpoints (i.e. how many times you have to shoot him with fireballs to take him down).
+ * Options:
+ * normal - Bowser has 5 hitpoints, as in vanilla
+ * easy   - Bowser has a random amount of hitpoints between 1-5
+ * medium - Bowser has a random amount of hitpoints between 5-10
+ * hard   - Bowser has a random amount of hitpoints between 10-20
+ */
+$options['Bowser Hitpoints'] = "easy";
 
 $log = null;
 

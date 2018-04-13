@@ -12,9 +12,9 @@ $message = [
 ];
 
 $another_castle_variations = [
-  //"but our princess is in/another castle!",
-  //"but your eggroll is in/another castle!",
-    "keep on keeping on    / -- bob dylan  ",
+    "but our princess is in/another castle!",
+    "but your eggroll is in/another castle!",
+    //"keep on keeping on    / -- bob dylan  ",
 ];
 
 $thank_you_mario_variations = [
@@ -38,6 +38,7 @@ $thank_you_luigi_variations = [
 $quest_over_variations = [
     "your quest is over.",
     "your race is over. ",
+    "a winner is you!!!!",
 ];
 
 class Translator {

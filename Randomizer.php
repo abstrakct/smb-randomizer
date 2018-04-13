@@ -12,7 +12,6 @@
  * http://php.net/manual/en/migration72.incompatible.php#migration72.incompatible.rand-mt_rand-output
  */
 
-// TODO: CHECK WARP ZONES!!!!!! Do they work?
 
 
 use SMBR\Game;
@@ -23,6 +22,12 @@ use SMBR\Levels;
 use SMBR\Level;
 use SMBR\Item;
 use SMBR\Text;
+
+const HammerTimeOffset  = 0x512b;
+const HammerTimeOffset2 = 0x5161;
+const FireTimeOffset    = 0x515d;
+const BowserHPOffset    = 0x457c;
+
 
 function enemyIsInPool($o, $pool) {
     foreach ($pool as $p) {
@@ -190,6 +195,7 @@ class Randomizer {
                                 $newcoord = 0x98;
                                 $game->addData($enemy_data_offsets_for_shuffling[$level] + $i, pack('C*', $newcoord));
                             } else if ($o == $enemy['Bowser Fire Generator'] or $o == $enemy['Red Flying Cheep-Cheep Generator'] or $o == $enemy['Bullet Bill/Cheep-Cheep Generator']) {
+                                // TODO: should Bowser Fire Generator be included in this?
                                 $newo = $generator_pool[mt_rand(0, count($generator_pool) - 1)]->num;
                             } else {
                                 $newo = $reasonable_enemy_pool[mt_rand(0, count($reasonable_enemy_pool) - 1)]->num;
@@ -487,6 +493,39 @@ class Randomizer {
         }
     }
 
+    public function randomizeBowserAbilities(&$game) {
+        global $log;
+        $log->write("Randomizing Bowser's abilities.\n");
+
+        $new_hammer_world = mt_rand(0, 6);
+        $new_fire_world = mt_rand($new_hammer_world, 7);
+        //print("Hammer: $new_hammer_world\nFire: $new_fire_world\n");
+
+        $game->addData(HammerTimeOffset,  pack('C*', $new_hammer_world));
+        $game->addData(HammerTimeOffset2, pack('C*', $new_hammer_world));
+        $game->addData(FireTimeOffset,    pack('C*', $new_fire_world));
+    }
+
+    public function randomizeBowserHitpoints(&$game) {
+        global $log;
+        $log->write("Randomizing Bowser's hitpoints.\n");
+
+        if ($this->options['Bowser Hitpoints'] == "easy") {
+            $new_hitpoints = mt_rand(1, 5);
+        } else if ($this->options['Bowser Hitpoints'] == "medium") {
+            $new_hitpoints = mt_rand(5, 10);
+        } else if ($this->options['Bowser Hitpoints'] == "hard") {
+            $new_hitpoints = mt_rand(10, 20);
+        } else {
+            echo "Invalid value for option Bowser Hitpoints!";
+            exit(1);
+        }
+
+        $log->write("Bowser's hitpoints: " . $new_hitpoints . "\n");
+        print("B HP: $new_hitpoints \n");
+        $game->addData(BowserHPOffset, pack('C*', $new_hitpoints));
+    }
+
     public function fixPipes(Game &$game) {
         global $log;
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
@@ -619,6 +658,8 @@ class Randomizer {
         $this->flags[2] = $this->options['Normal World Length'][1];
         $this->flags[3] = $this->options['Shuffle Enemies'][1];
         $this->flags[4] = $this->options['Shuffle Blocks'][2];
+        $this->flags[5] = $this->options['Bowser Abilities'][3];
+        $this->flags[5] = $this->options['Bowser Hitpoints'][3];
         $s = implode("", $this->flags);
         $f = strtoupper($s);
         if ($this->options["webmode"])
@@ -701,6 +742,16 @@ class Randomizer {
             $log->write("No randomization of blocks!\n");
         }
 
+        // Randomize Bowser's Abilities
+        if ($this->options['Bowser Abilities'] == "true") {
+            $this->randomizeBowserAbilities($game);
+        }
+
+        // Randomize Bowser's Hitpoints
+        if ($this->options['Bowser Hitpoints'] != "normal") {
+            $this->randomizeBowserHitpoints($game);
+        }
+
         // Fix Pipes
         $this->fixPipes($game);
 
@@ -721,7 +772,7 @@ class Randomizer {
         // Set colorschemes
         $this->setMarioColorScheme($this->options['Mario Color Scheme'], $game);
         $this->setLuigiColorScheme($this->options['Luigi Color Scheme'], $game);
-        $this->setFireColorScheme($this->options['Fire Color Scheme'], $game);
+        $this->setFireColorScheme ($this->options['Fire Color Scheme'],  $game);
 
         return $game;
     }

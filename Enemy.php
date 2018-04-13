@@ -162,6 +162,8 @@ $reasonable_enemy_pool = [
     new Enemy('3 Green Koopa Troopas V6'),
 ];
 
+//  TODO: rework pools! add to- and from-pools!
+
 $toad_pool = [
     new Enemy('Toad'),
     new Enemy('Lakitu'),
