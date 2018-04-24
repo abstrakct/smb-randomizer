@@ -1,6 +1,6 @@
 <?php namespace SMBR;
 
-$message = [
+$messages = [
     // first 3 bytes = header, last = 0x00 - keep those!
     "ThankYouMario" => [ 0xd64, 0xd77 ], // THANK YOU MARIO!
     "ThankYouLuigi" => [ 0xd78, 0xd8b ], // THANK YOU LUIGI!
@@ -39,6 +39,11 @@ $quest_over_variations = [
     "your quest is over.",
     "your race is over. ",
     "a winner is you!!!!",
+];
+
+$win_variations = [
+    [ "your quest is over.", "we present you a new quest.", "push button b", "to select a world" ],
+    [ "funny quote asasdf.", "insert joke hereasdfasdfasf", "iusdfaiusdfhh", "sidufsdifhgiusdfh" ],
 ];
 
 class Translator {

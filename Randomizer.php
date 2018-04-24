@@ -603,49 +603,45 @@ class Randomizer {
         }
     }
 
-    //public function shuffleTextAnotherCastle(&$game) {
-    //    global $message, $another_castle_variations;
+    public function setText(&$game, $text, $newtext) {
+        global $messages;
 
-    //    $variation = 1;
-    //    $offset = $message["AnotherCastle"][0] + 3;
-    //    $lastoffset = $message["AnotherCastle"][1];
-    //    for ($i = 0; $i < strlen($another_castle_variations[$variation]); $i++) {
-    //        if ($i + $offset > $lastoffset) {
-    //            print("ERROR WHILE CHANGING A TEXT!");
-    //            exit(1);
-    //        }
-
-    //        if ($another_castle_variations[$variation][$i] == '/') {
-    //            $offset += 2;
-    //            $i++;
-    //        }
-
-    //        $game->addData($offset + $i, pack('C*', $this->trans->asciitosmb($another_castle_variations[$variation][$i])));
-    //    }
-    //}
-
-    public function shuffleText(&$game, $text, $variations) {
-        global $message;
-
-        $this->setSeed();
-
-        $variation = mt_rand(0, count($variations) - 1);
-        
-        $offset = $message[$text][0] + 3;
-        $lastoffset = $message[$text][1];
-        for ($i = 0; $i < strlen($variations[$variation]); $i++) {
+        $offset = $messages[$text][0] + 3;
+        $lastoffset = $messages[$text][1];
+        for ($i = 0; $i < strlen($newtext); $i++) {
             if ($i + $offset > $lastoffset) {
                 print("ERROR WHILE CHANGING A TEXT!");
                 exit(1);
             }
 
-            if ($variations[$variation][$i] == '/') {
+            if ($newtext[$i] == '/') {
                 $offset += 2;
                 $i++;
             }
 
-            $game->addData($offset + $i, pack('C*', $this->trans->asciitosmb($variations[$variation][$i])));
+            $game->addData($offset + $i, pack('C*', $this->trans->asciitosmb($newtext[$i])));
         }
+    }
+
+    public function shuffleText(&$game, $text, $variations) {
+        $this->setSeed();
+        $variation = mt_rand(0, count($variations) - 1);
+        
+        $this->setText($game, $text, $variations[$variation]);
+    }
+
+    // Do this one separately
+    public function shuffleWinText(&$game) {
+        global $win_variations, $log;
+
+        $this->setSeed();
+        $variation = mt_rand(0, count($win_variations) - 1);
+
+        $this->setText($game, "QuestOver", $win_variations[$variation][0]);
+        $this->setText($game, "NewQuest", $win_variations[$variation][1]);
+        $this->setText($game, "WorldSelect", $win_variations[$variation][2]);
+        $this->setText($game, "WorldSelect2", $win_variations[$variation][3]);
+        $log->write("Randomized win text to entry " . $variation . "\n");
     }
 
     public function getFlags() {
@@ -762,11 +758,11 @@ class Randomizer {
         $this->setTextSeedhash($this->seedhash, $game);
 
         // Shuffle texts
-        //$this->shuffleTextAnotherCastle($game);
         global $another_castle_variations, $thank_you_mario_variations, $thank_you_luigi_variations;
         $this->shuffleText($game, "ThankYouMario", $thank_you_mario_variations);
         $this->shuffleText($game, "ThankYouLuigi", $thank_you_luigi_variations);
         $this->shuffleText($game, "AnotherCastle", $another_castle_variations);
+        $this->shuffleWinText($game);
 
         // Set colorschemes
         $this->setMarioColorScheme($this->options['Mario Color Scheme'], $game);

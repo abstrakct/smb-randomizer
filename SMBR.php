@@ -15,6 +15,7 @@ use SMBR\Game;
  * DONE: Randomize Bowser's abilities? like hammers etc.?
  *       - we could change the code which selects bowser's abilities based on which world you're in
  * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
+ * TODO: Randomize Fake Bowser identities!
  *
  * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
  *
@@ -117,7 +118,7 @@ $options['Bowser Abilities'] = "true";
  * medium - Bowser has a random amount of hitpoints between 5-10
  * hard   - Bowser has a random amount of hitpoints between 10-20
  */
-$options['Bowser Hitpoints'] = "easy";
+$options['Bowser Hitpoints'] = "hard";
 
 $log = null;
 

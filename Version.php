@@ -1,6 +1,6 @@
 <?php
 
-const SMBRVersion = "0.7.5";
+const SMBRVersion = "0.7.6";
 
 function printVersion() {
     return "version " . SMBRVersion;
