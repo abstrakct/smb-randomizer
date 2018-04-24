@@ -47,7 +47,7 @@ $win_variations = [
     [ "  I have a step-   ", "  ladder. I never knew my  ", " real ladder.", "                 " ],
     [ " A blind man walks ", "        into a bar.        ", " And a table.", "   And a chair.  " ],
     [ "my dog can do magic", "      tricks. he is a      ", "             ", " labracadabrador." ],
-    [ "   I used to be    ", " addicted to soap, but now ", "I am clean...", "                 " ],
+    [ "   I used to be    ", " addicted to soap. but now ", "I am clean...", "                 " ],
     [ "I poured root beer ", "into a square glass. Now I ", "             ", " just have beer. " ],
     [ "     Time flies    ", "       like an arrow.      ", " Fruit flies ", "  like a banana! " ],
     [ " Once upon a time, ", "  men were men and wrote   ", "  their own  ", "   randomizers!  " ],

@@ -624,6 +624,8 @@ class Randomizer {
     }
 
     public function shuffleText(&$game, $text, $variations) {
+        global $log;
+        $log->write("Shuffling text " . $text . "\n");
         $this->setSeed();
         $variation = mt_rand(0, count($variations) - 1);
         

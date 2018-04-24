@@ -15,7 +15,7 @@ use SMBR\Game;
  * DONE: Randomize Bowser's abilities? like hammers etc.?
  *       - we could change the code which selects bowser's abilities based on which world you're in
  * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
- * TODO: Randomize Fake Bowser identities!
+ * TODO: Randomize Fake Bowser identities!? possible?
  *
  * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
  *
@@ -23,6 +23,9 @@ use SMBR\Game;
  * TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
  * TODO: randomize x pos of Toad/substitute Toad? To prevent Mario getting hit by a hammer bro or something after defeating Bowser.
  * TODO: option to randomize music?
+ * TODO: option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
+ * TODO: option to not randomize texts
+ * TODO: keep randomized texts independent of game seed? or make it an option?
  *
  * for power up shuffling - options:
  * DONE - only power ups are random (flower, star, 1 up)
