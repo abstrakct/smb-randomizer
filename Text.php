@@ -43,7 +43,15 @@ $quest_over_variations = [
 
 $win_variations = [
     [ "your quest is over.", "we present you a new quest.", "push button b", "to select a world" ],
-    [ "funny quote asasdf.", "insert joke hereasdfasdfasf", "iusdfaiusdfhh", "sidufsdifhgiusdfh" ],
+    [ "  A magician was   ", "driving down the road. Then", "  he turned  ", "into a driveway!!" ],
+    [ " This is my step-  ", "  ladder. I never knew my  ", " real ladder.", "                 " ],
+    [ " A blind man walks ", "        into a bar.        ", " And a table.", "   And a chair.  " ],
+    [ "my dog can do magic", "      tricks. he is a      ", "     ...     ", " labracadabrador." ],
+    [ "   I used to be    ", " addicted to soap, but now ", "I am clean...", "                 " ],
+    [ "I poured root beer ", "into a square glass. Now I ", "             ", " just have beer. " ],
+    [ "     Time flies    ", "       like an arrow.      ", " Fruit flies ", "  like a banana! " ],
+    [ " Once upon a time, ", "  men were men and wrote   ", "  their own  ", "   randomizers!  " ],
+    [ "                   ", "          SYNTAX           ", "             ", "      ERROR      " ],
 ];
 
 class Translator {
