@@ -18,6 +18,7 @@ use SMBR\Game;
  * TODO: Randomize Fake Bowser identities!? possible?
  *
  * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
+ * not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
  *
  * TODO: disappearing trampolines
  * TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
@@ -26,6 +27,8 @@ use SMBR\Game;
  * TODO: option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
  * TODO: option to not randomize texts
  * TODO: keep randomized texts independent of game seed? or make it an option?
+ * TODO: option to keep castles in vanilla order?
+ * TODO: randomize enemies in pools better! from-/to-pools
  *
  * for power up shuffling - options:
  * DONE - only power ups are random (flower, star, 1 up)
@@ -177,6 +180,7 @@ function smbrMain($filename, $seed = null, $webmode = false) {
         $logfilename = "logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
     }
 
+    // Start the logger
     $log = new Logger($logfilename);
     $rom->setLogger($log);
     
@@ -186,18 +190,21 @@ function smbrMain($filename, $seed = null, $webmode = false) {
     // Make the seed a.k.a. this performs the actual randomization!
     $randomized_game = $rando->makeSeed();
     
-    $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
-    //print $gamejson;
-    //print_r($randomized_game);
+    // Write all changes (to temporary file)
+    $rom->writeGame($randomized_game);
     
+    // Save the new ROM file
+    $rom->save($outfilename);
+    
+    // write JSON formatted data to logfile
+    $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
     $log->write("\nJSON:\n\n");
     $log->write($game_json);
     $log->write("\n\n");
-    
-    $rom->writeGame($randomized_game);
-    
-    $rom->save($outfilename);
-    
+
+    // write "pretty" world layout to logfile
+    $log->write($randomized_game->prettyprint());
+
     $log->close();
     
     if ($options["webmode"]) {
@@ -206,6 +213,7 @@ function smbrMain($filename, $seed = null, $webmode = false) {
     } else {
         print("\nFinished!\nFilename: $outfilename\n");
     }
+
 }
 
 if (php_sapi_name() == "cli") {

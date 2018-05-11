@@ -20,6 +20,10 @@ class World {
     public function getLevels() {
         return $this->levels;
     }
+
+    public function getName() {
+        return $this->name;
+    }
 }
 
 class World1 extends World {

@@ -16,12 +16,25 @@ include "Version.php";
 .flex-container {
   display: flex;
 }
+
+p {
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
 </style>
 
 
 <div class="flex-container">
 
-<div style="flex-basis: 600px">
+<div style="flex-basis: 800px">
+<p>
 <h1>Super Mario Bros. Randomizer!</h1>
 <?php
 echo printVersion() . "<p>";
@@ -110,9 +123,10 @@ Color Scheme for Mario:<br>
 
 <div>
 <h1>What is this?</h1>
+<p>
 Are you tired of playing the same old levels of Super Mario Bros. over and over again? Do you want a challenge while still playing the game you know and love? Well, look no further! This randomizer will take the original Super Mario
-Bros. game for the NES and randomize the elements of the game, kinda like shuffling a deck of cards, providing you with a new and (hopefully) exciting and challenging experience each time!
-<br><b>Goodbye muscle memory, hello SMB Rando!</b><br>
+Bros. game for the NES and randomize certain elements of the game, kinda like shuffling a deck of cards, providing you with a new and (hopefully) exciting and challenging experience each time! You can even choose various options for which elements are randomized, giving you even more possibilities for variation! 
+<br><b><i>Goodbye muscle memory, hello SMB Randomizer!</i></b><br><br>
 <i>Please read the Guide, Notes and Bugs/Todo sections before playing for the first time. The randomizer is still in a beta stage, and
 although I haven't personally come across an unwinable seed at this point, I cannot guarantee 100% that every seed will produce a winable seed, and there is still room (and plans) for improvement.</i><br>
 <p>
@@ -126,12 +140,12 @@ Select <i>no</i> if you want the order of the levels to be normal.
 <p>
 <b>Normal World Length:</b><br>
 Select <i>yes</i> if you want each world to have 4 levels.<br>
-Select <i>no</i> if you want worlds to have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting.<br>
+Select <i>no</i> if you want worlds to have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting. <b>NOTE: This setting does nothing if "Shuffle Levels" is set to <i>no</i>.</b><br>
 <p>
 <b>Pipe Transitions:</b><br>
 Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the vanilla game.<br>
 Select <i>remove</i> if you want to remove these transitions.<br>
-Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: can NOT be combined with Shuffle Levels and Normal World Length set to <i>yes</i></b>!<br>
+Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: can NOT be combined with Shuffle Levels AND Normal World Length set to <i>yes</i></b>!<br>
 <p>
 <b>Enemy Randomization:</b><br>
 <i>Full</i> randomizes all enemies, within reasonable limits.<br>
@@ -146,7 +160,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <i>No block shuffle</i> means blocks are NOT randomized in any way.<br>
 <p>
 <b>Bowser's Abilities:</b><br>
-<i>Yes</i> randomizes which world Bowser starts throwing hammers (between 1 and 7).<br>
+<i>Yes</i> randomizes the world in which Bowser starts throwing hammers (between 1 and 7).<br>
 <i>No</i> leaves Bowser's abilities unchanged.<br>
 <p>
 <b>Bowser's Hitpoints</b> randomizes how many hitpoints Bowser has, i.e. how many fireballs it takes to kill him:<br>
@@ -156,7 +170,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <i>Hard</i> randomizes Bowser's hitpoints between 10 and 20.<br>
 <p>
 <h2>Notes</h2>
-<li>The seed you input will always produce the same result, making this randomizer suitable for a tournament/race setting. Color schemes, random or not, for Mario/Luigi is independent of this seed/randomization, and does not affect anything gameplay-wise. The same goes for randomized changes of in-game texts.</li>
+<li>The seed you input will always produce the same result, making this randomizer suitable for tournament/race settings. Color schemes, random or not, are independent of this seed/randomization, and does not affect anything gameplay-wise. The same goes for randomized changes of in-game texts.</li>
 <li>On the title screen, a "seedhash" is shown where the text "(C) 1985 Nintendo" is normally shown. In a race setting or similar, if all players have the same seedhash it guarantees that the ROMs were generated with the same seed, same settings, same vanilla ROM and same version of the randomizer.</li>
 <li>Toad sometimes gets randomized to an enemy - if this enemy kills you on the "Thank you Mario!" screen, don't worry. You don't actually lose a life and the game will progress as normal. You might lose Super/Fire status though, so this needs to be fixed.</li>
 <li>Random Colors for Mario/Luigi is totally random, results can be anything from super cool to very weird.</li>
@@ -165,14 +179,14 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <p>
 <h2>Bugs / Known Limitations</h2>
 <li>The title screen will show whatever is set as the first level, and thus it technically spoils what the first level is. I don't think there's an easy fix for this.</li>
-<li>Warp Pipes can be wonky. The ones that have a number above them work correctly. A pipe in a Warp Zone without a number above it will (probably) take you to level -1 and you'll be stuck there.</li>
+<li>Warp Pipes can be wonky, depending on which world they show up in. The ones that have a number above them work correctly. A pipe in a Warp Zone without a number above it will (probably) take you to level -1 and you'll be stuck there.</li>
 <li>Randomized enemies sometimes get stuck inside blocks/walls/pipes. I'm looking into a way to fix this.</li>
-<li>Sometimes you get invisible enemies (probably stuck behing scenery).</li>
+<li>Sometimes you get invisible enemies - they are probably hiding behing scenery. This should be fixed.</li>
 <li>When "Block Shuffle" is set to <i>All</i> a small number of blocks seem to disappear completely. I haven't figured out why yet.</li>
 <li>Trampolines sometimes disappear. If you see that happen, DO NOT jump onto where the trampoline was - you will get stuck if yo do! Instead, look for an alternate way to progress.</li>
 <li>Shuffle Levels + Normal World Length + Keep Pipe Transitions = does not work! Can probably be fixed, if there is a high demand for this particular combination...</li>
 <li>If Normal World Length is <i>false</i>, there will be no midway points in any level! In other words: No matter where you die on a level, you will respawn at the beginning of the level! This is due to limitations in the original game code.</li> 
-<li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too many other enemies on screen.</li>
+<li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too many other enemies on screen. Fix is needed.</li>
 <p>
 <h2>TODO / Upcoming Features / Ideas</h2>
 <li>Require user to upload a ROM instead of providing one</li>
@@ -184,7 +198,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>Fix Toad randomizationing</li>
 <li>More error checking</li>
 <li>[kinda done] Improve backend</li>
-<li>Add option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.</li>
+<li>Add option to only randomize clothes for mario/luigi, for more reasonable random colors (hopefully).</li>
 <li>Custom color schemes!</li>
 <li>More color schemes!</li>
 <li>Fix/Randomize Warp Pipes (if possible)</li>
@@ -195,8 +209,15 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>Randomize music? If possible.</li>
 <li>make it an option to have randomized texts independent of game seed?</li>
 <li>[kinda done] Better / more readable log</li>
-
 <p>
+<h2>Credits / thanks</h2>
+<li>Thanks to the ALTTP Randomizer and the people behind it - for some small bits of code were taken from there, a long with some inspiration! Also, for hours of fun watching and playing!</li>
+<li>Thansk to the SMB3 Randomizer and its author, fcoughlin - for a lot of inspiration, and hours of fun watching and playing SMB3 Rando!</li>
+<li>Various sources of information about the game found online, including, but not limited to:</li>
+<li><a href="https://github.com/justinmichaud/rust-nes-emulator/">Rust NES emulator</a></li>
+<li><a href="https://gist.github.com/1wErt3r/4048722">A Comprehensive Super Mario Bros. Disassembly</a></li>
+<li><a href="https://www.romhacking.net/forum/index.php?topic=25371.0">https://www.romhacking.net/forum/index.php?topic=25371.0</a></li>
+<li><a href="https://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:ROM_map">https://datacrystal.romhacking.net/wiki/Super_Mario_Bros.:ROM_map</a></li>
 
 
 </div>

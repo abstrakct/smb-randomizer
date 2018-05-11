@@ -3,6 +3,8 @@
 require_once "World.php";
 require_once "Level.php";
 
+use SMBR\Translator;
+
 class DataPacket {
     private $offset, $data;
 
@@ -50,5 +52,21 @@ class Game {
 
     public function getDataPackets() {
         return $this->data_packets;
+    }
+
+    public function prettyprint() {
+        $trans = new Translator();
+        $ret = "\n";
+        $ret .= sprintf("WORLD LAYOUT:\n");
+        foreach ($this->worlds as $world) {
+            $ret .= sprintf($world->getName() . "\n");
+            $l = 1;
+            foreach ($world->levels as $level) {
+                $ret .= sprintf("\t" . $world->num . "-" . $trans->smbtoascii($l) . ": " . $level->name . "\n");
+                $l++;
+            }
+        }
+    
+        return $ret;
     }
 }
