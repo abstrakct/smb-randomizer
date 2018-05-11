@@ -117,6 +117,10 @@ class Rom {
 
     public function writeGame(Game $game) {
         global $options;
+        global $log;
+
+        $log->write("\nWRITING NEW ROM\n");
+        $log->write("---------------\n");
 
         $offset = LevelListOffset;
         $index = 0;

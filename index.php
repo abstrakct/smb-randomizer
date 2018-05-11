@@ -211,8 +211,8 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>[kinda done] Better / more readable log</li>
 <p>
 <h2>Credits / thanks</h2>
-<li>Thanks to the ALTTP Randomizer and the people behind it - for some small bits of code were taken from there, a long with some inspiration! Also, for hours of fun watching and playing!</li>
 <li>Thansk to the SMB3 Randomizer and its author, fcoughlin - for a lot of inspiration, and hours of fun watching and playing SMB3 Rando!</li>
+<li>Thanks to the ALTTP Randomizer and the people behind it - for some small bits of code that were taken from there, along with some inspiration! Also, for hours of fun watching and playing!</li>
 <li>Various sources of information about the game found online, including, but not limited to:</li>
 <li><a href="https://github.com/justinmichaud/rust-nes-emulator/">Rust NES emulator</a></li>
 <li><a href="https://gist.github.com/1wErt3r/4048722">A Comprehensive Super Mario Bros. Disassembly</a></li>
