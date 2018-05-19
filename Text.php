@@ -50,7 +50,7 @@ $win_variations = [
     [ "   I used to be    ", " addicted to soap. but now ", "I am clean...", "                 " ],
     [ "I poured root beer ", "into a square glass. Now I ", "             ", " just have beer. " ],
     [ "     Time flies    ", "       like an arrow.      ", " Fruit flies ", "  like a banana! " ],
-    [ " Once upon a time, ", "  men were men and wrote   ", "  their own  ", "   randomizers!  " ],
+    [ " Once upon a time  ", "  men were men and wrote   ", "  their own  ", "   randomizers!  " ],
     [ "                   ", "          SYNTAX           ", "             ", "      ERROR      " ],
 ];
 

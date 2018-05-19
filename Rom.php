@@ -59,7 +59,9 @@ class Rom {
      * @return bool
      */
     public function checkMD5() : bool {
-        return $this->getMD5() === static::HASH;
+        global $known_good_hashes;
+        return in_array($this->getMD5(), $known_good_hashes);
+        //return $this->getMD5() === static::HASH;
     }
 
     /**

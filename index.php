@@ -40,7 +40,10 @@ body {
 echo printVersion() . "<p>";
 ?>
 
-<form action="/SMBR.php" method="post">
+<form action="/SMBR.php" method="post" enctype="multipart/form-data">
+Provide NES file to be randomized:
+<input type="file" name="fileToUpload" id="fileToUpload">
+<br>
 Seed (leave blank for random seed):<br>
 <input type="text" name="seed"><br>
 <br>
@@ -131,6 +134,8 @@ Bros. game for the NES and randomize certain elements of the game, kinda like sh
 although I haven't personally come across an unwinable seed at this point, I cannot guarantee 100% that every seed will produce a winable seed, and there is still room (and plans) for improvement.</i><br>
 <p>
 <h1>Guide</h1>
+<p>
+<b>You need to provide a Super Mario Bros. ROM file to be randomized. The recommended ROM is named "Super Mario Bros. (JU) [!].nes", but other versions of SMB might work as well. If you upload a ROM the randomizer doesn't recognize, it might still go ahead and try to use that ROM, but in that case there are no guarantees that the randomized ROM will work correctly!</b>
 <p>
 <b>Seed</b> is quite self-explanatory: leave empty to get a random seed, or input a number you want to use as the seed.
 <p>
