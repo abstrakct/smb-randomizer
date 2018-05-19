@@ -585,12 +585,12 @@ class Randomizer {
     public function setTextRando(Game &$game) {
         global $log;
         $log->write("Changing Texts\n");
-        $game->addData(0x09fb5, pack('C*', $this->trans->asciitosmb('R')));
+        $game->addData(0x09fb5, pack('C*', $this->trans->asciitosmb('H')));
         $game->addData(0x09fb6, pack('C*', $this->trans->asciitosmb('A')));
-        $game->addData(0x09fb7, pack('C*', $this->trans->asciitosmb('N')));
-        $game->addData(0x09fb8, pack('C*', $this->trans->asciitosmb('D')));
-        $game->addData(0x09fb9, pack('C*', $this->trans->asciitosmb('O')));
-        $game->addData(0x09fba, pack('C*', $this->trans->asciitosmb('×')));
+        $game->addData(0x09fb7, pack('C*', $this->trans->asciitosmb('S')));
+        $game->addData(0x09fb8, pack('C*', $this->trans->asciitosmb('H')));
+        $game->addData(0x09fb9, pack('C*', $this->trans->asciitosmb(' ')));
+        $game->addData(0x09fba, pack('C*', $this->trans->asciitosmb(' ')));
     }
 
     public function setTextSeedhash(string $text, Game &$game) {
