@@ -94,7 +94,7 @@ class Randomizer {
         if($colorscheme == "random") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = mt_rand(0, 255);
+            $skin  = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
             $outer = $colorschemes[$colorscheme]->outer;
@@ -113,7 +113,7 @@ class Randomizer {
         if($colorscheme == "random") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = mt_rand(0, 255);
+            $skin  = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
             $outer = $colorschemes[$colorscheme]->outer;
@@ -132,7 +132,7 @@ class Randomizer {
         if($colorscheme == "random") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = mt_rand(0, 255);
+            $skin  = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
             $outer = $colorschemes[$colorscheme]->outer;
@@ -146,6 +146,8 @@ class Randomizer {
     }
 
         // improve this - we have enemy data offsets in the level data! 
+        // TODO: improve enemy shuffling in general! the code is a bit messy.
+        // TODO: the word 'shuffle' is sometimes used incorrectly. FIX
     public function shuffleEnemiesOnLevel(string $level, Game &$game) {
         global $dont_randomize;
         global $full_enemy_pool;
@@ -235,6 +237,7 @@ class Randomizer {
 
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
+                $log->write("Shuffling enemies in level " . $level->name . "\n");
                 $end = 0;
                 if ($level->enemy_data_offset == 0x0000)
                     break;

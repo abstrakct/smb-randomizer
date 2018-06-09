@@ -194,7 +194,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too many other enemies on screen. Fix is needed.</li>
 <p>
 <h2>TODO / Upcoming Features / Ideas</h2>
-<li>Require user to upload a ROM instead of providing one</li>
+<del><li>Require user to upload a ROM instead of providing one</li></del>
 <li>Improve web interface</li>
 <del><li>Randomize Bowser's abilities</li></del>
 <li>Randomize texts better - by 'texts' I mean strings like this: "thank you mario!" "but our princess is in another castle!" etc.</li>

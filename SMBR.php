@@ -16,6 +16,7 @@ use SMBR\Game;
  *       - we could change the code which selects bowser's abilities based on which world you're in
  * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
  * TODO: Randomize Fake Bowser identities!? possible?
+ * TODO: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3, containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
  *
  * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
  * not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
@@ -29,6 +30,7 @@ use SMBR\Game;
  * TODO: keep randomized texts independent of game seed? or make it an option?
  * TODO: option to keep castles in vanilla order?
  * TODO: randomize enemies in pools better! from-/to-pools
+ * TODO: check that all options are set to a valid value!
  *
  * for power up shuffling - options:
  * DONE - only power ups are random (flower, star, 1 up)
@@ -76,7 +78,7 @@ $options['Shuffle Levels'] = "true";
 /*
  * Normal World Length can be
  * true  - make sure each world has 4 levels, last level of each world is a castle.
- * false - castles can appear anywhere and will take you to the next world when beaten. Worlds can be 1 - 25 levels long.....
+ * false - castles can appear anywhere and will take you to the next world when beaten. Worlds can theoretically be 1 - 25 levels long.....
  *         total number of levels will still be 32, like in vanilla.
  *
  * 8-4 will always be last.
