@@ -617,7 +617,9 @@ class Randomizer {
         global $log;
         $log->write("Fixing midway points:\n");
 
-        if ($this->options['Shuffle Levels'] == 'true' and $this->options['Normal World Length'] == 'false') {
+        if (($this->options['Shuffle Levels'] == 'all'    && $this->options['Normal World Length'] == 'false') ||
+            ($this->options['Shuffle Levels'] == 'worlds'))
+        {
             // Remove midway points
             $log->write("Removing all midway points!\n");
             for ($i = 0; $i < 0xF; $i++) {
@@ -625,7 +627,8 @@ class Randomizer {
             }
         }
 
-        if ($this->options['Shuffle Levels'] == 'true' and $this->options['Normal World Length'] == 'true') {
+        if ($this->options['Shuffle Levels'] == 'all' && $this->options['Normal World Length'] == 'true')
+        {
             // Fix midway points
             $log->write("Moving midway points around to correct positions!\n");
             $mpindex = 0;

@@ -146,7 +146,7 @@ class Rom {
         }
 
         // Write midway points
-        if ($options['Shuffle Levels'] == "true") {
+        if ($options['Shuffle Levels'] == "all" || $options['Shuffle Levels'] == "worlds") {
             $offset = MidwayPointsOffset;
             for ($i = 0; $i < 0xF; $i++) {
                 $this->write($offset + $i, pack('C*', $game->midway_points[$i]));

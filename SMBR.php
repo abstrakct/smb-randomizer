@@ -67,7 +67,7 @@ $options['Fire Color Scheme']  = "random";
  *
  * third possibility: shuffle pipe transitions in with normal levels, so that they can appear anywhere (but only as many times as in vanilla)
  */
-$options['Pipe Transitions'] = "keep";
+$options['Pipe Transitions'] = "remove";
 
 /*
  * Shuffle Levels can be

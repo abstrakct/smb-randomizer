@@ -193,10 +193,11 @@ Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the
 <li>Trampolines sometimes disappear. If you see that happen, DO NOT jump onto where the trampoline was - you will get stuck if yo do! Instead, look for an alternate way to progress.</li>
 <li>Shuffle Levels + Normal World Length + Keep Pipe Transitions = does not work! Can probably be fixed, if there is a high demand for this particular combination...</li>
 <li>If Normal World Length is <i>false</i>, there will be no midway points in any level! In other words: No matter where you die on a level, you will respawn at the beginning of the level! This is due to limitations in the original game code.</li> 
+<li>The same (no midway points) goes for when Shuffle Levels == <i>worlds</i>. This is mainly to avoid softlocks, and I don't know yet if it's fixable. I believe it is, but will need some internal changes to the randomizer.</li>
 <li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too many other enemies on screen. Fix is needed.</li>
 <p>
 <h2>TODO / Upcoming Features / Ideas</h2>
-<li>I feel a little bit bad about overwriting the "(C) 1985 Nintendo" text. A better solution would be to find a way to display some sprites (corresponding to the hash) on the title screen instead.
+<li>I feel a little bit bad about overwriting the "(C) 1985 Nintendo" text. A better solution would be to find a way to display some sprites (corresponding to the hash) on the title screen instead.</li>
 <del><li>Require user to upload a ROM instead of providing one</li></del>
 <li>Improve web interface</li>
 <del><li>Randomize Bowser's abilities</li></del>
@@ -209,12 +210,13 @@ Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the
 <li>Add option to only randomize clothes for mario/luigi, for more reasonable random colors (hopefully).</li>
 <li>Custom color schemes!</li>
 <li>More color schemes!</li>
+<li>Add option to not generate spoiler/log.</li>
 <li>Fix/Randomize Warp Pipes (if possible)</li>
-<li>Exclude certain blocks from randomization</li>
 <li>Add option to disable warp pipes - if possible</li>
+<li>Exclude certain blocks from randomization</li>
 <li>Add option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are</li>
 <li>Add option to include continous Cheep-Cheeps/Bullet Bills in randomization pools.</li>
-<li>Be more careful about enemy randomization, to avoid despawning a.o. platforms because of too many sprites onscreen. That will probably solve the problem of disappearing trampolines too.
+<li>Be more careful about enemy randomization, to avoid despawning a.o. platforms because of too many sprites onscreen. That will probably solve the problem of disappearing trampolines too.</li>
 <li>Randomize music? If possible.</li>
 <li>Make it an option to have randomized texts independent of game seed?</li>
 <li>[kinda done] Better / more readable log</li>
