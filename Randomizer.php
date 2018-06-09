@@ -767,7 +767,7 @@ class Randomizer {
             }
         } else if ($this->options['Shuffle Levels'] == "worlds") {
             $this->shuffleWorldOrder($game);
-        } else {
+        } else if ($this->options['Shuffle Levels'] == "false") {
             $game->worlds = [
                 '1' => new World1($this, 1),
                 '2' => new World2($this, 2),
@@ -779,6 +779,9 @@ class Randomizer {
                 '8' => new World8($this, 8),
             ];
             $game->setVanilla();
+        } else {
+            print("Unrecognized option " . $this->options['Shuffle Levels'] . " for Shuffle Levels! Exiting...");
+            exit(1);
         }
 
         //  Shuffle Enemies

@@ -99,7 +99,7 @@ $options['Normal World Length'] = "false";
  * Some restrictions has to be applied anyway, since full randomization can break the game in certain cases.
  * Also, maybe make some enemies more rare than others?
  */
-$options['Shuffle Enemies'] = "full";
+$options['Shuffle Enemies'] = "pools";
 
 /*
  * Shuffle Blocks can be
@@ -316,8 +316,10 @@ if (php_sapi_name() == "cli") {
         echo "<html><body>";
         echo "Starting the Randomizationing...<br>";
 
-        if ($_POST["shufflelevels"] == "yes")
-            $options['Shuffle Levels'] = "true";
+        if ($_POST["shufflelevels"] == "all")
+            $options['Shuffle Levels'] = "all";
+        else if ($_POST["shufflelevels"] == "worlds")
+            $options['Shuffle Levels'] = "worlds";
         else if ($_POST["shufflelevels"] == "no")
             $options['Shuffle Levels'] = "false";
 

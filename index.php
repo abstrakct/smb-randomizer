@@ -48,7 +48,8 @@ Seed (leave blank for random seed):<br>
 <input type="text" name="seed"><br>
 <br>
 Shuffle levels?<br>
-<input type="radio" name="shufflelevels" value="yes" checked> Yes<br>
+<input type="radio" name="shufflelevels" value="all" checked> All<br>
+<input type="radio" name="shufflelevels" value="worlds"> World Order Only<br>
 <input type="radio" name="shufflelevels" value="no"> No<br>
 <br>
 Normal world length?<br>
@@ -140,17 +141,18 @@ although I haven't personally come across an unwinable seed at this point, I can
 <b>Seed</b> is quite self-explanatory: leave empty to get a random seed, or input a number you want to use as the seed.
 <p>
 <b>Shuffle Levels:</b><br>
-Select <i>yes</i> if you want the order of the levels to be shuffled.<br>
-Select <i>no</i> if you want the order of the levels to be normal.
+<i>All</i> shuffles all levels.<br>
+<i>World Order Only</i> shuffles the order in which worlds appear, but keeps the levels within each world in normal order. World 8 will always be last.<br>
+<i>No</i> means no shuffling of levels or worlds.
 <p>
-<b>Normal World Length:</b><br>
-Select <i>yes</i> if you want each world to have 4 levels.<br>
-Select <i>no</i> if you want worlds to have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting. <b>NOTE: This setting does nothing if "Shuffle Levels" is set to <i>no</i>.</b><br>
+<b>Normal World Length (only has effect when Shuffle Levels is set to <i>All</i>):</b><br>
+<i>Yes</i> means each world will have 4 levels.<br>
+<i>No</i> means each world will have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting. <b>NOTE: This setting does nothing if "Shuffle Levels" is set to <i>no</i>.</b><br>
 <p>
 <b>Pipe Transitions:</b><br>
 Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the vanilla game.<br>
-Select <i>remove</i> if you want to remove these transitions.<br>
-Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: can NOT be combined with Shuffle Levels AND Normal World Length set to <i>yes</i></b>!<br>
+<i>Remove</i> will remove these transitions.<br>
+<i>Keep</i> will keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: does NOT work if combined with Shuffle Levels AND Normal World Length set to <i>yes</i></b>! In that case Pipe Transitions will be removed. This is due to limitations in the randomizer code for now. Will hopefully be fixed in the future.<br>
 <p>
 <b>Enemy Randomization:</b><br>
 <i>Full</i> randomizes all enemies, within reasonable limits.<br>
@@ -168,7 +170,7 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <i>Yes</i> randomizes the world in which Bowser starts throwing hammers (between 1 and 7).<br>
 <i>No</i> leaves Bowser's abilities unchanged.<br>
 <p>
-<b>Bowser's Hitpoints</b> randomizes how many hitpoints Bowser has, i.e. how many fireballs it takes to kill him:<br>
+<b>Bowser's Hitpoints</b> randomizes how many hitpoints Bowser has - i.e. how many fireballs it takes to kill him:<br>
 <i>No</i> leaves Bowser's hitpoints unchanged at 5.<br>
 <i>Easy</i> randomizes Bowser's hitpoints between 1 and 5.<br>
 <i>Medium</i> randomizes Bowser's hitpoints between 5 and 10.<br>
@@ -211,13 +213,15 @@ Select <i>keep</i> if you want to keep them (i.e. a pipe transition will show up
 <li>Add option to disable warp pipes - if possible</li>
 <li>Add option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are</li>
 <li>Add option to include continous Cheep-Cheeps/Bullet Bills in randomization pools.</li>
+<li>Be more careful about enemy randomization, to avoid despawning a.o. platforms because of too many sprites onscreen. That will probably solve the problem of disappearing trampolines too.
 <li>Randomize music? If possible.</li>
-<li>make it an option to have randomized texts independent of game seed?</li>
+<li>Make it an option to have randomized texts independent of game seed?</li>
 <li>[kinda done] Better / more readable log</li>
+<li>Store a cookie or something when user has uploaded a valid ROM so they don't have to repeat it every time they use the randomizer.</li>
 <p>
 <h2>Credits / thanks</h2>
-<li>Thansk to the SMB3 Randomizer and its author, fcoughlin - for a lot of inspiration, and hours of fun watching and playing SMB3 Rando!</li>
-<li>Thanks to the ALTTP Randomizer and the people behind it - for some small bits of code that were taken from there, along with some inspiration! Also, for hours of fun watching and playing!</li>
+<li>Thanks to the SMB3 Randomizer and its author, fcoughlin, for a lot of inspiration, and hours of fun watching and playing SMB3 Rando!</li>
+<li>Thanks to the ALTTP Randomizer and the people behind it - for some small bits of code that were taken from there, along with much inspiration! Also, for hours of fun watching and playing!</li>
 <li>Various sources of information about the game found online, including, but not limited to:</li>
 <li><a href="https://github.com/justinmichaud/rust-nes-emulator/">Rust NES emulator</a></li>
 <li><a href="https://gist.github.com/1wErt3r/4048722">A Comprehensive Super Mario Bros. Disassembly</a></li>
