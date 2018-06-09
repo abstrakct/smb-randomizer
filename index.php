@@ -141,44 +141,44 @@ although I haven't personally come across an unwinable seed at this point, I can
 <b>Seed</b> is quite self-explanatory: leave empty to get a random seed, or input a number you want to use as the seed.
 <p>
 <b>Shuffle Levels:</b><br>
-<i>All</i> shuffles all levels.<br>
-<i>World Order Only</i> shuffles the order in which worlds appear, but keeps the levels within each world in normal order. World 8 will always be last.<br>
-<i>No</i> means no shuffling of levels or worlds.
+<b>All</b> shuffles all levels.<br>
+<b>World Order Only</b> shuffles the order in which worlds appear, but keeps the levels within each world in normal order. World 8 will always be last.<br>
+<b>No</b> means no shuffling of levels or worlds.
 <p>
 <b>Normal World Length (only has effect when Shuffle Levels is set to <i>All</i>):</b><br>
-<i>Yes</i> means each world will have 4 levels.<br>
-<i>No</i> means each world will have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting. <b>NOTE: This setting does nothing if "Shuffle Levels" is set to <i>no</i>.</b><br>
+<b>Yes</b> means each world will have 4 levels.<br>
+<b>No</b> means each world will have a random number of levels. Each world will still end with a castle, and 8-4 will always be the last level of world 8. The total number of levels will be 32, like in the vanilla game. Theoretically a world can have between 1 and 24 levels with this setting. <b>NOTE: This setting does nothing if "Shuffle Levels" is set to <i>no</i>.</b><br>
 <p>
 <b>Pipe Transitions:</b><br>
 Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the vanilla game.<br>
-<i>Remove</i> will remove these transitions.<br>
-<i>Keep</i> will keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: does NOT work if combined with Shuffle Levels AND Normal World Length set to <i>yes</i></b>! In that case Pipe Transitions will be removed. This is due to limitations in the randomizer code for now. Will hopefully be fixed in the future.<br>
+<b>Remove</b> will remove these transitions.<br>
+<b>Keep</b> will keep them (i.e. a pipe transition will show up before vanilla 1-2, wherever vanilla 1-2 is, and so on). <b>NOTE: does NOT work if combined with Shuffle Levels AND Normal World Length set to <i>yes</i></b>! In that case Pipe Transitions will be removed. This is due to limitations in the randomizer code for now. Will hopefully be fixed in the future.<br>
 <p>
 <b>Enemy Randomization:</b><br>
-<i>Full</i> randomizes all enemies, within reasonable limits.<br>
-<i>Pools</i> randomizes enemies within smaller pools of similar/related enemies.<br>
-<i>No enemy randomization</i> means enemies are NOT randomized in any way.<br>
+<b>Full</b> randomizes all enemies, within reasonable limits.<br>
+<b>Pools</b> randomizes enemies within smaller pools of similar/related enemies.<br>
+<b>No enemy randomization</b> means enemies are NOT randomized in any way.<br>
 <p>
 <b>Block Randomization:</b><br>
-<i>All</i> randomizes all kinds of single blocks that contain an item (mushroom/flower, star, 1-up, coin).<br>
-<i>Power-Ups</i> randomizes all single blocks that contain a power-up (mushroom/flower, star, 1-up). Coins are not included in the randomization.<br>
-<i>Grouped</i> randomizes single blocks in groups (bricks, question blocks, hidden blocks). <br>
-<i>Coins</i> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins! Probably quite hard!<br>
-<i>No block shuffle</i> means blocks are NOT randomized in any way.<br>
+<b>All</b> randomizes all kinds of single blocks that contain an item (mushroom/flower, star, 1-up, coin).<br>
+<b>Power-Ups</b> randomizes all single blocks that contain a power-up (mushroom/flower, star, 1-up). Coins are not included in the randomization.<br>
+<b>Grouped</b> randomizes single blocks in groups (bricks, question blocks, hidden blocks). In other words: any vanilla question block can become a different kind of question block, any hidden block can become a different kind of hidden block, etc. Note that this only applies to single blocks, so rows of e.g. several question blocks do not get randomized.<br>
+<b>Coins</b> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins! Probably quite hard!<br>
+<b>No block shuffle</b> means blocks are NOT randomized in any way.<br>
 <p>
 <b>Bowser's Abilities:</b><br>
-<i>Yes</i> randomizes the world in which Bowser starts throwing hammers (between 1 and 7).<br>
-<i>No</i> leaves Bowser's abilities unchanged.<br>
+<b>Yes</b> randomizes the world in which Bowser starts throwing hammers (between 1 and 7).<br>
+<b>No</b> leaves Bowser's abilities unchanged.<br>
 <p>
 <b>Bowser's Hitpoints</b> randomizes how many hitpoints Bowser has - i.e. how many fireballs it takes to kill him:<br>
-<i>No</i> leaves Bowser's hitpoints unchanged at 5.<br>
-<i>Easy</i> randomizes Bowser's hitpoints between 1 and 5.<br>
-<i>Medium</i> randomizes Bowser's hitpoints between 5 and 10.<br>
-<i>Hard</i> randomizes Bowser's hitpoints between 10 and 20.<br>
+<b>No</b> leaves Bowser's hitpoints unchanged at 5.<br>
+<b>Easy</b> randomizes Bowser's hitpoints between 1 and 5.<br>
+<b>Medium</b> randomizes Bowser's hitpoints between 5 and 10.<br>
+<b>Hard</b> randomizes Bowser's hitpoints between 10 and 20.<br>
 <p>
 <h2>Notes</h2>
-<li>The seed you input will always produce the same result, making this randomizer suitable for tournament/race settings. Color schemes, random or not, are independent of this seed/randomization, and does not affect anything gameplay-wise. The same goes for randomized changes of in-game texts.</li>
-<li>On the title screen, a "seedhash" is shown where the text "(C) 1985 Nintendo" is normally shown. In a race setting or similar, if all players have the same seedhash it guarantees that the ROMs were generated with the same seed, same settings, same vanilla ROM and same version of the randomizer.</li>
+<li>The seed you input will always produce the same result, making this randomizer (at least theoretically) suitable for racing, or even a tournament. Color schemes, random or not, are independent of this seed/randomization, and does not affect anything gameplay-wise. The same goes for randomized changes of in-game texts.</li>
+<li>On the title screen, a "seedhash" is shown where the text "(C) 1985 Nintendo" is normally shown. In a race setting, if all players have the same seedhash it guarantees that the ROMs were generated with the same seed, same settings, same vanilla ROM and same version of the randomizer.</li>
 <li>Toad sometimes gets randomized to an enemy - if this enemy kills you on the "Thank you Mario!" screen, don't worry. You don't actually lose a life and the game will progress as normal. You might lose Super/Fire status though, so this needs to be fixed.</li>
 <li>Random Colors for Mario/Luigi is totally random, results can be anything from super cool to very weird.</li>
 <li>Mosts texts are now randomized. Like color schemes they are randomized independently of anything related to gameplay. An option to don't do this will be added.</li>
@@ -196,6 +196,7 @@ Pipe Transitions are the transitions that happen e.g. between 1-1 and 1-2 in the
 <li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too many other enemies on screen. Fix is needed.</li>
 <p>
 <h2>TODO / Upcoming Features / Ideas</h2>
+<li>I feel a little bit bad about overwriting the "(C) 1985 Nintendo" text. A better solution would be to find a way to display some sprites (corresponding to the hash) on the title screen instead.
 <del><li>Require user to upload a ROM instead of providing one</li></del>
 <li>Improve web interface</li>
 <del><li>Randomize Bowser's abilities</li></del>

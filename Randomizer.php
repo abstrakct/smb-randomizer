@@ -711,7 +711,7 @@ class Randomizer {
         $this->flags[1] = $this->options['Shuffle Levels'][1];
         $this->flags[2] = $this->options['Normal World Length'][1];
         $this->flags[3] = $this->options['Shuffle Enemies'][1];
-        $this->flags[4] = $this->options['Shuffle Blocks'][2];
+        $this->flags[4] = $this->options['Shuffle Blocks'][0];
         $this->flags[5] = $this->options['Bowser Abilities'][3];
         $this->flags[5] = $this->options['Bowser Hitpoints'][3];
         $s = implode("", $this->flags);
