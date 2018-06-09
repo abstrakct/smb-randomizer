@@ -404,6 +404,59 @@ class Randomizer {
             $game->worlds[8]->levels[$lastlevelindex] = $vanilla_level['8-4'];
         }
     }
+
+    /*
+     * Shuffle World Order - produce a seed where the worlds and their levels stay vanilla,
+     * but the order the worlds appear in is shuffled.
+     * World 8 will always be last.
+     */
+    public function shuffleWorldOrder(&$game) {
+        $worlds = [ 1, 2, 3, 4, 5, 6, 7 ];
+        $shuffledworlds = mt_shuffle($worlds);
+
+        // shuffle worlds 1-7
+        for ($i = 1; $i <= 7; $i++) {
+            switch ($shuffledworlds[$i - 1]) {
+            case 1:
+                if ($this->options['Pipe Transitions'] == 'keep')
+                    $game->worlds[$i] = new World1($game, $i);
+                if ($this->options['Pipe Transitions'] == 'remove')
+                    $game->worlds[$i] = new World1NoPipeTransition($game, $i);
+                break;
+            case 2:
+                if ($this->options['Pipe Transitions'] == 'keep')
+                    $game->worlds[$i] = new World2($game, $i);
+                if ($this->options['Pipe Transitions'] == 'remove')
+                    $game->worlds[$i] = new World2NoPipeTransition($game, $i);
+                break;
+            case 3:
+                $game->worlds[$i] = new World3($game, $i);
+                break;
+            case 4:
+                if ($this->options['Pipe Transitions'] == 'keep')
+                    $game->worlds[$i] = new World4($game, $i);
+                if ($this->options['Pipe Transitions'] == 'remove')
+                    $game->worlds[$i] = new World4NoPipeTransition($game, $i);
+                break;
+            case 5:
+                $game->worlds[$i] = new World5($game, $i);
+                break;
+            case 6:
+                $game->worlds[$i] = new World6($game, $i);
+                break;
+            case 7:
+                $game->worlds[$i] = new World7($game, $i);
+                break;
+            }
+        }
+
+        // set world 8 as world 8
+        $game->worlds[8] = new World8($game, 8);
+        // set the shuffled worlds to their vanilla layout
+        $game->setVanilla();
+        //print_r($game);
+    }
+
     /*
      * Shuffle levels, but make sure each -4 is a castle.
      * Castles are also shuffled, except the 8-4 which is 8-4
@@ -655,7 +708,7 @@ class Randomizer {
 
     public function makeFlags() {
         $this->flags[0] = $this->options['Pipe Transitions'][2];
-        $this->flags[1] = $this->options['Shuffle Levels'][0];
+        $this->flags[1] = $this->options['Shuffle Levels'][1];
         $this->flags[2] = $this->options['Normal World Length'][1];
         $this->flags[3] = $this->options['Shuffle Enemies'][1];
         $this->flags[4] = $this->options['Shuffle Blocks'][2];
@@ -706,13 +759,25 @@ class Randomizer {
             print("\nHere we go! Making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
-        if ($this->options['Shuffle Levels'] == "true") {
+        if ($this->options['Shuffle Levels'] == "all") {
             if ($this->options['Normal World Length'] == "true") {
                 $this->shuffleLevelsWithNormalWorldLength($game);
             } else {
                 $this->shuffleAllLevels($game);
             }
+        } else if ($this->options['Shuffle Levels'] == "worlds") {
+            $this->shuffleWorldOrder($game);
         } else {
+            $game->worlds = [
+                '1' => new World1($this, 1),
+                '2' => new World2($this, 2),
+                '3' => new World3($this, 3),
+                '4' => new World4($this, 4),
+                '5' => new World5($this, 5),
+                '6' => new World6($this, 6),
+                '7' => new World7($this, 7),
+                '8' => new World8($this, 8),
+            ];
             $game->setVanilla();
         }
 

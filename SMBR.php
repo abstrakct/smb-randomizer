@@ -16,7 +16,8 @@ use SMBR\Game;
  *       - we could change the code which selects bowser's abilities based on which world you're in
  * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
  * TODO: Randomize Fake Bowser identities!? possible?
- * TODO: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3, containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
+ * DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
+ *      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
  *
  * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
  * not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
@@ -60,20 +61,22 @@ $options['Mario Color Scheme'] = "random";
 $options['Luigi Color Scheme'] = "random";
 $options['Fire Color Scheme']  = "random";
 /*
- * Pipe Transitions (like between 1-1 and 1-2) can be:
+ * Pipe Transitions (like the one between 1-1 and 1-2) can be:
  * remove  - just remove them entirely
  * keep    - add pipe transitions before levels that have them in vanilla - i.e. you'd get a pipe transition before playing vanilla 1-2
  *
  * third possibility: shuffle pipe transitions in with normal levels, so that they can appear anywhere (but only as many times as in vanilla)
  */
-$options['Pipe Transitions'] = "remove";
+$options['Pipe Transitions'] = "keep";
 
 /*
  * Shuffle Levels can be
- * true  - shuffle levels
- * false - don't shuffle levels
+ * all    - shuffle all levels
+ * worlds - shuffle only the world order ('Normal World Length' option will be ignored in this case). World 8 will always be last, though.
+ *          the 'Pipe Transitions' option works as expected.
+ * false  - don't shuffle levels 
  */
-$options['Shuffle Levels'] = "true";
+$options['Shuffle Levels'] = "worlds";
 
 /*
  * Normal World Length can be
