@@ -18,6 +18,8 @@ use SMBR\Game;
  * TODO: Randomize Fake Bowser identities!? possible?
  * DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
  *      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
+ * TODO: Option to randomize music? (line 2790 in disasm)
+ * TODO: Randomize when fireworks appear? (line 10469 of disasm)
  *
  * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
  * not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
@@ -25,7 +27,6 @@ use SMBR\Game;
  * TODO: disappearing trampolines
  * TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
  * TODO: randomize x pos of Toad/substitute Toad? To prevent Mario getting hit by a hammer bro or something after defeating Bowser.
- * TODO: option to randomize music?
  * TODO: option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
  * TODO: option to not randomize texts
  * TODO: keep randomized texts independent of game seed? or make it an option?
