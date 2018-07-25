@@ -1,0 +1,14 @@
+*.nes
+*.log
+*.asm
+archive/
+colors.txt
+dump*
+duuump
+smb.txt
+webout*
+archive-logs*
+broken*
+cool*
+roms*
+logs*
