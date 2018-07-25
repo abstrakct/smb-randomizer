@@ -45,6 +45,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
+    const VERSION = "0.8";
 
     /**
      * Create a new randomizer.
@@ -764,7 +765,7 @@ class Randomizer
 
     public function makeSeedHash()
     {
-        $hashstring = implode("", $this->flags) . strval($this->getSeed() . SMBRVersion . $this->rom->getMD5());
+        $hashstring = implode("", $this->flags) . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
         //print("makkSeedHash()\n
         //          md5: " . hash("md5", $hashstring) . "\n

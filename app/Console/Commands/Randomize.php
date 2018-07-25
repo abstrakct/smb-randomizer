@@ -11,8 +11,6 @@ use SMBR\Logger;
 use SMBR\Randomizer;
 use SMBR\Rom;
 
-require_once "app/SMBR/Version.php";
-
 class Randomize extends Command
 {
     /**
@@ -97,7 +95,7 @@ class Randomize extends Command
                 //TODO: Add checks to see if ROM is usable (check data in various offsets).
             }
         } else {
-            print("\n\nSMB RANDOMIZER " . printVersion() . "\n\nROM filename: $input_file\n");
+            print("\n\nSMB RANDOMIZER v" . \SMBR\Randomizer::VERSION . "\n\nROM filename: $input_file\n");
             print("MD5 checksum: $checksum");
             if ($ok) {
                 print(" [OK]\n");
