@@ -7,24 +7,26 @@ use SMBR\Game;
  * Sources used:
  * https://github.com/justinmichaud/rust-nes-emulator/
  * http://1st.geocities.jp/bysonshome/smb1/
+ * and more
  */
 
 /*
  *
- * TODO: Randomize where pipes lead to?
- * DONE: Randomize Bowser's abilities? like hammers etc.?
- *       - we could change the code which selects bowser's abilities based on which world you're in
- * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
- * TODO: Randomize Fake Bowser identities!? possible?
- * DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
+ * BUG: SOMETHING IS WRONG WITH THE PIPE POINTERS!!!!!!!!!????????????
+ *
+ * TODO: Check this: DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
  *      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
+ *
+ * TODO: Randomize where pipes lead to?
+ * TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!
  * TODO: Option to randomize music? (line 2790 in disasm)
  * TODO: Randomize when fireworks appear? (line 10469 of disasm)
- *
- * TODO: warp zone pipes have strange behavior (pipes with no number take you to world -1)
- * not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
- *
+ * TODO: shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
+ * TODO: fix warp zones! warp zone pipes have strange behavior (pipes with no number take you to world -1)
+ *       not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
+ *       see line 1682 in disasm
  * TODO: disappearing trampolines
+ * TODO: disappearing powerup blocks sometimes - might be related to stuff around line 5860 in disasm
  * TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
  * TODO: randomize x pos of Toad/substitute Toad? To prevent Mario getting hit by a hammer bro or something after defeating Bowser.
  * TODO: option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
@@ -33,15 +35,30 @@ use SMBR\Game;
  * TODO: option to keep castles in vanilla order?
  * TODO: randomize enemies in pools better! from-/to-pools
  * TODO: check that all options are set to a valid value!
+ * TODO: disasm line  1084: change demo action data in order to not spoil first level??  offset 0x350 in rom, length 20 bytes
+ * TODO: disasm line  7338: maybe a better way to shuffle powerups? for mode that changes all powerups of one type to another.
+ * TODO: disasm line  7787: respawn points - I think. look at that
+ * TODO: disasm line  8370: fire bar spin speed / direction -- can be randomized!?
+ * TODO: disasm line  8405: cheep cheep data -- can be randomized!?
+ * TODO: disasm line  8698: enemy frenzy thing that checks for world 2 - should be changed??
+ * TODO: disasm line 11440: it's possible/easy(?) to change which enemies can be stomped and not!
+ * TODO: disasm line 13475: it's possible/easy(?) to change the appearance of a powerup!!!    NOPE DOESN'T WORK (sprites get weird)
  *
  * for power up shuffling - options:
  * DONE - only power ups are random (flower, star, 1 up)
  * DONE - add coins to that pool
- * - shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
+ * DONE: Randomize Bowser's abilities? like hammers etc.?
+ *       - we could change the code which selects bowser's abilities based on which world you're in
+ * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
  *
  * NOTES
  * - Sometimes enemies "hide" behind scenery.
  *
+ * 
+ *
+ *
+ * HASH = 11 0A 1C 11
+ * offset = 0x9fd6  (overwrites "2 PLAYER GAME")
  */
 
 
@@ -77,7 +94,7 @@ $options['Pipe Transitions'] = "remove";
  *          the 'Pipe Transitions' option works as expected.
  * false  - don't shuffle levels 
  */
-$options['Shuffle Levels'] = "worlds";
+$options['Shuffle Levels'] = "all";
 
 /*
  * Normal World Length can be
@@ -216,7 +233,7 @@ function smbrMain($filename, $seed = null, $webmode = false) {
     $log->write("\n\n");
 
     // write "pretty" world layout to logfile
-    $log->write($randomized_game->prettyprint());
+    //$log->write($randomized_game->prettyprint());
 
     $log->close();
     

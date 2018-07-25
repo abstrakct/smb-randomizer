@@ -24,6 +24,7 @@ $thank_you_mario_variations = [
     "thank you sonic!",
     "thank you zelda!",
     "a winner is you!",
+    "a you is winner!",
 ];
 
 $thank_you_luigi_variations = [
@@ -38,7 +39,8 @@ $thank_you_luigi_variations = [
 $quest_over_variations = [
     "your quest is over.",
     "your race is over. ",
-    "a winner is you!!!!",
+    " a winner is you!! ",
+    " a you is winner!! ",
 ];
 
 $win_variations = [

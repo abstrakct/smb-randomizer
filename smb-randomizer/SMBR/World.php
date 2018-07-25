@@ -7,7 +7,7 @@ use SMBR\Level;
 class World {
     protected $name = 'Unknown';
     protected $game;
-    public $num;
+    public $num = 0;
     public $levels = [];
     protected $num_levels; // probably not needed, can use count()
 

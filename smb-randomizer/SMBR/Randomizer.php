@@ -15,6 +15,7 @@
 
 
 use SMBR\Game;
+use SMBR\World;
 use SMBR\Colorscheme;
 use SMBR\Translator;
 use SMBR\Enemy;
@@ -654,8 +655,10 @@ class Randomizer {
 
     public function setTextSeedhash(string $text, Game &$game) {
         /*
-         * Replace "NINTENDO" in "(C)1985 NINTENDO" on the title screen with the first 8 characters of the seedhash
+         * Write the first 8 characters of the seedhash on title screen.
+         * TODO: move to diff. location
          * TODO: see if there's a way to draw some sprites instead!
+         * DONE: there is, but no good sprites it seems......
          */
         for($i = 0; $i < 8; $i++) {
             $game->addData(0x09fbb + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
@@ -755,6 +758,16 @@ class Randomizer {
         global $log;
 
         $game = new Game();
+        $game->worlds = [
+            '1' => new World1($game, 1),
+            '2' => new World2($game, 2),
+            '3' => new World3($game, 3),
+            '4' => new World4($game, 4),
+            '5' => new World5($game, 5),
+            '6' => new World6($game, 6),
+            '7' => new World7($game, 7),
+            '8' => new World8($game, 8),
+        ];
 
         if ($this->options["webmode"])
             print("<br>Here we go! Making randomized SMB ROM with seed $this->rng_seed <br>");
@@ -769,18 +782,9 @@ class Randomizer {
                 $this->shuffleAllLevels($game);
             }
         } else if ($this->options['Shuffle Levels'] == "worlds") {
+            $game->setVanilla();
             $this->shuffleWorldOrder($game);
         } else if ($this->options['Shuffle Levels'] == "false") {
-            $game->worlds = [
-                '1' => new World1($this, 1),
-                '2' => new World2($this, 2),
-                '3' => new World3($this, 3),
-                '4' => new World4($this, 4),
-                '5' => new World5($this, 5),
-                '6' => new World6($this, 6),
-                '7' => new World7($this, 7),
-                '8' => new World8($this, 8),
-            ];
             $game->setVanilla();
         } else {
             print("Unrecognized option " . $this->options['Shuffle Levels'] . " for Shuffle Levels! Exiting...");
