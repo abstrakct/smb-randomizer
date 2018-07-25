@@ -1,50 +1,62 @@
 <?php namespace SMBR;
 
-require_once "World.php";
-require_once "Level.php";
+/* require_once "World.php";
+require_once "Level.php"; */
 
 use SMBR\Translator;
 
-class DataPacket {
+class DataPacket
+{
     private $offset, $data;
 
-    public function __construct($offset, $data) {
+    public function __construct($offset, $data)
+    {
         $this->offset = $offset;
         $this->data = $data;
     }
 
-    public function getData() {
+    public function getData()
+    {
         return $this->data;
     }
 
-    public function getOffset() {
+    public function getOffset()
+    {
         return $this->offset;
     }
 };
 
-class Game {
+class Game
+{
     public $worlds = [];
     public $midway_points = [];
+    public $options;
     private $data_packets = [];
 
-    public function __construct() {
+    public function __construct($options)
+    {
+        $this->options = $options;
     }
 
-    public function setVanilla() {
+    public function setVanilla()
+    {
         foreach ($this->worlds as $world) {
             $world->setVanilla();
         }
     }
 
-    public function addData($offset, $data) {
+    public function addData($offset, $data)
+    {
         $this->data_packets[] = new DataPacket($offset, $data);
     }
 
-    public function getDataPackets() {
+    public function getDataPackets()
+    {
         return $this->data_packets;
     }
 
-    public function prettyprint() {
+    public function prettyprint()
+    {
         $trans = new Translator();
         $ret = "\n";
         $ret .= sprintf("WORLD LAYOUT:\n");
@@ -56,7 +68,7 @@ class Game {
                 $l++;
             }
         }
-    
+
         return $ret;
     }
 }

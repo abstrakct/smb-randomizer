@@ -7,6 +7,11 @@
 namespace SMBR\Console\Commands;
 
 use Illuminate\Console\Command;
+use SMBR\Logger;
+use SMBR\Randomizer;
+use SMBR\Rom;
+
+require_once "app/SMBR/Version.php";
 
 class Randomize extends Command
 {
@@ -17,10 +22,22 @@ class Randomize extends Command
      */
     protected $signature = 'smbr:randomize {input_file : base rom to randomize}'
         . '{output_dir : where to save the randomized rom}'
-        . '{--testoption : this is a test option}'
+        . '{--seed= : set seed for rng}'
+        . '{--pipe-transitions=remove : keep or remove pipe transitions}'
+        . '{--shuffle-levels=all : level randomization}'
+        . '{--normal-world-length=false : world length options}'
+        . '{--enemies=randomize-full : enemy randomization}'
+        . '{--blocks=randomize-all : block randomization}'
+        . '{--bowser-abilities=true : randomize Bowser abilities}'
+        . '{--bowser-hitpoints=medium : randomize Bowser hitpoints}'
+        . '{--mariocolors=random : Mario Color Scheme}'
+        . '{--luigicolors=random : Luigi Color Scheme}'
+        . '{--firecolors=random : Fire Color Scheme}'
     ;
 
     protected $description = 'Generate a randomized ROM';
+
+    protected $smbrOptions = [];
 
     /**
      * Create a new command instance.
@@ -49,8 +66,103 @@ class Randomize extends Command
             return $this->error('Output directory is not writeable.');
         }
 
-        if ($this->option('testoption')) {
-            echo "Test option applied!";
+        // MOVE HERE smbrMain($this->argument('input_file'));
+        $this->do_the_randomizer($this->argument('input_file'), $this->argument('output_dir'), $this->option());
+    }
+
+    public function do_the_randomizer($input_file, $output_dir, $options)
+    {
+        $log = null;
+
+        // global $options, $log;
+        //$vanilla = new Game();
+        //$vanilla->setVanilla();
+        //print_r($vanilla);
+        //print(count($vanilla->worlds[1]->levels));
+
+        $webmode = false;
+        $options['webmode'] = false;
+        $rom = new Rom($input_file);
+        $checksum = $rom->getMD5();
+        $ok = $rom->checkMD5();
+
+        if ($webmode) {
+            print("<br><br>SMB RANDOMIZER " . printVersion() . "<br><br>ROM filename: $input_file<br>");
+            print("MD5 checksum: $checksum");
+            if ($ok) {
+                print(" <b>[OK]</b><br>");
+            } else {
+                print(" <b>[FAILED!]</b><br>");
+                print("Trying to use this ROM anyway, <b>not guaranteed to work,</b> results may vary...<br>");
+                //TODO: Add checks to see if ROM is usable (check data in various offsets).
+            }
+        } else {
+            print("\n\nSMB RANDOMIZER " . printVersion() . "\n\nROM filename: $input_file\n");
+            print("MD5 checksum: $checksum");
+            if ($ok) {
+                print(" [OK]\n");
+            } else {
+                print(" [FAILED!]\n");
+                print("Trying to use this ROM anyway, not guaranteed to work, results may vary...\n");
+                //TODO: Add checks to see if ROM is usable (check data in various offsets).
+            }
         }
+
+        print("\n");
+
+        // if seed == null a random seed will be chosen, else it will use the user's chosen seed.
+        $rando = new Randomizer($options['seed'], $options, $rom);
+
+        $rando->setSeed($rando->getSeed());
+        $rando->makeFlags();
+
+        if ($webmode) {
+            $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());
+            if (!file_exists($dir)) {
+                mkdir($dir, 0744);
+            }
+
+            $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
+            $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
+        } else {
+            $outfilename = $output_dir . "/roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
+            $logfilename = $output_dir . "/logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
+        }
+
+        // Start the logger
+        $log = new Logger($logfilename);
+        $rom->setLogger($log);
+        $rando->setLogger($log);
+
+        // Print out the selected options and relevant information
+        $rando->printOptions();
+
+        // Make the seed a.k.a. this performs the actual randomization!
+        $randomized_game = $rando->makeSeed();
+
+        // Write all changes (to temporary file)
+        $rom->writeGame($randomized_game);
+
+        // Save the new ROM file
+        $rom->save($outfilename);
+
+        // write JSON formatted data to logfile
+        $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
+        $log->write("\nJSON:\n\n");
+        $log->write($game_json);
+        $log->write("\n\n");
+
+        // write "pretty" world layout to logfile
+        //$log->write($randomized_game->prettyprint());
+
+        $log->close();
+
+        if ($options["webmode"]) {
+            print('<br><br><b>Finished!</b><br><a href="' . $outfilename . '">Click here to download randomized ROM!</a>');
+            print('<br><a href="' . $logfilename . '">Click here to view the log (contains spoilers!)</a>');
+        } else {
+            print("\nFinished!\nFilename: $outfilename\n");
+        }
+
     }
 }

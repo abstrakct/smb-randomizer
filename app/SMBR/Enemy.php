@@ -51,7 +51,6 @@ $enemy = [
     '3 Green Koopa Troopas V6' => 0x3E,
 ];
 
-
 $enemydataoffsets = [
     '1-4' => 0x1d80, '6-4' => 0x1d80, '4-4' => 0x1da7, '2-4' => 0x1dc0, '5-4' => 0x1dc0, '3-4' => 0x1def, '7-4' => 0x1e1a, '8-4' => 0x1e2f,
     '3-3' => 0x1e69, '8-3' => 0x1e8e, '4-1' => 0x1eab, '6-2' => 0x1eb9, '3-1' => 0x1ee0, '1-1' => 0x1f11, '1-3' => 0x1f2f, '5-3' => 0x1f2f,
@@ -67,176 +66,18 @@ $enemydataoffsets = [
     'underground-bonus' => 0x2143,
 ];
 
-$enemy_data_offsets_for_shuffling = [
-    '1-4 6-4' => 0x1d80, '4-4' => 0x1da7, '2-4 5-4' => 0x1dc0, '3-4' => 0x1def, '7-4' => 0x1e1a, '8-4' => 0x1e2f,
-    '3-3' => 0x1e69, '8-3' => 0x1e8e, '4-1' => 0x1eab, '6-2' => 0x1eb9, '3-1' => 0x1ee0, '1-1' => 0x1f11, '1-3 5-3' => 0x1f2f,
-    '2-3 7-3' => 0x1f4c, '2-1' => 0x1f61, '5-1' => 0x1f8c, '4-3' => 0x1fb9, '6-3' => 0x1fde, '6-1' => 0x2001, '8-1' => 0x200b,
-    '5-2' => 0x2045, '8-2' => 0x2070, '7-1' => 0x209e, '3-2' => 0x20c3, '1-2' => 0x20e8, '4-2' => 0x2115, '2-2 7-2' => 0x2181,
-];
+/* $enemy_data_offsets_for_shuffling = [
+'1-4 6-4' => 0x1d80, '4-4' => 0x1da7, '2-4 5-4' => 0x1dc0, '3-4' => 0x1def, '7-4' => 0x1e1a, '8-4' => 0x1e2f,
+'3-3' => 0x1e69, '8-3' => 0x1e8e, '4-1' => 0x1eab, '6-2' => 0x1eb9, '3-1' => 0x1ee0, '1-1' => 0x1f11, '1-3 5-3' => 0x1f2f,
+'2-3 7-3' => 0x1f4c, '2-1' => 0x1f61, '5-1' => 0x1f8c, '4-3' => 0x1fb9, '6-3' => 0x1fde, '6-1' => 0x2001, '8-1' => 0x200b,
+'5-2' => 0x2045, '8-2' => 0x2070, '7-1' => 0x209e, '3-2' => 0x20c3, '1-2' => 0x20e8, '4-2' => 0x2115, '2-2 7-2' => 0x2181,
+]; */
 
-$dont_randomize = [
-    new Enemy('Bowser'),
-    new Enemy('Lift (Balance)'),
-    new Enemy('Lift (Down Up)'),
-    new Enemy('Lift (Up)'),
-    new Enemy('Lift (Down)'),
-    new Enemy('Lift (Left Right)'),
-    new Enemy('Lift (Fall)'),
-    new Enemy('Lift (Right)'),
-    new Enemy('Short Lift (Up)'),
-    new Enemy('Short Lift (Down)'),
-    new Enemy('Warp Zone'),
-];
-
-$full_enemy_pool = [
-    new Enemy('Green Koopa Troopa'),
-    new Enemy('Red Koopa Troopa (walks off floors)'),
-    new Enemy('Buzzy Beetle'),
-    new Enemy('Red Koopa Troopa (stays on floors)'),
-    new Enemy('Green Koopa Troopa (does not move)'),
-    new Enemy('Hammer Bro'),
-    new Enemy('Goomba'),
-    new Enemy('Blooper'),
-    new Enemy('Bullet Bill'),
-    new Enemy('Yellow Koopa Paratroopa (does not move)'),
-    new Enemy('Green Cheep-Cheep (slow)'),
-    new Enemy('Red Cheep-Cheep (fast)'),
-    new Enemy('Podoboo'),
-    new Enemy('Pirhana Plant'),
-    new Enemy('Green Koopa Paratroopa (leaping)'),
-    new Enemy('Red Koopa Troopa (down then up)'),
-    new Enemy('Green Koopa Troopa (left then right)'),
-    new Enemy('Lakitu'),
-    new Enemy('Red Flying Cheep-Cheep Generator'),
-    new Enemy('Bowser Fire Generator'),
-    new Enemy('Bullet Bill/Cheep-Cheep Generator'),
-    new Enemy('Fire Bar (Clockwise)'),
-    new Enemy('Fast Fire Bar (Clockwise)'),
-    new Enemy('Fire Bar (Counter-Clockwise)'),
-    new Enemy('Fast Fire Bar (Counter-Clockwise)'),
-    new Enemy('Long Fire Bar (Clockwise)'),
-    new Enemy('Bowser'),
-    new Enemy('2 Goombas V10'),
-    new Enemy('3 Goombas V10'),
-    new Enemy('2 Goombas V6'),
-    new Enemy('3 Goombas V6'),
-    new Enemy('2 Green Koopa Troopas V10'),
-    new Enemy('3 Green Koopa Troopas V10'),
-    new Enemy('2 Green Koopa Troopas V6'),
-    new Enemy('3 Green Koopa Troopas V6'),
-];
-
-$reasonable_enemy_pool = [
-    new Enemy('Green Koopa Troopa'),
-    new Enemy('Red Koopa Troopa (walks off floors)'),
-    new Enemy('Buzzy Beetle'),
-    new Enemy('Red Koopa Troopa (stays on floors)'),
-    new Enemy('Green Koopa Troopa (does not move)'),
-    new Enemy('Hammer Bro'),
-    new Enemy('Goomba'),
-    new Enemy('Blooper'),
-    new Enemy('Bullet Bill'),
-    new Enemy('Yellow Koopa Paratroopa (does not move)'),
-    new Enemy('Green Cheep-Cheep (slow)'),
-    new Enemy('Red Cheep-Cheep (fast)'),
-    new Enemy('Podoboo'),
-    new Enemy('Pirhana Plant'),
-    new Enemy('Green Koopa Paratroopa (leaping)'),
-    new Enemy('Red Koopa Troopa (down then up)'),
-    new Enemy('Green Koopa Troopa (left then right)'),
-    new Enemy('Lakitu'),
-    new Enemy('Bowser Fire Generator'),
-    new Enemy('Bullet Bill/Cheep-Cheep Generator'),
-    new Enemy('Fire Bar (Clockwise)'),
-    new Enemy('Fast Fire Bar (Clockwise)'),
-    new Enemy('Fire Bar (Counter-Clockwise)'),
-    new Enemy('Fast Fire Bar (Counter-Clockwise)'),
-    new Enemy('Long Fire Bar (Clockwise)'),
-    new Enemy('2 Goombas V10'),
-    new Enemy('3 Goombas V10'),
-    new Enemy('2 Goombas V6'),
-    new Enemy('3 Goombas V6'),
-    new Enemy('2 Green Koopa Troopas V10'),
-    new Enemy('3 Green Koopa Troopas V10'),
-    new Enemy('2 Green Koopa Troopas V6'),
-    new Enemy('3 Green Koopa Troopas V6'),
-];
-
-//  TODO: rework pools! add to- and from-pools!
-
-$toad_pool = [
-    new Enemy('Toad'),
-    new Enemy('Lakitu'),
-    new Enemy('Podoboo'),
-    new Enemy('Hammer Bro'),
-    //new Enemy('Pirhana Plant'), coord = 0x9B
-    //new Enemy('Green Cheep-Cheep (slow)'), coord = 0x98
-    //new Enemy('Red Cheep-Cheep (fast)'), coord 0x98
-];
-
-$generator_pool = [
-    new Enemy('Red Flying Cheep-Cheep Generator'),
-    new Enemy('Bowser Fire Generator'),
-    new Enemy('Bullet Bill/Cheep-Cheep Generator'),
-];
-
-$firebar_pool = [
-    new Enemy('Fire Bar (Clockwise)'),
-    new Enemy('Fast Fire Bar (Clockwise)'),
-    new Enemy('Fire Bar (Counter-Clockwise)'),
-    new Enemy('Fast Fire Bar (Counter-Clockwise)'),
-    new Enemy('Long Fire Bar (Clockwise)'),
-    new Enemy('Podoboo'),
-];
-
-$koopa_pool = [
-    new Enemy('Green Koopa Troopa'),
-    new Enemy('Red Koopa Troopa (walks off floors)'),
-    new Enemy('Red Koopa Troopa (stays on floors)'),
-    new Enemy('Green Koopa Troopa (does not move)'),
-    new Enemy('Yellow Koopa Paratroopa (does not move)'),
-    new Enemy('Green Koopa Paratroopa (leaping)'),
-    new Enemy('Red Koopa Troopa (down then up)'),
-    new Enemy('Green Koopa Troopa (left then right)'),
-    new Enemy('2 Green Koopa Troopas V10'),
-    new Enemy('3 Green Koopa Troopas V10'),
-    new Enemy('2 Green Koopa Troopas V6'),
-    new Enemy('3 Green Koopa Troopas V6'),
-    new Enemy('Buzzy Beetle'),
-    new Enemy('Hammer Bro'),
-    new Enemy('Blooper'),
-];
-
-$goomba_pool = [
-    new Enemy('Goomba'),
-    new Enemy('2 Goombas V10'),
-    new Enemy('3 Goombas V10'),
-    new Enemy('2 Goombas V6'),
-    new Enemy('3 Goombas V6'),
-    new Enemy('Buzzy Beetle'),
-    new Enemy('Hammer Bro'),
-    new Enemy('Blooper'),
-];
-
-$lakitu_pool = [
-    new Enemy('Lakitu'),
-    new Enemy('Lakitu'),
-    new Enemy('Podoboo'),
-    new Enemy('Green Koopa Paratroopa (leaping)'),
-    new Enemy('Green Koopa Troopa (left then right)'),
-    new Enemy('Lakitu'),
-    new Enemy('2 Green Koopa Troopas V10'),
-    new Enemy('3 Green Koopa Troopas V10'),
-    new Enemy('2 Green Koopa Troopas V6'),
-    new Enemy('3 Green Koopa Troopas V6'),
-    new Enemy('Lakitu'),
-];
-
-$dont_use = [ new Enemy('Spiny') ];
-
-class Enemy {
+class Enemy
+{
     public $num;
-    public function __construct($name) {
+    public function __construct($name)
+    {
         global $enemy;
         $this->num = $enemy[$name];
     }
