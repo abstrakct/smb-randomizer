@@ -191,7 +191,7 @@ class Randomizer
                     $o = $data[$i + 1] & 0b00111111; // this is the enemy
                     /* Some enemies can't be randomized, so let's check for those */
                     foreach ($this->enemy_pools->dont_randomize as $nope) {
-                        if ($o == $nope->num) {
+                        if ($o == $nope) {
                             $do_randomize = false;
                         }
                     }
@@ -200,14 +200,14 @@ class Randomizer
                         if (mt_rand(1, 100) <= $percentage) {
                             if ($o == Enemy::get('Toad')) {
                                 $z = count($this->enemy_pools->toad_pool);
-                                $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)]->num;
+                                $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
                                 $newcoord = 0x98;
                                 $game->addData($offset + $i, pack('C*', $newcoord));
                             } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
                                 // TODO: should Bowser Fire Generator be included in this?
-                                $newo = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)]->num;
+                                $newo = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
                             } else {
-                                $newo = $this->enemy_pools->reasonable_enemy_pool[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool) - 1)]->num;
+                                $newo = $this->enemy_pools->reasonable_enemy_pool[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool) - 1)];
                             }
 
                             $newdata = (($data[$i + 1] & 0b10000000) | ($data[$i + 1] & 0b01000000)) | $newo;
@@ -271,7 +271,7 @@ class Randomizer
 
                             /* Some enemies can't be randomized, so let's check for those */
                             foreach ($this->enemy_pools->dont_randomize as $nope) {
-                                if ($o == $nope->num) {
+                                if ($o == $nope) {
                                     $do_randomize = false;
                                 }
                             }
@@ -281,19 +281,19 @@ class Randomizer
                                 if (mt_rand(1, 100) <= $percentage) {
                                     if ($o == Enemy::get('Toad')) {
                                         $z = count($this->enemy_pools->toad_pool);
-                                        $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)]->num;
+                                        $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
                                         $newcoord = 0x98;
                                         $game->addData($level->enemy_data_offset + $i, pack('C*', $newcoord));
                                     } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
-                                        $newo = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)]->num;
+                                        $newo = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
                                     } else if (enemyIsInPool($o, $this->enemy_pools->goomba_pool)) {
-                                        $newo = $this->enemy_pools->goomba_pool[mt_rand(0, count($this->enemy_pools->goomba_pool) - 1)]->num;
+                                        $newo = $this->enemy_pools->goomba_pool[mt_rand(0, count($this->enemy_pools->goomba_pool) - 1)];
                                     } else if (enemyIsInPool($o, $this->enemy_pools->koopa_pool)) {
-                                        $newo = $this->enemy_pools->koopa_pool[mt_rand(0, count($this->enemy_pools->koopa_pool) - 1)]->num;
+                                        $newo = $this->enemy_pools->koopa_pool[mt_rand(0, count($this->enemy_pools->koopa_pool) - 1)];
                                     } else if (enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
-                                        $newo = $this->enemy_pools->firebar_pool[mt_rand(0, count($this->enemy_pools->firebar_pool) - 1)]->num;
+                                        $newo = $this->enemy_pools->firebar_pool[mt_rand(0, count($this->enemy_pools->firebar_pool) - 1)];
                                     } else if ($o == Enemy::get("Lakitu")) {
-                                        $newo = $this->enemy_pools->lakitu_pool[mt_rand(0, count($this->enemy_pools->lakitu_pool) - 1)]->num;
+                                        $newo = $this->enemy_pools->lakitu_pool[mt_rand(0, count($this->enemy_pools->lakitu_pool) - 1)];
                                     }
 
                                     $newdata = (($data[$i + 1] & 0b10000000) | ($data[$i + 1] & 0b01000000)) | $newo;
