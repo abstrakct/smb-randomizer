@@ -665,19 +665,16 @@ class Randomizer
         }
     }
 
-    public function setTextRando(Game &$game)
-    {
-        $this->log->write("Changing Texts\n");
-        $game->addData(0x09fb5, pack('C*', $this->trans->asciitosmb('H')));
-        $game->addData(0x09fb6, pack('C*', $this->trans->asciitosmb('A')));
-        $game->addData(0x09fb7, pack('C*', $this->trans->asciitosmb('S')));
-        $game->addData(0x09fb8, pack('C*', $this->trans->asciitosmb('H')));
-        $game->addData(0x09fb9, pack('C*', $this->trans->asciitosmb(' ')));
-        $game->addData(0x09fba, pack('C*', $this->trans->asciitosmb(' ')));
-    }
-
     public function setTextSeedhash(string $text, Game &$game)
     {
+        $offset = 0x9fa5;
+        $this->log->write("Writing Seedhash on title screen\n");
+
+        $game->addData($offset, pack('C*', $this->trans->asciitosmb('H')));
+        $game->addData($offset + 1, pack('C*', $this->trans->asciitosmb('A')));
+        $game->addData($offset + 2, pack('C*', $this->trans->asciitosmb('S')));
+        $game->addData($offset + 3, pack('C*', $this->trans->asciitosmb('H')));
+        $game->addData($offset + 4, pack('C*', $this->trans->asciitosmb(' ')));
         /*
          * Write the first 8 characters of the seedhash on title screen.
          * TODO: move to diff. location
@@ -685,7 +682,7 @@ class Randomizer
          * DONE: there is, but no good sprites it seems......
          */
         for ($i = 0; $i < 8; $i++) {
-            $game->addData(0x09fbb + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
+            $game->addData($offset + 5 + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
         }
     }
 
@@ -870,8 +867,7 @@ class Randomizer
         // Fix Midway Points
         $this->fixMidwayPoints($game);
 
-        // Set texts
-        $this->setTextRando($game);
+        // Set seedhash text
         $this->setTextSeedhash($this->seedhash, $game);
 
         // Shuffle texts
