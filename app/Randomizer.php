@@ -199,9 +199,8 @@ class Randomizer
                         $newdata = 0;
                         if (mt_rand(1, 100) <= $percentage) {
                             if ($o == Enemy::get('Toad')) {
-                                $z = count($this->enemy_pools->toad_pool);
                                 $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                $newcoord = 0x98;
+                                $newcoord = 0xb8;
                                 $game->addData($offset + $i, pack('C*', $newcoord));
                             } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
                                 // TODO: should Bowser Fire Generator be included in this?
@@ -221,6 +220,7 @@ class Randomizer
 
     public function randomizeEnemies(&$game)
     {
+        $this->log->write("Randomizing enemies!\n");
         $vanilla = new VanillaLevels();
         foreach ($vanilla->level as $level) {
             if ($level->enemy_data_offset > 0x0000) {
@@ -241,7 +241,6 @@ class Randomizer
 
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
-                $this->log->write("Randomizing enemies in level " . $level->name . "\n");
                 $end = 0;
                 if ($level->enemy_data_offset == 0x0000) {
                     break;
