@@ -10,7 +10,6 @@
 
 /*
  *
- * PRETTY SURE THIS IS FIXED: BUG: SOMETHING IS WRONG WITH THE PIPE POINTERS!!!!!!!!!????????????
  *
  * TODO: Check this: DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
  *      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
@@ -26,7 +25,6 @@
  * TODO: disappearing trampolines
  * TODO: disappearing powerup blocks sometimes - might be related to stuff around line 5860 in disasm
  * TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
- * TODO: randomize x pos of Toad/substitute Toad? To prevent Mario getting hit by a hammer bro or something after defeating Bowser.
  * TODO: option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
  * TODO: option to not randomize texts
  * TODO: keep randomized texts independent of game seed? or make it an option?
@@ -52,6 +50,7 @@
  * DONE: Randomize Bowser's abilities? like hammers etc.?
  *       - we could change the code which selects bowser's abilities based on which world you're in
  * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
+ * DONE: change x pos of Toad/substitute Toad? To prevent Mario getting hit by a hammer bro or something after defeating Bowser.
  *
  * NOTES
  * - Sometimes enemies "hide" behind scenery.

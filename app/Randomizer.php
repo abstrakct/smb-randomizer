@@ -13,6 +13,7 @@
 
 use SMBR\Game;
 use SMBR\ItemPools;
+use SMBR\Level;
 use SMBR\Translator;
 
 // TODO: move these somewhere better!
@@ -218,22 +219,8 @@ class Randomizer
         }
     }
 
-    public function randomizeEnemies(&$game)
-    {
-        $this->log->write("Randomizing enemies!\n");
-        $vanilla = new VanillaLevels();
-        foreach ($vanilla->level as $level) {
-            if ($level->enemy_data_offset > 0x0000) {
-                $m = "Randomizing enemies on level " . $level->name . "\n";
-                $this->log->write($m);
-                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game);
-            }
-        }
-    }
-
     public function randomizeEnemiesInPools(&$game)
     {
-        global $enemy;
         $this->log->write("Randomizing enemies in pools!\n");
         $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
         // TODO: change percentage based on settings/flags/something.
@@ -306,6 +293,19 @@ class Randomizer
         }
     }
 
+    public function randomizeEnemies(&$game)
+    {
+        $this->log->write("Randomizing enemies!\n");
+        $vanilla = Level::all();
+        foreach ($vanilla as $level) {
+            if ($level->enemy_data_offset > 0x0000) {
+                $m = "Randomizing enemies on level " . $level->name . "\n";
+                $this->log->write($m);
+                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game);
+            }
+        }
+    }
+
     public function randomizeBlocks(Game &$game, $frompool, $topool)
     {
         $this->log->write("Randomizing blocks!\n");
@@ -357,7 +357,6 @@ class Randomizer
      */
     public function shuffleAllLevels(&$game)
     {
-        $vanilla = new VanillaLevels();
         $all_levels = ['1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4', '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3'];
 
         $this->log->write("Shuffling ALL levels\n");
@@ -372,8 +371,8 @@ class Randomizer
         // TODO: reduce code duplication!
         if ($this->options['pipe-transitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
-                $game->worlds[$worldindex]->levels[$levelindex] = $vanilla->level[$shuffledlevels[$shuffleindex]];
-                if ($vanilla->level[$shuffledlevels[$shuffleindex]]->map >= 0x60 and $vanilla->level[$shuffledlevels[$shuffleindex]]->map <= 0x65) {
+                $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
+                if (Level::get($shuffledlevels[$shuffleindex])->map >= 0x60 and Level::get($shuffledlevels[$shuffleindex])->map <= 0x65) {
                     // it's a castle, so increase the world index and reset the level index
                     $worldindex++;
                     if ($worldindex > 8) {
@@ -386,13 +385,13 @@ class Randomizer
                 $levelindex++;
                 $shuffleindex++;
             }
-            $game->worlds[8]->levels[$lastlevelindex + 1] = $vanilla->level['8-4'];
+            $game->worlds[8]->levels[$lastlevelindex + 1] = Level::get('8-4');
         } else if ($this->options['pipe-transitions'] == 'keep') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
-                $game->worlds[$worldindex]->levels[$levelindex] = $vanilla->level[$shuffledlevels[$shuffleindex]];
+                $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $levelindex++;
 
-                if ($vanilla->level[$shuffledlevels[$shuffleindex]]->map >= 0x60 and $vanilla->level[$shuffledlevels[$shuffleindex]]->map <= 0x65) {
+                if (Level::get($shuffledlevels[$shuffleindex])->map >= 0x60 and Level::get($shuffledlevels[$shuffleindex])->map <= 0x65) {
                     // it's a castle, so increase the world index and reset the level index
                     $worldindex++;
                     if ($worldindex > 8) {
@@ -403,8 +402,8 @@ class Randomizer
                 }
 
                 if ($shuffleindex < 30) {
-                    if (in_array($vanilla->level[$shuffledlevels[$shuffleindex + 1]]->map, [$vanilla->level['1-2']->map, $vanilla->level['2-2']->map, $vanilla->level['4-2']->map])) {
-                        $game->worlds[$worldindex]->levels[$levelindex] = $vanilla->level['Pipe Transition'];
+                    if (in_array(Level::get($shuffledlevels[$shuffleindex + 1])->map, [Level::get('1-2')->map, Level::get('2-2')->map, Level::get('4-2')->map])) {
+                        $game->worlds[$worldindex]->levels[$levelindex] = Level::get('Pipe Transition');
                     }
                 }
 
@@ -412,7 +411,7 @@ class Randomizer
                 $shuffleindex++;
             }
             $lastlevelindex = count($game->worlds[8]->levels) + 2;
-            $game->worlds[8]->levels[$lastlevelindex] = $vanilla->level['8-4'];
+            $game->worlds[8]->levels[$lastlevelindex] = Level::get('8-4');
         }
     }
 
@@ -488,7 +487,6 @@ class Randomizer
      */
     public function shuffleLevelsWithNormalWorldLength(&$game)
     {
-        global $vanilla_level;
         $levels = ['1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3'];
         $castles = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4'];
 
@@ -503,16 +501,16 @@ class Randomizer
             $castleindex = 0;
             for ($w = 1; $w <= 8; $w++) {
                 for ($i = 0; $i < 3; $i++) {
-                    $game->worlds[$w]->levels[$i] = $vanilla_level[$shuffledlevels[$levelindex]];
+                    $game->worlds[$w]->levels[$i] = Level::get($shuffledlevels[$levelindex]);
                     $levelindex++;
                 }
                 if ($castleindex < 7) {
-                    $game->worlds[$w]->levels[3] = $vanilla_level[$shuffledcastles[$castleindex]];
+                    $game->worlds[$w]->levels[3] = Level::get($shuffledcastles[$castleindex]);
                 }
 
                 $castleindex++;
             }
-            $game->worlds[8]->levels[3] = $vanilla_level['8-4'];
+            $game->worlds[8]->levels[3] = Level::get('8-4');
         } else if ($this->options['pipe-transitions'] == 'keep') {
             // TODO: implement this.
             // Probably needs a better structure where we can insert a level in between others!
