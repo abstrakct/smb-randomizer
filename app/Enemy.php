@@ -22,10 +22,12 @@
 '5-2' => 0x2045, '8-2' => 0x2070, '7-1' => 0x209e, '3-2' => 0x20c3, '1-2' => 0x20e8, '4-2' => 0x2115, '2-2 7-2' => 0x2181,
 ]; */
 
+// TODO: FIX ENEMY DATA! This is absolutely terrible!
+
 class Enemy
 {
     public $num;
-    private $enemy = [
+    private static $enemy = [
         'Green Koopa Troopa' => 0x00,
         'Red Koopa Troopa (walks off floors)' => 0x01,
         'Buzzy Beetle' => 0x02,
@@ -78,7 +80,12 @@ class Enemy
 
     public function __construct($name)
     {
-        global $enemy;
-        $this->num = $this->enemy[$name];
+        $this->num = self::$enemy[$name];
+    }
+
+    // Simple fix for now - we should structure enemy data better!
+    public static function get($name)
+    {
+        return self::$enemy[$name];
     }
 }

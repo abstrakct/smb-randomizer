@@ -59,7 +59,6 @@
  *
  *
  *
- * HASH = 11 0A 1C 11
  * offset = 0x9fd6  (overwrites "2 PLAYER GAME")
  */
 

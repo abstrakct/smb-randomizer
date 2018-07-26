@@ -164,8 +164,6 @@ class Randomizer
     // TODO: improve enemy shuffling in general! the code is a bit messy.
     public function randomizeEnemiesOnLevel($offset, Game &$game)
     {
-        global $enemy;
-
         $end = 0;
         $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
         // TODO: change percentage based on settings/flags/something.
@@ -200,12 +198,12 @@ class Randomizer
                     if ($do_randomize) {
                         $newdata = 0;
                         if (mt_rand(1, 100) <= $percentage) {
-                            if ($o == $enemy['Toad']) {
+                            if ($o == Enemy::get('Toad')) {
                                 $z = count($this->enemy_pools->toad_pool);
                                 $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)]->num;
                                 $newcoord = 0x98;
                                 $game->addData($offset + $i, pack('C*', $newcoord));
-                            } else if ($o == $enemy['Bowser Fire Generator'] or $o == $enemy['Red Flying Cheep-Cheep Generator'] or $o == $enemy['Bullet Bill/Cheep-Cheep Generator']) {
+                            } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
                                 // TODO: should Bowser Fire Generator be included in this?
                                 $newo = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)]->num;
                             } else {
@@ -281,7 +279,7 @@ class Randomizer
                             if ($do_randomize) {
                                 $newdata = 0;
                                 if (mt_rand(1, 100) <= $percentage) {
-                                    if ($o == $enemy['Toad']) {
+                                    if ($o == Enemy::get('Toad')) {
                                         $z = count($this->enemy_pools->toad_pool);
                                         $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)]->num;
                                         $newcoord = 0x98;
@@ -294,7 +292,7 @@ class Randomizer
                                         $newo = $this->enemy_pools->koopa_pool[mt_rand(0, count($this->enemy_pools->koopa_pool) - 1)]->num;
                                     } else if (enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
                                         $newo = $this->enemy_pools->firebar_pool[mt_rand(0, count($this->enemy_pools->firebar_pool) - 1)]->num;
-                                    } else if ($o == $enemy["Lakitu"]) {
+                                    } else if ($o == Enemy::get("Lakitu")) {
                                         $newo = $this->enemy_pools->lakitu_pool[mt_rand(0, count($this->enemy_pools->lakitu_pool) - 1)]->num;
                                     }
 
