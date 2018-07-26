@@ -624,7 +624,7 @@ class Randomizer
         }
 
         $this->log->write("Player starting lives: " . $new_lives . "\n");
-        $game->addData(StartingLivesOffset, pack('C*', $new_lives));
+        $game->addData(StartingLivesOffset, pack('C*', $new_lives - 1));
     }
 
     public function fixPipes(Game &$game)
@@ -767,7 +767,12 @@ class Randomizer
         $this->flags[3] = $this->options['enemies'][12];
         $this->flags[4] = $this->options['blocks'][10];
         $this->flags[5] = $this->options['bowser-abilities'][3];
-        $this->flags[6] = $this->options['bowser-hitpoints'][3];
+        $this->flags[6] = $this->options['bowser-hitpoints'][0];
+        $this->flags[6]++;
+        $this->flags[7] = $this->options['starting-lives'][0];
+        $this->flags[7]++;
+        $this->flags[7]++;
+
         $s = implode("", $this->flags);
         $f = strtoupper($s);
         if ($this->options["webmode"]) {
@@ -803,8 +808,8 @@ class Randomizer
 
     public function setSeed(int $rng_seed = null)
     {
-        $rng_seed = $rng_seed ?: random_int(1, 999999999); // cryptographic pRNG for seeding
-        $this->rng_seed = $rng_seed % 1000000000;
+        $rng_seed = $rng_seed ?: random_int(1, 9999999999); // cryptographic pRNG for seeding
+        $this->rng_seed = $rng_seed % 10000000000;
         mt_srand($this->rng_seed);
     }
 
