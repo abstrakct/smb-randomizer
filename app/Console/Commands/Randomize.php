@@ -35,8 +35,6 @@ class Randomize extends Command
 
     protected $description = 'Generate a randomized ROM';
 
-    protected $smbrOptions = [];
-
     /**
      * Create a new command instance.
      *
@@ -64,11 +62,20 @@ class Randomize extends Command
             return $this->error('Output directory is not writeable.');
         }
 
-        // MOVE HERE smbrMain($this->argument('input_file'));
-        $this->do_the_randomizer($this->argument('input_file'), $this->argument('output_dir'), $this->option());
+        $smbrOptions['pipe-transitions'] = $this->option('pipe-transitions');
+        $smbrOptions['shuffle-levels'] = $this->option('shuffle-levels');
+        $smbrOptions['normal-world-length'] = $this->option('normal-world-length');
+        $smbrOptions['enemies'] = $this->option('enemies');
+        $smbrOptions['blocks'] = $this->option('blocks');
+        $smbrOptions['bowser-abilities'] = $this->option('bowser-abilities');
+        $smbrOptions['bowser-hitpoints'] = $this->option('bowser-hitpoints');
+        $smbrOptions['mariocolors'] = $this->option('mariocolors');
+        $smbrOptions['luigicolors'] = $this->option('luigicolors');
+        $smbrOptions['firecolors'] = $this->option('firecolors');
+        $this->do_the_randomizer($this->argument('input_file'), $this->argument('output_dir'), $this->option('seed'), $smbrOptions);
     }
 
-    public function do_the_randomizer($input_file, $output_dir, $options)
+    public function do_the_randomizer($input_file, $output_dir, $seed, $options)
     {
         $log = null;
 
@@ -109,7 +116,7 @@ class Randomize extends Command
         print("\n");
 
         // if seed == null a random seed will be chosen, else it will use the user's chosen seed.
-        $rando = new Randomizer($options['seed'], $options, $rom);
+        $rando = new Randomizer($seed, $options, $rom);
 
         $rando->setSeed($rando->getSeed());
         $rando->makeFlags();
