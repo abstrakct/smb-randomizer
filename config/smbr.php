@@ -68,6 +68,14 @@ return [
             'easy' => 'Bowser has 1-5 hitpoints',
             'medium' => 'Bowser has 5-10 hitpoints',
             'hard' => 'Bowser has 10-20 hitpoints',
+            'random' => 'Bowser has 1-20 hitpoints',
+        ],
+        'starting-lives' => [
+            'normal' => 'Start with 3 lives',
+            'easy' => 'Start with 6-10 lives',
+            'medium' => 'Start with 3-6 lives',
+            'hard' => 'Start with 1-3 lives',
+            'random' => 'Start with 1-19 lives',
         ],
     ],
 ];

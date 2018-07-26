@@ -21,6 +21,7 @@ const HammerTimeOffset = 0x512b;
 const HammerTimeOffset2 = 0x5161;
 const FireTimeOffset = 0x515d;
 const BowserHPOffset = 0x457c;
+const StartingLivesOffset = 0x107a;
 
 function enemyIsInPool($o, $pool)
 {
@@ -46,7 +47,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.8";
+    const VERSION = "0.8.2";
 
     /**
      * Create a new randomizer.
@@ -594,6 +595,8 @@ class Randomizer
             $new_hitpoints = mt_rand(5, 10);
         } else if ($this->options['bowser-hitpoints'] == "hard") {
             $new_hitpoints = mt_rand(10, 20);
+        } else if ($this->options['bowser-hitpoints'] == "random") {
+            $new_hitpoints = mt_rand(1, 20);
         } else {
             echo "Invalid value for option Bowser Hitpoints!";
             exit(1);
@@ -601,6 +604,27 @@ class Randomizer
 
         $this->log->write("Bowser's hitpoints: " . $new_hitpoints . "\n");
         $game->addData(BowserHPOffset, pack('C*', $new_hitpoints));
+    }
+
+    public function randomizeStartingLives(&$game)
+    {
+        $this->log->write("Randomizing player's starting lives.\n");
+
+        if ($this->options['starting-lives'] == "easy") {
+            $new_lives = mt_rand(7, 10);
+        } else if ($this->options['starting-lives'] == "medium") {
+            $new_lives = mt_rand(4, 6);
+        } else if ($this->options['starting-lives'] == "hard") {
+            $new_lives = mt_rand(1, 3);
+        } else if ($this->options['starting-lives'] == "random") {
+            $new_lives = mt_rand(1, 19);
+        } else {
+            echo "Invalid value for option Starting Lives!";
+            exit(1);
+        }
+
+        $this->log->write("Player starting lives: " . $new_lives . "\n");
+        $game->addData(StartingLivesOffset, pack('C*', $new_lives));
     }
 
     public function fixPipes(Game &$game)
@@ -854,6 +878,11 @@ class Randomizer
         // Randomize Bowser's Hitpoints
         if ($this->options['bowser-hitpoints'] != "normal") {
             $this->randomizeBowserHitpoints($game);
+        }
+
+        // Randomize player's starting lives
+        if ($this->options['starting-lives'] != "normal") {
+            $this->randomizeStartingLives($game);
         }
 
         // Fix Pipes

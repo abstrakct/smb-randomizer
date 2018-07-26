@@ -14,6 +14,7 @@
  * TODO: Check this: DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
  *      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
  *
+ * TODO: Option to randomize number of starting lives.
  * TODO: Randomize where pipes lead to?
  * TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!
  * TODO: Option to randomize music? (line 2790 in disasm)
