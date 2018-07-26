@@ -1,11 +1,13 @@
 <?php namespace SMBR;
 
-class Colorscheme {
+class Colorscheme
+{
     public $outer;
     public $skin;
     public $inner;
 
-    public function __construct($outer, $skin, $inner) {
+    public function __construct($outer, $skin, $inner)
+    {
         $this->outer = $outer;
         $this->skin = $skin;
         $this->inner = $inner;
@@ -22,4 +24,5 @@ $colorschemes = [
     'Black & Blue' => new Colorscheme(0xcc, 0x18, 0x2f),
     'Black & Blue 2' => new Colorscheme(0x51, 0xf8, 0x6e),
     'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
+    'Mustard Man' => new Colorscheme(0xd8, 0x27, 0x28),
 ];

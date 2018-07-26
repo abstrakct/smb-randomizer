@@ -1,7 +1,5 @@
 <?php namespace SMBR;
 
-use SMBR\Game;
-
 /*
  *
  * Sources used:
@@ -12,7 +10,7 @@ use SMBR\Game;
 
 /*
  *
- * BUG: SOMETHING IS WRONG WITH THE PIPE POINTERS!!!!!!!!!????????????
+ * PRETTY SURE THIS IS FIXED: BUG: SOMETHING IS WRONG WITH THE PIPE POINTERS!!!!!!!!!????????????
  *
  * TODO: Check this: DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
  *      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
@@ -33,6 +31,7 @@ use SMBR\Game;
  * TODO: option to not randomize texts
  * TODO: keep randomized texts independent of game seed? or make it an option?
  * TODO: option to keep castles in vanilla order?
+ * TODO: no level shuffle + remove pipe transitions combo does not remove pipe transitions. can be fixed.
  * TODO: randomize enemies in pools better! from-/to-pools
  * TODO: check that all options are set to a valid value!
  * TODO: disasm line  1084: change demo action data in order to not spoil first level??  offset 0x350 in rom, length 20 bytes
@@ -43,6 +42,9 @@ use SMBR\Game;
  * TODO: disasm line  8698: enemy frenzy thing that checks for world 2 - should be changed??
  * TODO: disasm line 11440: it's possible/easy(?) to change which enemies can be stomped and not!
  * TODO: disasm line 13475: it's possible/easy(?) to change the appearance of a powerup!!!    NOPE DOESN'T WORK (sprites get weird)
+ * TODO: A way to let individual options not change other aspects of randomization?!
+ *       So that if you e.g. generate a new rom with the same seed, but enemy randomization turned off, all other aspects should be the same as before.
+ *       Might be done by creating individual seeds for each aspect at the start of the program.
  *
  * for power up shuffling - options:
  * DONE - only power ups are random (flower, star, 1 up)
@@ -54,14 +56,12 @@ use SMBR\Game;
  * NOTES
  * - Sometimes enemies "hide" behind scenery.
  *
- * 
+ *
  *
  *
  * HASH = 11 0A 1C 11
  * offset = 0x9fd6  (overwrites "2 PLAYER GAME")
  */
-
-
 
 require_once "Version.php";
 require_once "Enemy.php";
@@ -77,7 +77,7 @@ require_once "Item.php";
 
 $options['Mario Color Scheme'] = "random";
 $options['Luigi Color Scheme'] = "random";
-$options['Fire Color Scheme']  = "random";
+$options['Fire Color Scheme'] = "random";
 /*
  * Pipe Transitions (like the one between 1-1 and 1-2) can be:
  * remove  - just remove them entirely
@@ -92,7 +92,7 @@ $options['Pipe Transitions'] = "remove";
  * all    - shuffle all levels
  * worlds - shuffle only the world order ('Normal World Length' option will be ignored in this case). World 8 will always be last, though.
  *          the 'Pipe Transitions' option works as expected.
- * false  - don't shuffle levels 
+ * false  - don't shuffle levels
  */
 $options['Shuffle Levels'] = "all";
 
@@ -151,24 +151,25 @@ $options['Bowser Hitpoints'] = "hard";
 
 $log = null;
 
-$known_good_hashes = [ "811b027eaf99c2def7b933c5208636de", "673913a23cd612daf5ad32d4085e0760" ];
-$hash_to_filename =  [
+$known_good_hashes = ["811b027eaf99c2def7b933c5208636de", "673913a23cd612daf5ad32d4085e0760"];
+$hash_to_filename = [
     "811b027eaf99c2def7b933c5208636de" => "uploaded_roms/Super Mario Bros. (JU) [!].nes",
-    "673913a23cd612daf5ad32d4085e0760" => "uploaded_roms/Super Mario Bros. (E).nes"
+    "673913a23cd612daf5ad32d4085e0760" => "uploaded_roms/Super Mario Bros. (E).nes",
 ];
 const ROMSIZE = 40976;
 
-function smbrMain($filename, $seed = null, $webmode = false) {
+function smbrMain($filename, $seed = null, $webmode = false)
+{
     global $options, $log;
     //$vanilla = new Game();
     //$vanilla->setVanilla();
     //print_r($vanilla);
     //print(count($vanilla->worlds[1]->levels));
-    
+
     $rom = new Rom($filename);
     $checksum = $rom->getMD5();
     $ok = $rom->checkMD5();
-    
+
     if ($webmode) {
         print("<br><br>SMB RANDOMIZER " . printVersion() . "<br><br>ROM filename: $filename<br>");
         print("MD5 checksum: $checksum");
@@ -190,19 +191,21 @@ function smbrMain($filename, $seed = null, $webmode = false) {
             //TODO: Add checks to see if ROM is usable (check data in various offsets).
         }
     }
-    
+
     print("\n");
-    
+
     // if seed == null a random seed will be chosen, else it will use the user's chosen seed.
-    $rando  = new Randomizer($seed, $options, $rom);
-    
+    $rando = new Randomizer($seed, $options, $rom);
+
     $rando->setSeed($rando->getSeed());
     $rando->makeFlags();
 
     if ($webmode) {
         $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());
-        if (!file_exists($dir))
+        if (!file_exists($dir)) {
             mkdir($dir, 0744);
+        }
+
         $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
         $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
     } else {
@@ -213,19 +216,19 @@ function smbrMain($filename, $seed = null, $webmode = false) {
     // Start the logger
     $log = new Logger($logfilename);
     $rom->setLogger($log);
-    
+
     // Print out the selected options and relevant information
     $rando->printOptions();
-    
+
     // Make the seed a.k.a. this performs the actual randomization!
     $randomized_game = $rando->makeSeed();
-    
+
     // Write all changes (to temporary file)
     $rom->writeGame($randomized_game);
-    
+
     // Save the new ROM file
     $rom->save($outfilename);
-    
+
     // write JSON formatted data to logfile
     $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
     $log->write("\nJSON:\n\n");
@@ -236,10 +239,10 @@ function smbrMain($filename, $seed = null, $webmode = false) {
     //$log->write($randomized_game->prettyprint());
 
     $log->close();
-    
+
     if ($options["webmode"]) {
-        print('<br><br><b>Finished!</b><br><a href="' . $outfilename. '">Click here to download randomized ROM!</a>');
-        print('<br><a href="' . $logfilename. '">Click here to view the log (contains spoilers!)</a>');
+        print('<br><br><b>Finished!</b><br><a href="' . $outfilename . '">Click here to download randomized ROM!</a>');
+        print('<br><a href="' . $logfilename . '">Click here to view the log (contains spoilers!)</a>');
     } else {
         print("\nFinished!\nFilename: $outfilename\n");
     }
@@ -254,7 +257,7 @@ if (php_sapi_name() == "cli") {
         print "Please provide ROM filename.\n";
         exit(1);
     }
-    
+
     if ($argv[1] == "-d") {
         $filename = $argv[2];
         $rom = new Rom($filename);
@@ -262,7 +265,7 @@ if (php_sapi_name() == "cli") {
         exit(0);
     }
 
-    $filename = $argv[1];    
+    $filename = $argv[1];
     if ($argc > 2) {
         $chosenseed = $argv[2];
         smbrMain($filename, $chosenseed);
@@ -271,15 +274,15 @@ if (php_sapi_name() == "cli") {
     }
 } else {
     global $options;
-    ini_set('display_errors',1); 
+    ini_set('display_errors', 1);
     error_reporting(E_ALL);
 
     // First, deal with the ROM file chosen to be uploaded
-    // TODO: MD5 check 
+    // TODO: MD5 check
     $target_dir = "uploaded_roms/";
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
     $uploadOk = 1;
-    $romFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+    $romFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
     $uploadedFileMD5 = hash_file('md5', $_FILES["fileToUpload"]["tmp_name"]);
     $uploadedFileMD5OK = 0;
@@ -294,17 +297,17 @@ if (php_sapi_name() == "cli") {
     //if (file_exists($target_file)) {
     //    $uploadOk = 1;
     //}
-    
+
     if ($_FILES["fileToUpload"]["size"] != ROMSIZE) {
         echo "Sorry, wrong file size.<br>";
         $uploadOk = 0;
     }
-    
+
     if ($romFileType != "nes") {
         echo "Sorry, only NES files are allowed.<br>";
         $uploadOk = 0;
     }
-    
+
     if ($uploadOk == 0) {
         echo "Sorry, your file was not uploaded.<br>";
     } else {
@@ -312,7 +315,7 @@ if (php_sapi_name() == "cli") {
         if (file_exists($target_file) && $uploadedFileMD5OK == 1) {
             echo "File uploaded OK!<br>";
             //echo "filename: $target_file <br>";
-        } 
+        }
 
         if (!file_exists($target_file)) {
             if ($uploadedFileMD5OK == 0) {
@@ -328,72 +331,80 @@ if (php_sapi_name() == "cli") {
             }
         }
     }
-    
+
     // Then the randomization - if everything went ok
     if ($uploadOk == 1) {
         echo "<html><body>";
         echo "Starting the Randomizationing...<br>";
 
-        if ($_POST["shufflelevels"] == "all")
+        if ($_POST["shufflelevels"] == "all") {
             $options['Shuffle Levels'] = "all";
-        else if ($_POST["shufflelevels"] == "worlds")
+        } else if ($_POST["shufflelevels"] == "worlds") {
             $options['Shuffle Levels'] = "worlds";
-        else if ($_POST["shufflelevels"] == "no")
+        } else if ($_POST["shufflelevels"] == "no") {
             $options['Shuffle Levels'] = "false";
+        }
 
-        if ($_POST["normalworldlength"] == "yes")
+        if ($_POST["normalworldlength"] == "yes") {
             $options['Normal World Length'] = "true";
-        else if ($_POST["normalworldlength"] == "no")
+        } else if ($_POST["normalworldlength"] == "no") {
             $options['Normal World Length'] = "false";
+        }
 
         // this part could probably be done simpler, but at the same time I want
         // to make sure the input is exactly what it should be.
-        if ($_POST["pipetransitions"] == "keep")
+        if ($_POST["pipetransitions"] == "keep") {
             $options['Pipe Transitions'] = "keep";
-        else if($_POST["pipetransitions"] == "remove")
+        } else if ($_POST["pipetransitions"] == "remove") {
             $options['Pipe Transitions'] = "remove";
+        }
 
-        if ($_POST["shuffleenemies"] == "full")
+        if ($_POST["shuffleenemies"] == "full") {
             $options['Shuffle Enemies'] = "full";
-        else if($_POST["shuffleenemies"] == "pools")
+        } else if ($_POST["shuffleenemies"] == "pools") {
             $options['Shuffle Enemies'] = "pools";
-        else if($_POST["shuffleenemies"] == "none")
+        } else if ($_POST["shuffleenemies"] == "none") {
             $options['Shuffle Enemies'] = "none";
+        }
 
-        if ($_POST["shuffleblocks"] == "all")
+        if ($_POST["shuffleblocks"] == "all") {
             $options['Shuffle Blocks'] = "all";
-        else if ($_POST["shuffleblocks"] == "powerups")
+        } else if ($_POST["shuffleblocks"] == "powerups") {
             $options['Shuffle Blocks'] = "powerups";
-        else if ($_POST["shuffleblocks"] == "grouped")
+        } else if ($_POST["shuffleblocks"] == "grouped") {
             $options['Shuffle Blocks'] = "grouped";
-        else if ($_POST["shuffleblocks"] == "coins")
+        } else if ($_POST["shuffleblocks"] == "coins") {
             $options['Shuffle Blocks'] = "coins";
-        else if ($_POST["shuffleblocks"] == "none")
+        } else if ($_POST["shuffleblocks"] == "none") {
             $options['Shuffle Blocks'] = "none";
+        }
 
-        if ($_POST["bowserabilities"] == "yes")
+        if ($_POST["bowserabilities"] == "yes") {
             $options['Bowser Abilities'] = "true";
-        else if ($_POST["bowserabilites"] == "no")
+        } else if ($_POST["bowserabilites"] == "no") {
             $options['Bowser Abilities'] = "false";
+        }
 
-        if ($_POST["bowserhitpoints"] == "normal")
+        if ($_POST["bowserhitpoints"] == "normal") {
             $options['Bowser Hitpoints'] = "normal";
-        else if ($_POST["bowserhitpoints"] == "easy")
+        } else if ($_POST["bowserhitpoints"] == "easy") {
             $options['Bowser Hitpoints'] = "easy";
-        else if ($_POST["bowserhitpoints"] == "medium")
+        } else if ($_POST["bowserhitpoints"] == "medium") {
             $options['Bowser Hitpoints'] = "medium";
-        else if ($_POST["bowserhitpoints"] == "hard")
+        } else if ($_POST["bowserhitpoints"] == "hard") {
             $options['Bowser Hitpoints'] = "hard";
+        }
 
         $options["Mario Color Scheme"] = $_POST["mariocolor"];
         $options["Luigi Color Scheme"] = $_POST["luigicolor"];
-        $options["Fire Color Scheme"]  = $_POST["firecolor"];
+        $options["Fire Color Scheme"] = $_POST["firecolor"];
 
         $filename = "Super Mario Bros. (JU) [!].nes";
-        if ($_POST["seed"])
+        if ($_POST["seed"]) {
             $seed = $_POST["seed"];
-        else
+        } else {
             $seed = null;
+        }
 
         $options["webmode"] = true;
         smbrMain($target_file, $seed, true);

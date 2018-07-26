@@ -114,9 +114,9 @@ class Randomizer
             $skin = $colorschemes[$colorscheme]->skin;
             $inner = $colorschemes[$colorscheme]->inner;
         }
-        $this->rom->setMarioInnerColor($inner, $game);
-        $this->rom->setMarioSkinColor($skin, $game);
         $this->rom->setMarioOuterColor($outer, $game);
+        $this->rom->setMarioSkinColor($skin, $game);
+        $this->rom->setMarioInnerColor($inner, $game);
         return $this;
     }
 
@@ -134,9 +134,9 @@ class Randomizer
             $skin = $colorschemes[$colorscheme]->skin;
             $inner = $colorschemes[$colorscheme]->inner;
         }
-        $this->rom->setFireInnerColor($inner, $game);
-        $this->rom->setFireSkinColor($skin, $game);
         $this->rom->setFireOuterColor($outer, $game);
+        $this->rom->setFireSkinColor($skin, $game);
+        $this->rom->setFireInnerColor($inner, $game);
         return $this;
     }
 
@@ -154,16 +154,15 @@ class Randomizer
             $skin = $colorschemes[$colorscheme]->skin;
             $inner = $colorschemes[$colorscheme]->inner;
         }
-        $this->rom->setLuigiInnerColor($inner, $game);
-        $this->rom->setLuigiSkinColor($skin, $game);
         $this->rom->setLuigiOuterColor($outer, $game);
+        $this->rom->setLuigiSkinColor($skin, $game);
+        $this->rom->setLuigiInnerColor($inner, $game);
         return $this;
     }
 
     // improve this - we have enemy data offsets in the level data!
     // TODO: improve enemy shuffling in general! the code is a bit messy.
-    // TODO: the word 'shuffle' is sometimes used incorrectly. FIX
-    public function shuffleEnemiesOnLevel($offset, Game &$game)
+    public function randomizeEnemiesOnLevel($offset, Game &$game)
     {
         global $enemy;
 
@@ -222,28 +221,29 @@ class Randomizer
         }
     }
 
-    public function shuffleEnemies(&$game)
+    public function randomizeEnemies(&$game)
     {
         $vanilla = new VanillaLevels();
         foreach ($vanilla->level as $level) {
             if ($level->enemy_data_offset > 0x0000) {
-                $m = "Shuffling enemies on level " . $level->name . "\n";
+                $m = "Randomizing enemies on level " . $level->name . "\n";
                 $this->log->write($m);
-                $this->shuffleEnemiesOnLevel($level->enemy_data_offset, $game);
+                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game);
             }
         }
     }
 
-    public function shuffleEnemiesInPools(&$game)
+    public function randomizeEnemiesInPools(&$game)
     {
-        $this->log->write("Shuffling enemies in pools!\n");
+        global $enemy;
+        $this->log->write("Randomizing enemies in pools!\n");
         $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
         // TODO: change percentage based on settings/flags/something.
         // TODO: or remove this percentage setting?
 
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
-                $this->log->write("Shuffling enemies in level " . $level->name . "\n");
+                $this->log->write("Randomizing enemies in level " . $level->name . "\n");
                 $end = 0;
                 if ($level->enemy_data_offset == 0x0000) {
                     break;
@@ -282,7 +282,7 @@ class Randomizer
                                 $newdata = 0;
                                 if (mt_rand(1, 100) <= $percentage) {
                                     if ($o == $enemy['Toad']) {
-                                        $z = count($toad_pool);
+                                        $z = count($this->enemy_pools->toad_pool);
                                         $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)]->num;
                                         $newcoord = 0x98;
                                         $game->addData($level->enemy_data_offset + $i, pack('C*', $newcoord));
@@ -834,9 +834,9 @@ class Randomizer
 
         //  Shuffle Enemies
         if ($this->options['enemies'] == "randomize-full") {
-            $this->shuffleEnemies($game);
+            $this->randomizeEnemies($game);
         } else if ($this->options['enemies'] == "randomize-pools") {
-            $this->shuffleEnemiesInPools($game);
+            $this->randomizeEnemiesInPools($game);
         }
 
         // Shuffle Blocks
