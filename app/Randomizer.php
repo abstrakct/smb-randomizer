@@ -553,6 +553,8 @@ class Randomizer
             $new_lives = mt_rand(4, 6);
         } else if ($this->options['starting-lives'] == "hard") {
             $new_lives = mt_rand(1, 3);
+        } else if ($this->options['starting-lives'] == "very-hard") {
+            $new_lives = 1;
         } else if ($this->options['starting-lives'] == "random") {
             $new_lives = mt_rand(1, 19);
         } else {

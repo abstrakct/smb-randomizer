@@ -75,6 +75,7 @@ return [
             'easy' => 'Start with 6-10 lives',
             'medium' => 'Start with 3-6 lives',
             'hard' => 'Start with 1-3 lives',
+            'very-hard' => 'Start with 1 life',
             'random' => 'Start with 1-19 lives',
         ],
         'warp-zones' => [
