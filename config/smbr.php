@@ -77,5 +77,10 @@ return [
             'hard' => 'Start with 1-3 lives',
             'random' => 'Start with 1-19 lives',
         ],
+        'warp-zones' => [
+            'normal' => 'Warp Zones stay as they are in the original game',
+            'random' => 'The destination of warp zone pipes is randomized',
+            'shuffle' => 'There will be one warp pipe to each world, shuffled across the 3 warp zones',
+        ],
     ],
 ];

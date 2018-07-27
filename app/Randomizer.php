@@ -564,6 +564,28 @@ class Randomizer
         $game->addData(StartingLivesOffset, pack('C*', $new_lives - 1));
     }
 
+    public function randomizeWarpZones(&$game)
+    {
+        $offset = 0x802;
+
+        if ($this->options['warp-zones'] == 'random') {
+            for ($i = 0; $i < 11; $i++) {
+                $new_warp = mt_rand(1, 8);
+                $game->addData($offset + $i, pack('C*', $new_warp));
+            }
+            // cheap and easy fix
+            $new_warp = 0x00;
+            $game->addData(0x805, pack('C*', $new_warp));
+            $game->addData(0x809, pack('C*', $new_warp));
+        } else if ($this->options['warp-zones'] == 'shuffle') {
+            echo "not implemented yet!";
+            exit(1);
+        } else {
+            echo "Invalid value for option Warp Zones!";
+            exit(1);
+        }
+    }
+
     public function fixPipes(Game &$game)
     {
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
@@ -717,6 +739,10 @@ class Randomizer
         $this->flags[7] = $this->options['starting-lives'][0];
         $this->flags[7]++;
         $this->flags[7]++;
+        $this->flags[8] = $this->options['warp-zones'][2];
+        $this->flags[8]++;
+        $this->flags[8]++;
+        $this->flags[8]++;
 
         $s = implode("", $this->flags);
         $f = strtoupper($s);
@@ -823,6 +849,11 @@ class Randomizer
         // Randomize player's starting lives
         if ($this->options['starting-lives'] != "normal") {
             $this->randomizeStartingLives($game);
+        }
+
+        // Randomize warp zones
+        if ($this->options['warp-zones'] != "normal") {
+            $this->randomizeWarpZones($game);
         }
 
         // Fix Pipes
