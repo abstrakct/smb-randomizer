@@ -571,6 +571,7 @@ class Randomizer
         $offset = 0x802;
 
         if ($this->options['warp-zones'] == 'random') {
+            $this->log->write("Randomizing Warp Zones.\n");
             for ($i = 0; $i < 11; $i++) {
                 $new_warp = mt_rand(1, 8);
                 $game->addData($offset + $i, pack('C*', $new_warp));
@@ -580,8 +581,17 @@ class Randomizer
             $game->addData(0x805, pack('C*', $new_warp));
             $game->addData(0x809, pack('C*', $new_warp));
         } else if ($this->options['warp-zones'] == 'shuffle') {
-            echo "not implemented yet!";
-            exit(1);
+            $this->log->write("Shuffling Warp Zones.\n");
+            $destinations = [1, 2, 3, 4, 5, 6, 7, 8, 0x24]; // 0x24 is "blank"
+            $shuffled_destinations = mt_shuffle($destinations);
+            $index = 0;
+
+            for ($i = 0; $i <= 9; $i += 4) {
+                $game->addData($offset + $i, pack('C*', $shuffled_destinations[$index]));
+                $game->addData($offset + $i + 1, pack('C*', $shuffled_destinations[$index + 1]));
+                $game->addData($offset + $i + 2, pack('C*', $shuffled_destinations[$index + 2]));
+                $index += 3;
+            }
         } else {
             echo "Invalid value for option Warp Zones!";
             exit(1);
