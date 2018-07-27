@@ -14,12 +14,12 @@
  * TODO: Check this: DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
  *      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
  *
- * TODO: Option to randomize number of starting lives.
  * TODO: Randomize where pipes lead to?
  * TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!
  * TODO: Option to randomize music? (line 2790 in disasm)
  * TODO: Randomize when fireworks appear? (line 10469 of disasm)
  * TODO: shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
+ * TODO: shuffle enemies? or keep the randomization as it is now?
  * TODO: fix warp zones! warp zone pipes have strange behavior (pipes with no number take you to world -1)
  *       not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
  *       see line 1682 in disasm
@@ -45,13 +45,17 @@
  *       So that if you e.g. generate a new rom with the same seed, but enemy randomization turned off, all other aspects should be the same as before.
  *       Might be done by creating individual seeds for each aspect at the start of the program.
  *
- * for power up shuffling - options:
+ *
+ * *********************************************************
+ * DONE
+ * *********************************************************
  * DONE - only power ups are random (flower, star, 1 up)
  * DONE - add coins to that pool
  * DONE: Randomize Bowser's abilities? like hammers etc.?
  *       - we could change the code which selects bowser's abilities based on which world you're in
  * DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
  * DONE: change x pos of Toad/substitute Toad? To prevent Mario getting hit by a hammer bro or something after defeating Bowser.
+ * DONE: Option to randomize number of starting lives.
  *
  * NOTES
  * - Sometimes enemies "hide" behind scenery.

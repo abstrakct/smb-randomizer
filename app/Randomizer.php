@@ -707,7 +707,16 @@ class Randomizer
 
     public function setText(&$game, $text, $newtext)
     {
-        global $messages;
+        $messages = [
+            // first 3 bytes = header, last = 0x00 - keep those!
+            "ThankYouMario" => [0xd64, 0xd77], // THANK YOU MARIO!
+            "ThankYouLuigi" => [0xd78, 0xd8b], // THANK YOU LUIGI!
+            "AnotherCastle" => [0xd8c, 0xdb7], // BUT OUR PRINCESS IS IN \ ANOTHER CASTLE!
+            "QuestOver" => [0xdb8, 0xdce], // YOUR QUEST IS OVER.
+            "NewQuest" => [0xdcf, 0xded], // WE PRESENT YOU A NEW QUEST.
+            "WorldSelect" => [0xdee, 0xdfe], // PUSH BUTTON B
+            "WorldSelect2" => [0xdff, 0xe13], // TO SELECT A WORLD
+        ];
 
         $offset = $messages[$text][0] + 3;
         $lastoffset = $messages[$text][1];
@@ -728,18 +737,16 @@ class Randomizer
 
     public function shuffleText(&$game, $text, $variations)
     {
-        $this->log->write("Shuffling text " . $text . "\n");
         $this->setSeed();
         $variation = mt_rand(0, count($variations) - 1);
+        $this->log->write("Shuffling text " . $text . " to variation " . $variation . " (" . $variations[$variation] . ")\n");
 
         $this->setText($game, $text, $variations[$variation]);
     }
 
     // Do this one separately
-    public function shuffleWinText(&$game)
+    public function shuffleWinText(&$game, $win_variations)
     {
-        global $win_variations;
-
         $this->setSeed();
         $variation = mt_rand(0, count($win_variations) - 1);
 
@@ -747,7 +754,7 @@ class Randomizer
         $this->setText($game, "NewQuest", $win_variations[$variation][1]);
         $this->setText($game, "WorldSelect", $win_variations[$variation][2]);
         $this->setText($game, "WorldSelect2", $win_variations[$variation][3]);
-        $this->log->write("Randomized win text to entry " . $variation . "\n");
+        $this->log->write("Randomized win text to entry " . $variation . " (" . $win_variations[$variation][0] . ")\n");
     }
 
     public function getFlags()
@@ -786,19 +793,19 @@ class Randomizer
 
     public function makeSeedHash()
     {
+        // TODO - thought/idea:
+        // include the MD5 of the randomized ROM in the seedhash?
+        // - it would have to be the MD5 of the file BEFORE writing the seedhash though.
+        // - but is it necessary? probably not. it could be an extra guarantee that the
+        // files are identical, but there shouldn't be any risk of collisions, right?
         $hashstring = implode("", $this->flags) . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
-        //print("makkSeedHash()\n
-        //          md5: " . hash("md5", $hashstring) . "\n
-        //          crc: " . $this->seedhash . "\n
-        //       md5crc: " . hash("crc32b", hash("md5", $hashstring)) . "\n");
 
         if ($this->options["webmode"]) {
             print("SeedHash: $this->seedhash <br>");
         } else {
             print("SeedHash: $this->seedhash\n");
         }
-
     }
 
     public function getSeedHash()
@@ -816,6 +823,8 @@ class Randomizer
     // Here we go!
     public function makeSeed()
     {
+        include "TextVariations.php";
+
         $game = new Game($this->options);
         $item_pools = new ItemPools();
 
@@ -900,11 +909,10 @@ class Randomizer
         $this->setTextSeedhash($this->seedhash, $game);
 
         // Shuffle texts
-        //global $another_castle_variations, $thank_you_mario_variations, $thank_you_luigi_variations;
-        //$this->shuffleText($game, "ThankYouMario", $thank_you_mario_variations);
-        //$this->shuffleText($game, "ThankYouLuigi", $thank_you_luigi_variations);
-        //$this->shuffleText($game, "AnotherCastle", $another_castle_variations);
-        //$this->shuffleWinText($game);
+        $this->shuffleText($game, "ThankYouMario", $thank_you_mario_variations);
+        $this->shuffleText($game, "ThankYouLuigi", $thank_you_luigi_variations);
+        $this->shuffleText($game, "AnotherCastle", $another_castle_variations);
+        $this->shuffleWinText($game, $win_variations);
 
         // Set colorschemes
         $this->setMarioColorScheme($this->options['mariocolors'], $game);
