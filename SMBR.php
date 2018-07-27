@@ -9,6 +9,7 @@
  */
 
 /*
+ * BUG: in enemies-randomize-pools Bowser can get randomized to something else!
  *
  *
  * TODO: Check this: DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,

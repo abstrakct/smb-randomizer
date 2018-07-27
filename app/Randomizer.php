@@ -26,7 +26,7 @@ const StartingLivesOffset = 0x107a;
 function enemyIsInPool($o, $pool)
 {
     foreach ($pool as $p) {
-        if ($o == $p->num) {
+        if ($o == $p) {
             return true;
         }
     }
@@ -79,7 +79,7 @@ class Randomizer
         print("\n\n*** OPTIONS ***\nSeed: $this->rng_seed\n");
 
         foreach ($this->options as $key => $value) {
-            print("$key: $value<br>");
+            print("$key: $value\n");
         }
     }
 
@@ -148,14 +148,26 @@ class Randomizer
         return $this;
     }
 
-    // improve this - we have enemy data offsets in the level data!
-    // TODO: improve enemy shuffling in general! the code is a bit messy.
-    public function randomizeEnemiesOnLevel($offset, Game &$game)
+    public function randomizeEnemies(&$game, $in_pools = false)
+    {
+        $this->log->write("Randomizing enemies" . ($in_pools ? " in pools." : ".") . "\n");
+        $vanilla = Level::all();
+        foreach ($vanilla as $level) {
+            if ($level->enemy_data_offset > 0x0000) {
+                $m = "Randomizing enemies on level " . $level->name . "\n";
+                $this->log->write($m);
+                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game, $in_pools);
+            }
+        }
+    }
+
+    public function randomizeEnemiesOnLevel($offset, &$game, $in_pools = false)
     {
         $end = 0;
         $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
         // TODO: change percentage based on settings/flags/something.
         // TODO: or remove this percentage setting?
+        // TODO: improve enemy shuffling in general!? the code is a bit messy. but hey, it works!
 
         $data = $this->rom->read($offset, 100);
         foreach ($data as $byte) {
@@ -176,119 +188,59 @@ class Randomizer
                 if ($data[$i] != 0xFF) {
                     $p = $data[$i + 1] & 0b10000000;
                     $h = $data[$i + 1] & 0b01000000;
-                    $o = $data[$i + 1] & 0b00111111; // this is the enemy
+                    $o = $data[$i + 1] & 0b00111111; // this is the enemy object
+
                     /* Some enemies can't be randomized, so let's check for those */
                     foreach ($this->enemy_pools->dont_randomize as $nope) {
                         if ($o == $nope) {
                             $do_randomize = false;
                         }
                     }
+
                     if ($do_randomize) {
-                        $newdata = 0;
-                        if (mt_rand(1, 100) <= $percentage) {
-                            if ($o == Enemy::get('Toad')) {
-                                $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                $newcoord = 0xb8;
-                                $game->addData($offset + $i, pack('C*', $newcoord));
-                            } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
-                                // TODO: should Bowser Fire Generator be included in this?
-                                $newo = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
-                            } else {
-                                $newo = $this->enemy_pools->reasonable_enemy_pool[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool) - 1)];
-                            }
-
-                            $newdata = (($data[$i + 1] & 0b10000000) | ($data[$i + 1] & 0b01000000)) | $newo;
-                            $game->addData($offset + $i + 1, pack('C*', $newdata));
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public function randomizeEnemiesInPools(&$game)
-    {
-        $this->log->write("Randomizing enemies in pools!\n");
-        $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
-        // TODO: change percentage based on settings/flags/something.
-        // TODO: or remove this percentage setting?
-
-        foreach ($game->worlds as $world) {
-            foreach ($world->levels as $level) {
-                $end = 0;
-                if ($level->enemy_data_offset == 0x0000) {
-                    break;
-                }
-
-                $data = $this->rom->read($level->enemy_data_offset, 100);
-                foreach ($data as $byte) {
-                    $end++;
-                    if ($byte == 0xFF) {
-                        break;
-                    }
-                }
-
-                for ($i = 0; $i < $end; $i += 2) {
-                    $do_randomize = true;
-                    $x = $data[$i] & 0xf0;
-                    $y = $data[$i] & 0x0f;
-                    if ($y == 0xE) {
-                        $i++;
-                    } else if ($y > 0xE) {
-                        continue;
-                    } else {
-                        if ($data[$i] != 0xFF) {
-                            $p = $data[$i + 1] & 0b10000000;
-                            $h = $data[$i + 1] & 0b01000000;
-                            $o = $data[$i + 1] & 0b00111111; // this is the enemy
-
-                            /* Some enemies can't be randomized, so let's check for those */
-                            foreach ($this->enemy_pools->dont_randomize as $nope) {
-                                if ($o == $nope) {
-                                    $do_randomize = false;
+                        if ($in_pools) {
+                            $new_data = 0;
+                            if (mt_rand(1, 100) <= $percentage) {
+                                if ($o == Enemy::get('Toad')) {
+                                    $z = count($this->enemy_pools->toad_pool);
+                                    $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
+                                    $new_coord = 0xb8;
+                                    $game->addData($offset + $i, pack('C*', $new_coord));
+                                } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
+                                    $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
+                                } else if (enemyIsInPool($o, $this->enemy_pools->goomba_pool)) {
+                                    $new_object = $this->enemy_pools->goomba_pool[mt_rand(0, count($this->enemy_pools->goomba_pool) - 1)];
+                                } else if (enemyIsInPool($o, $this->enemy_pools->koopa_pool)) {
+                                    $new_object = $this->enemy_pools->koopa_pool[mt_rand(0, count($this->enemy_pools->koopa_pool) - 1)];
+                                } else if (enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
+                                    $new_object = $this->enemy_pools->firebar_pool[mt_rand(0, count($this->enemy_pools->firebar_pool) - 1)];
+                                } else if ($o == Enemy::get("Lakitu")) {
+                                    $new_object = $this->enemy_pools->lakitu_pool[mt_rand(0, count($this->enemy_pools->lakitu_pool) - 1)];
                                 }
+
+                                $new_data = (($p | $h) | $new_object);
+                                $game->addData($offset + $i + 1, pack('C*', $new_data));
                             }
-
-                            if ($do_randomize) {
-                                $newdata = 0;
-                                if (mt_rand(1, 100) <= $percentage) {
-                                    if ($o == Enemy::get('Toad')) {
-                                        $z = count($this->enemy_pools->toad_pool);
-                                        $newo = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                        $newcoord = 0x98;
-                                        $game->addData($level->enemy_data_offset + $i, pack('C*', $newcoord));
-                                    } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
-                                        $newo = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
-                                    } else if (enemyIsInPool($o, $this->enemy_pools->goomba_pool)) {
-                                        $newo = $this->enemy_pools->goomba_pool[mt_rand(0, count($this->enemy_pools->goomba_pool) - 1)];
-                                    } else if (enemyIsInPool($o, $this->enemy_pools->koopa_pool)) {
-                                        $newo = $this->enemy_pools->koopa_pool[mt_rand(0, count($this->enemy_pools->koopa_pool) - 1)];
-                                    } else if (enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
-                                        $newo = $this->enemy_pools->firebar_pool[mt_rand(0, count($this->enemy_pools->firebar_pool) - 1)];
-                                    } else if ($o == Enemy::get("Lakitu")) {
-                                        $newo = $this->enemy_pools->lakitu_pool[mt_rand(0, count($this->enemy_pools->lakitu_pool) - 1)];
-                                    }
-
-                                    $newdata = (($data[$i + 1] & 0b10000000) | ($data[$i + 1] & 0b01000000)) | $newo;
-                                    $game->addData($level->enemy_data_offset + $i + 1, pack('C*', $newdata));
+                        } else {
+                            $new_data = 0;
+                            if (mt_rand(1, 100) <= $percentage) {
+                                if ($o == Enemy::get('Toad')) {
+                                    $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
+                                    $new_coord = 0xb8;
+                                    $game->addData($offset + $i, pack('C*', $new_coord));
+                                } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
+                                    // TODO: should Bowser Fire Generator be included in this?
+                                    $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
+                                } else {
+                                    $new_object = $this->enemy_pools->reasonable_enemy_pool[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool) - 1)];
                                 }
+
+                                $new_data = (($p | $h) | $new_object);
+                                $game->addData($offset + $i + 1, pack('C*', $new_data));
                             }
                         }
                     }
                 }
-            }
-        }
-    }
-
-    public function randomizeEnemies(&$game)
-    {
-        $this->log->write("Randomizing enemies!\n");
-        $vanilla = Level::all();
-        foreach ($vanilla as $level) {
-            if ($level->enemy_data_offset > 0x0000) {
-                $m = "Randomizing enemies on level " . $level->name . "\n";
-                $this->log->write($m);
-                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game);
             }
         }
     }
@@ -323,12 +275,11 @@ class Randomizer
                     if ($do_randomize) {
                         $p = $data[$i + 1] & 0b10000000;
                         $object = $data[$i + 1] & 0b01111111;
-                        $newdata = 0x99;
-                        // change to add write data to Game object
+                        $new_data = 0x99;
                         if (in_array($object, $frompool)) {
                             $pull_key = mt_rand(0, count($topool) - 1);
-                            $newdata = $topool[$pull_key];
-                            $new_object = $p | $newdata;
+                            $new_data = $topool[$pull_key];
+                            $new_object = $p | $new_data;
                             $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_object));
                         }
                     }
@@ -682,9 +633,8 @@ class Randomizer
         $game->addData($offset + 4, pack('C*', $this->trans->asciitosmb(' ')));
         /*
          * Write the first 8 characters of the seedhash on title screen.
-         * TODO: move to diff. location
          * TODO: see if there's a way to draw some sprites instead!
-         * DONE: there is, but no good sprites it seems......
+         * DONE: there probably is, but no good sprites it seems. Text/numbers is better.
          */
         for ($i = 0; $i < 8; $i++) {
             $game->addData($offset + 5 + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
@@ -708,7 +658,7 @@ class Randomizer
         $lastoffset = $messages[$text][1];
         for ($i = 0; $i < strlen($newtext); $i++) {
             if ($i + $offset > $lastoffset) {
-                print("ERROR WHILE CHANGING A TEXT!");
+                print("ERROR: Text exceeds max length! Text is $text\n");
                 exit(1);
             }
 
@@ -723,6 +673,7 @@ class Randomizer
 
     public function shuffleText(&$game, $text, $variations)
     {
+        // Set new seed for rng to separate this randomization from game randomization
         $this->setSeed();
         $variation = mt_rand(0, count($variations) - 1);
         $this->log->write("Shuffling text " . $text . " to variation " . $variation . " (" . $variations[$variation] . ")\n");
@@ -733,6 +684,7 @@ class Randomizer
     // Do this one separately
     public function shuffleWinText(&$game, $win_variations)
     {
+        // Set new seed for rng to separate this randomization from game randomization
         $this->setSeed();
         $variation = mt_rand(0, count($win_variations) - 1);
 
@@ -838,9 +790,9 @@ class Randomizer
 
         //  Shuffle Enemies
         if ($this->options['enemies'] == "randomize-full") {
-            $this->randomizeEnemies($game);
+            $this->randomizeEnemies($game, false);
         } else if ($this->options['enemies'] == "randomize-pools") {
-            $this->randomizeEnemiesInPools($game);
+            $this->randomizeEnemies($game, true);
         }
 
         // Shuffle Blocks

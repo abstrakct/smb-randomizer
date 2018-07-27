@@ -88,7 +88,6 @@ class Randomize extends Command
         //print(count($vanilla->worlds[1]->levels));
 
         $webmode = false;
-        $options['webmode'] = false;
         $rom = new Rom($input_file);
         $checksum = $rom->getMD5();
         $ok = $rom->checkMD5();
@@ -164,7 +163,7 @@ class Randomize extends Command
 
         $log->close();
 
-        if ($options["webmode"]) {
+        if ($webmode) {
             print('<br><br><b>Finished!</b><br><a href="' . $outfilename . '">Click here to download randomized ROM!</a>');
             print('<br><a href="' . $logfilename . '">Click here to view the log (contains spoilers!)</a>');
         } else {

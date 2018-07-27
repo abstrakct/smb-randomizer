@@ -1,5 +1,7 @@
 <?php namespace SMBR;
 
+// TODO: improve this like level and enemy
+
 class Item
 {
     public $name = 'Unknown';
