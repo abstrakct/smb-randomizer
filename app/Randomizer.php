@@ -76,24 +76,10 @@ class Randomizer
 
     public function printOptions()
     {
-        if ($this->options["webmode"]) {
-            print("<br>*** OPTIONS ***<br>Seed: $this->rng_seed<br>");
-        } else {
-            print("\n\n*** OPTIONS ***\nSeed: $this->rng_seed\n");
-        }
+        print("\n\n*** OPTIONS ***\nSeed: $this->rng_seed\n");
 
         foreach ($this->options as $key => $value) {
-            if ($this->options["webmode"]) {
-                if ($key != "webmode") {
-                    print("$key: $value<br>");
-                }
-
-            } else {
-                if ($key != "webmode") {
-                    print("$key: $value\n");
-                }
-
-            }
+            print("$key: $value<br>");
         }
     }
 
@@ -782,11 +768,7 @@ class Randomizer
 
         $s = implode("", $this->flags);
         $f = strtoupper($s);
-        if ($this->options["webmode"]) {
-            print("Flags: $f <br>");
-        } else {
-            print("Flags: $f\n");
-        }
+        print("Flags: $f\n");
 
         $this->makeSeedHash();
     }
@@ -801,11 +783,7 @@ class Randomizer
         $hashstring = implode("", $this->flags) . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
 
-        if ($this->options["webmode"]) {
-            print("SeedHash: $this->seedhash <br>");
-        } else {
-            print("SeedHash: $this->seedhash\n");
-        }
+        print("SeedHash: $this->seedhash\n");
     }
 
     public function getSeedHash()
@@ -839,11 +817,7 @@ class Randomizer
             '8' => new World8($game, 8),
         ];
 
-        if ($this->options["webmode"]) {
-            print("<br>Here we go! Making randomized SMB ROM with seed $this->rng_seed <br>");
-        } else {
-            print("\nHere we go! Making randomized SMB ROM with seed $this->rng_seed\n");
-        }
+        print("\nHere we go! Making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
         if ($this->options['shuffle-levels'] == "all") {
