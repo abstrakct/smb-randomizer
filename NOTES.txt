@@ -1,0 +1,83 @@
+*********
+SELF
+*********
+* Learn about localforage
+* Learn about javascript promise thing
+--- Done: I have read about it, know what it is
+
+********************************************************************
+Process for doing randomization frontend to backend back to frontend
+********************************************************************
+1. User selects base ROM
+2. Base ROM is stored in localforage
+2.5 User selects options
+3. Options & Base ROM get sent to backend via POST request
+4. Backend does the randomization, outputs a file
+5. Randomized file gets uploaded / sent back to frontend 
+6. User gets option to save file
+
+
+
+
+BUG: in enemies-randomize-pools Bowser can get randomized to something else!
+
+
+TODO: Check this: DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
+     containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
+
+TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
+TODO: Randomize where pipes lead to?
+TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!
+TODO: Option to randomize music? (line 2790 in disasm)
+TODO: Randomize when fireworks appear? (line 10469 of disasm)
+TODO: shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
+TODO: shuffle enemies? or keep the randomization as it is now?
+TODO: disappearing trampolines
+TODO: disappearing powerup blocks sometimes - might be related to stuff around line 5860 in disasm
+TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
+TODO: option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
+TODO: option to not randomize texts
+TODO: keep randomized texts independent of game seed? or make it an option?
+TODO: option to keep castles in vanilla order?
+TODO: no level shuffle + remove pipe transitions combo does not remove pipe transitions. can be fixed.
+TODO: randomize enemies in pools better! from-/to-pools
+TODO: check that all options are set to a valid value!
+TODO: disasm line  1084: change demo action data in order to not spoil first level??  offset 0x350 in rom, length 20 bytes
+TODO: disasm line  7338: maybe a better way to shuffle powerups? for mode that changes all powerups of one type to another.
+TODO: disasm line  7787: respawn points - I think. look at that
+TODO: disasm line  8370: fire bar spin speed / direction -- can be randomized!?
+TODO: disasm line  8405: cheep cheep data -- can be randomized!?
+TODO: disasm line  8698: enemy frenzy thing that checks for world 2 - should be changed??
+TODO: disasm line 11440: it's possible/easy(?) to change which enemies can be stomped and not!
+TODO: disasm line 13475: it's possible/easy(?) to change the appearance of a powerup!!!    NOPE DOESN'T WORK (sprites get weird)
+TODO: A way to let individual options not change other aspects of randomization?!
+      So that if you e.g. generate a new rom with the same seed, but enemy randomization turned off, all other aspects should be the same as before.
+      Might be done by creating individual seeds for each aspect at the start of the program.
+
+*********************************************************
+PROBABLY DONE
+*********************************************************
+
+PROBABLY DONE: fix warp zones! warp zone pipes have strange behavior (pipes with no number take you to world -1)
+      not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
+      see line 1682 in disasm
+
+*********************************************************
+DONE
+*********************************************************
+DONE - only power ups are random (flower, star, 1 up)
+DONE - add coins to that pool
+DONE: Randomize Bowser's abilities? like hammers etc.?
+      - we could change the code which selects bowser's abilities based on which world you're in
+DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
+DONE: change x pos of Toad/substitute Toad? To prevent Mario getting hit by a hammer bro or something after defeating Bowser.
+DONE: Option to randomize number of starting lives.
+
+OTHER BUGS:
+- Sometimes enemies "hide" behind scenery.
+
+
+
+
+offset = 0x9fd6  (overwrites "2 PLAYER GAME")
+

@@ -25,6 +25,13 @@ window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 window.Vue = require("vue");
 
+import BootstrapVue from "bootstrap-vue";
+Vue.use(BootstrapVue);
+
+/* ROM Stuff - inspired by alttp randomizer */
+window.localforage = require("localforage");
+window.ROM = require("./rom.js");
+
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
  * all outgoing HTTP requests automatically have it attached. This is just
