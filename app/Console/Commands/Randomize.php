@@ -123,6 +123,7 @@ class Randomize extends Command
 
         $rando->setSeed($rando->getSeed());
         $rando->makeFlags();
+        $rando->makeSeedHash();
 
         if ($webmode) {
             $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());

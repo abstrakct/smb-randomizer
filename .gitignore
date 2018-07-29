@@ -16,3 +16,4 @@ yarn-error.log
 roms/*
 output/*
 dev/*
+public/output/*

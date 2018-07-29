@@ -2,21 +2,27 @@
 SELF
 *********
 * Learn about localforage
+--- Mostly done
 * Learn about javascript promise thing
 --- Done: I have read about it, know what it is
 
 ********************************************************************
 Process for doing randomization frontend to backend back to frontend
 ********************************************************************
-1. User selects base ROM
-2. Base ROM is stored in localforage
-2.5 User selects options
-3. Options & Base ROM get sent to backend via POST request
-4. Backend does the randomization, outputs a file
-5. Randomized file gets uploaded / sent back to frontend 
-6. User gets option to save file
+1.  x User selects base ROM, MD5 is checked
+2.  x Base ROM is stored in localforage
+2.5 x User selects options
+3.  x Options & Base ROM get sent to backend via POST request
+4.  x Backend does the randomization, outputs a file
+5.    Randomized file gets uploaded / sent back to frontend 
+6.    User gets option to save file
 
 
+************
+* FRONTEND *
+************
+BUGS:
+- rom file not recognized after reloading browser
 
 
 BUG: in enemies-randomize-pools Bowser can get randomized to something else!

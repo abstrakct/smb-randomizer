@@ -25,6 +25,10 @@ var ROM = function(blob, loaded_callback) {
     return arrayBuffer;
   };
 
+  this.getData = function() {
+    return u_array;
+  };
+
   this.save = function(filename) {
     FileSaver.saveAs(new Blob([u_array]), filename);
   };

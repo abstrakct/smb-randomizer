@@ -307,7 +307,7 @@ class Randomizer
         $shuffleindex = 0;
 
         // TODO: reduce code duplication!
-        if ($this->options['pipe-transitions'] == 'remove') {
+        if ($this->options['pipeTransitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 if (Level::get($shuffledlevels[$shuffleindex])->map >= 0x60 and Level::get($shuffledlevels[$shuffleindex])->map <= 0x65) {
@@ -324,7 +324,7 @@ class Randomizer
                 $shuffleindex++;
             }
             $game->worlds[8]->levels[$lastlevelindex + 1] = Level::get('8-4');
-        } else if ($this->options['pipe-transitions'] == 'keep') {
+        } else if ($this->options['pipeTransitions'] == 'keep') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $levelindex++;
@@ -367,21 +367,21 @@ class Randomizer
         for ($i = 1; $i <= 7; $i++) {
             switch ($shuffledworlds[$i - 1]) {
                 case 1:
-                    if ($this->options['pipe-transitions'] == 'keep') {
+                    if ($this->options['pipeTransitions'] == 'keep') {
                         $game->worlds[$i] = new World1($game, $i);
                     }
 
-                    if ($this->options['pipe-transitions'] == 'remove') {
+                    if ($this->options['pipeTransitions'] == 'remove') {
                         $game->worlds[$i] = new World1NoPipeTransition($game, $i);
                     }
 
                     break;
                 case 2:
-                    if ($this->options['pipe-transitions'] == 'keep') {
+                    if ($this->options['pipeTransitions'] == 'keep') {
                         $game->worlds[$i] = new World2($game, $i);
                     }
 
-                    if ($this->options['pipe-transitions'] == 'remove') {
+                    if ($this->options['pipeTransitions'] == 'remove') {
                         $game->worlds[$i] = new World2NoPipeTransition($game, $i);
                     }
 
@@ -390,11 +390,11 @@ class Randomizer
                     $game->worlds[$i] = new World3($game, $i);
                     break;
                 case 4:
-                    if ($this->options['pipe-transitions'] == 'keep') {
+                    if ($this->options['pipeTransitions'] == 'keep') {
                         $game->worlds[$i] = new World4($game, $i);
                     }
 
-                    if ($this->options['pipe-transitions'] == 'remove') {
+                    if ($this->options['pipeTransitions'] == 'remove') {
                         $game->worlds[$i] = new World4NoPipeTransition($game, $i);
                     }
 
@@ -433,7 +433,7 @@ class Randomizer
         $shuffledlevels = mt_shuffle($levels);
         $shuffledcastles = mt_shuffle($castles);
 
-        if ($this->options['pipe-transitions'] == 'remove') {
+        if ($this->options['pipeTransitions'] == 'remove') {
             $this->log->write("Removing pipe transitions\n");
             $levelindex = 0;
             $castleindex = 0;
@@ -449,7 +449,7 @@ class Randomizer
                 $castleindex++;
             }
             $game->worlds[8]->levels[3] = Level::get('8-4');
-        } else if ($this->options['pipe-transitions'] == 'keep') {
+        } else if ($this->options['pipeTransitions'] == 'keep') {
             // TODO: implement this.
             // Probably needs a better structure where we can insert a level in between others!
             // fixMidwayPoints must also be changed for this to work.
@@ -526,13 +526,13 @@ class Randomizer
     {
         $this->log->write("Randomizing Bowser's hitpoints.\n");
 
-        if ($this->options['bowser-hitpoints'] == "easy") {
+        if ($this->options['bowserHitpoints'] == "easy") {
             $new_hitpoints = mt_rand(1, 5);
-        } else if ($this->options['bowser-hitpoints'] == "medium") {
+        } else if ($this->options['bowserHitpoints'] == "medium") {
             $new_hitpoints = mt_rand(5, 10);
-        } else if ($this->options['bowser-hitpoints'] == "hard") {
+        } else if ($this->options['bowserHitpoints'] == "hard") {
             $new_hitpoints = mt_rand(10, 20);
-        } else if ($this->options['bowser-hitpoints'] == "random") {
+        } else if ($this->options['bowserHitpoints'] == "random") {
             $new_hitpoints = mt_rand(1, 20);
         } else {
             echo "Invalid value for option Bowser Hitpoints!";
@@ -547,15 +547,15 @@ class Randomizer
     {
         $this->log->write("Randomizing player's starting lives.\n");
 
-        if ($this->options['starting-lives'] == "easy") {
+        if ($this->options['startingLives'] == "easy") {
             $new_lives = mt_rand(7, 10);
-        } else if ($this->options['starting-lives'] == "medium") {
+        } else if ($this->options['startingLives'] == "medium") {
             $new_lives = mt_rand(4, 6);
-        } else if ($this->options['starting-lives'] == "hard") {
+        } else if ($this->options['startingLives'] == "hard") {
             $new_lives = mt_rand(1, 3);
-        } else if ($this->options['starting-lives'] == "very-hard") {
+        } else if ($this->options['startingLives'] == "very-hard") {
             $new_lives = 1;
-        } else if ($this->options['starting-lives'] == "random") {
+        } else if ($this->options['startingLives'] == "random") {
             $new_lives = mt_rand(1, 19);
         } else {
             echo "Invalid value for option Starting Lives!";
@@ -570,7 +570,7 @@ class Randomizer
     {
         $offset = 0x802;
 
-        if ($this->options['warp-zones'] == 'random') {
+        if ($this->options['warpZones'] == 'random') {
             $this->log->write("Randomizing Warp Zones.\n");
             for ($i = 0; $i < 11; $i++) {
                 $new_warp = mt_rand(1, 8);
@@ -580,7 +580,7 @@ class Randomizer
             $new_warp = 0x00;
             $game->addData(0x805, pack('C*', $new_warp));
             $game->addData(0x809, pack('C*', $new_warp));
-        } else if ($this->options['warp-zones'] == 'shuffle') {
+        } else if ($this->options['warpZones'] == 'shuffle') {
             $this->log->write("Shuffling Warp Zones.\n");
             $destinations = [1, 2, 3, 4, 5, 6, 7, 8, 0x24]; // 0x24 is "blank"
             $shuffled_destinations = mt_shuffle($destinations);
@@ -633,8 +633,8 @@ class Randomizer
     {
         $this->log->write("Fixing midway points:\n");
 
-        if (($this->options['shuffle-levels'] == 'all' && $this->options['normal-world-length'] == 'false') ||
-            ($this->options['shuffle-levels'] == 'worlds')) {
+        if (($this->options['shuffleLevels'] == 'all' && $this->options['normalWorldLength'] == 'false') ||
+            ($this->options['shuffleLevels'] == 'worlds')) {
             // Remove midway points
             $this->log->write("Removing all midway points!\n");
             for ($i = 0; $i < 0xF; $i++) {
@@ -642,7 +642,7 @@ class Randomizer
             }
         }
 
-        if ($this->options['shuffle-levels'] == 'all' && $this->options['normal-world-length'] == 'true') {
+        if ($this->options['shuffleLevels'] == 'all' && $this->options['normalWorldLength'] == 'true') {
             // Fix midway points
             $this->log->write("Moving midway points around to correct positions!\n");
             $mpindex = 0;
@@ -729,38 +729,38 @@ class Randomizer
         $this->log->write("Randomized win text to entry " . $variation . " (" . $win_variations[$variation][0] . ")\n");
     }
 
-    public function getFlags()
+    public function getFlags($options)
     {
-        return implode("", $this->flags);
+        $flags[0] = $options['pipeTransitions'][2];
+        $flags[1] = $options['shuffleLevels'][1];
+        $flags[1]++;
+        $flags[1]++;
+        $flags[2] = $options['normalWorldLength'][1];
+        $flags[2]++;
+        $flags[2]++;
+        $flags[3] = $options['enemies'][12];
+        $flags[4] = $options['blocks'][10];
+        $flags[5] = $options['bowserAbilities'][3];
+        $flags[6] = $options['bowserHitpoints'][0];
+        $flags[6]++;
+        $flags[7] = $options['startingLives'][0];
+        $flags[7]++;
+        $flags[7]++;
+        $flags[8] = $options['warpZones'][2];
+        $flags[8]++;
+        $flags[8]++;
+        $flags[8]++;
+
+        $s = implode("", $flags);
+        $f = strtoupper($s);
+
+        return $f;
     }
 
     public function makeFlags()
     {
-        $this->flags[0] = $this->options['pipe-transitions'][2];
-        $this->flags[1] = $this->options['shuffle-levels'][1];
-        $this->flags[1]++;
-        $this->flags[1]++;
-        $this->flags[2] = $this->options['normal-world-length'][1];
-        $this->flags[2]++;
-        $this->flags[2]++;
-        $this->flags[3] = $this->options['enemies'][12];
-        $this->flags[4] = $this->options['blocks'][10];
-        $this->flags[5] = $this->options['bowser-abilities'][3];
-        $this->flags[6] = $this->options['bowser-hitpoints'][0];
-        $this->flags[6]++;
-        $this->flags[7] = $this->options['starting-lives'][0];
-        $this->flags[7]++;
-        $this->flags[7]++;
-        $this->flags[8] = $this->options['warp-zones'][2];
-        $this->flags[8]++;
-        $this->flags[8]++;
-        $this->flags[8]++;
-
-        $s = implode("", $this->flags);
-        $f = strtoupper($s);
-        print("Flags: $f\n");
-
-        $this->makeSeedHash();
+        $this->flags = $this->getFlags($this->options);
+        //print("Flags: $this->flags\n");
     }
 
     public function makeSeedHash()
@@ -770,7 +770,7 @@ class Randomizer
         // - it would have to be the MD5 of the file BEFORE writing the seedhash though.
         // - but is it necessary? probably not. it could be an extra guarantee that the
         // files are identical, but there shouldn't be any risk of collisions, right?
-        $hashstring = implode("", $this->flags) . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5());
+        $hashstring = $this->flags . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
 
         print("SeedHash: $this->seedhash\n");
@@ -810,16 +810,16 @@ class Randomizer
         print("\nHere we go! Making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
-        if ($this->options['shuffle-levels'] == "all") {
-            if ($this->options['normal-world-length'] == "true") {
+        if ($this->options['shuffleLevels'] == "all") {
+            if ($this->options['normalWorldLength'] == "true") {
                 $this->shuffleLevelsWithNormalWorldLength($game);
             } else {
                 $this->shuffleAllLevels($game);
             }
-        } else if ($this->options['shuffle-levels'] == "worlds") {
+        } else if ($this->options['shuffleLevels'] == "worlds") {
             $game->setVanilla();
             $this->shuffleWorldOrder($game);
-        } else if ($this->options['shuffle-levels'] == "none") {
+        } else if ($this->options['shuffleLevels'] == "none") {
             $game->setVanilla();
         } else {
             print("Unrecognized option " . $this->options['shuffle-levels'] . " for Shuffle Levels! Exiting...");
@@ -827,44 +827,46 @@ class Randomizer
         }
 
         //  Shuffle Enemies
-        if ($this->options['enemies'] == "randomize-full") {
+        if ($this->options['enemies'] == "randomizeFull") {
             $this->randomizeEnemies($game, false);
-        } else if ($this->options['enemies'] == "randomize-pools") {
+        } else if ($this->options['enemies'] == "randomizePools") {
             $this->randomizeEnemies($game, true);
+        } else if ($this->options['enemies'] == "randomizeNone") {
+            $this->log->write("No randomization of enemies!\n");
         }
 
         // Shuffle Blocks
-        if ($this->options['blocks'] == "randomize-all") {
+        if ($this->options['blocks'] == "randomizeAll") {
             $this->randomizeBlocks($game, $item_pools->all_items, $item_pools->all_items);
-        } else if ($this->options['blocks'] == "randomize-powerups") {
+        } else if ($this->options['blocks'] == "randomizePowerups") {
             $this->randomizeBlocks($game, $item_pools->powerups, $item_pools->powerups);
-        } else if ($this->options['blocks'] == "randomize-grouped") {
+        } else if ($this->options['blocks'] == "randomizeGrouped") {
             $this->randomizeBlocks($game, $item_pools->all_question_blocks, $item_pools->all_question_blocks);
             $this->randomizeBlocks($game, $item_pools->all_hidden_blocks, $item_pools->all_hidden_blocks);
             $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
-        } else if ($this->options['blocks'] == "randomize-coins") {
+        } else if ($this->options['blocks'] == "randomizeCoins") {
             $this->randomizeBlocks($game, $item_pools->all_items, $item_pools->all_coins);
-        } else if ($this->options['blocks'] == "randomize-none") {
+        } else if ($this->options['blocks'] == "randomizeNone") {
             $this->log->write("No randomization of blocks!\n");
         }
 
         // Randomize Bowser's Abilities
-        if ($this->options['bowser-abilities'] == "true") {
+        if ($this->options['bowserAbilities'] == "true") {
             $this->randomizeBowserAbilities($game);
         }
 
         // Randomize Bowser's Hitpoints
-        if ($this->options['bowser-hitpoints'] != "normal") {
+        if ($this->options['bowserHitpoints'] != "normal") {
             $this->randomizeBowserHitpoints($game);
         }
 
         // Randomize player's starting lives
-        if ($this->options['starting-lives'] != "normal") {
+        if ($this->options['startingLives'] != "normal") {
             $this->randomizeStartingLives($game);
         }
 
         // Randomize warp zones
-        if ($this->options['warp-zones'] != "normal") {
+        if ($this->options['warpZones'] != "normal") {
             $this->randomizeWarpZones($game);
         }
 
