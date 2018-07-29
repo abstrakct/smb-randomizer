@@ -2,7 +2,6 @@
 namespace SMBR\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use SMBR\Logger;
 use SMBR\Randomizer;
 use SMBR\Rom;
@@ -37,7 +36,6 @@ class RandomizerController extends Controller
         $options['mariocolors'] = $request->input('mario');
         $options['luigicolors'] = $request->input('luigi');
         $options['firecolors'] = $request->input('fire');
-        Log::debug($options);
 
         // if seed == null a random seed will be chosen, else it will use the user's chosen seed.
         $rando = new Randomizer($seed, $options, $rom);
@@ -48,7 +46,8 @@ class RandomizerController extends Controller
         $romfilename = $request->input('romfilename');
 
         $outfilename = "output/roms/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . strtoupper($rando->getFlags($options)) . ".nes";
-        $logfilename = "output/logs/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . strtoupper($rando->getFlags($options)) . ".log";
+        $logfilename = "output/logs/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . strtoupper($rando->getFlags($options)) . ".log.txt";
+        $outfilebasename = substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . strtoupper($rando->getFlags($options)) . ".nes";
 
         // Start the logger
         $log = new Logger($logfilename);
@@ -78,7 +77,16 @@ class RandomizerController extends Controller
 
         $log->close();
 
-        return $outfilename;
+        $base64data = $rom->b64();
+
+        $responseData = [
+            'fullpath' => $outfilename,
+            'filename' => $outfilebasename,
+            'logfullpath' => $logfilename,
+            'base64data' => $base64data,
+        ];
+
+        return json_encode($responseData);
     }
 
     public function options()

@@ -94,7 +94,14 @@
                     <p> </p>
 
                     <b-button variant="success" @click="generateSeed" class="w-100">Generate!</b-button>
-                    <div>{{ randomizedRom.data }}</div>
+                    <div v-if="rando.done">
+                      <p></p>
+                      <b-button variant="success" @click="saveRandomizedRom" class="w-100">Save
+                        <strong>{{ rando.filename }}</strong>
+                      </b-button>
+                      <p></p>
+                      <b-button variant="info" class="w-100" :href="rando.logfullpath">View log (contains spoilers!)</b-button>
+                    </div>
                   </b-col>
                 </b-row>
               </b-card>
@@ -119,13 +126,24 @@ export default {
   // TODO: Disable certain options when certain options are selected!
   data() {
     return {
+      // base rom
       baseRom: null,
       baseRomLoaded: false,
       baseRomHash: "",
       baseRomFilename: "",
-      randomizedRom: "",
+      // randomized rom
+      rando: {
+        fullpath: "",
+        filename: "",
+        logfullpath: "",
+        base64data: "",
+        jsondata: null,
+        done: false
+      },
+      // error
       error: false,
       errorMessage: "",
+      // options
       optionsLoaded: false,
       defaultLoaded: false,
       defaultOptions: null,
@@ -177,6 +195,7 @@ export default {
     });
 
     EventBus.$on("update-baserom-filename", this.updateFilename);
+    EventBus.$on("store-randomized-rom", this.storeRandomizedRom);
   },
 
   methods: {
@@ -200,7 +219,15 @@ export default {
           warpZones: this.selectedOptions.warpZones
         })
         .then(response => {
-          this.randomizedRom = response;
+          this.rando.fullpath = response.data.fullpath;
+          this.rando.filename = response.data.filename;
+          this.rando.logfullpath = response.data.logfullpath;
+          this.rando.base64data = response.data.base64data;
+          this.rando.jsondata = response.data.jsondata;
+          this.rando.done = true;
+        })
+        .then(() => {
+          EventBus.$emit("store-randomized-rom");
         })
         .catch(error => {
           if (error.response) {
@@ -246,6 +273,46 @@ export default {
       this.baseRomLoaded = false;
       localforage.removeItem("rom").then(function() {});
       localforage.removeItem("romfilename").then(function() {});
+    },
+
+    storeRandomizedRom() {
+      // Decode base64 encoded randomized rom data and store in localforage
+      var binary_string = Base64.decode(this.rando.base64data);
+      var s = "";
+      var data = [];
+
+      for (var i = 0; i <= binary_string.length; i++) {
+        if (binary_string[i] != " ") {
+          s += binary_string[i];
+        }
+
+        if (binary_string[i] == " ") {
+          data.push(parseInt(s));
+          s = "";
+        }
+      }
+
+      var arr = new Uint8Array(data);
+      var newRom = new NewROM(arr.buffer);
+
+      localforage.setItem("randomizedromfilename", this.rando.filename);
+      localforage.setItem("randomizedrom", newRom.getData());
+    },
+
+    saveRandomizedRom() {
+      localforage.getItem("randomizedrom").then(function(value) {
+        if (value == null) {
+          this.error = true;
+          this.errorMessage = "No randomized ROM found!";
+          return;
+        }
+
+        localforage.getItem("randomizedromfilename").then(function(value) {
+          var rom = new NewROM(value);
+          console.log(rom);
+          rom.save(value);
+        });
+      });
     },
 
     updateFilename(filename) {

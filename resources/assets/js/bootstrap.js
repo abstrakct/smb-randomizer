@@ -31,6 +31,8 @@ Vue.use(BootstrapVue);
 /* ROM Stuff - inspired by alttp randomizer */
 window.localforage = require("localforage");
 window.ROM = require("./rom.js");
+window.NewROM = require("./newrom.js");
+window.Base64 = require("./base64.js");
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that

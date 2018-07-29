@@ -55,7 +55,7 @@ return [
                 'randomizeFull' => 'Randomize all enemies (within reason)',
                 'randomizePools' => 'Randomize enemies within smaller pools of related or similar enemies',
                 'randomizeNone' => 'Do not randomize enemies',
-                'shuffle' => 'NOT IMPLEMENTED: Shuffle Enemies',
+                'shufflexxxxxx' => 'NOT IMPLEMENTED: Shuffle Enemies',
             ],
             'blocks' => [
                 'randomizeAll' => 'Randomize all blocks',
@@ -63,7 +63,7 @@ return [
                 'randomizeGrouped' => 'Randomize blocks in groups',
                 'randomizeCoins' => 'Replace all power ups with coins',
                 'randomizeNone' => 'Do not randomize blocks',
-                'shuffle' => 'NOT IMPLEMENTED: Shuffle Blocks',
+                'shufflexxxxx' => 'NOT IMPLEMENTED: Shuffle Blocks',
             ],
             'bowserAbilities' => [
                 'true' => 'Randomize which worlds Bowser starts throwing hammers and breathing fire',

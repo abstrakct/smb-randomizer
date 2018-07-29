@@ -18,4 +18,4 @@ Route::get('settings/base_rom', 'SettingsController@hash');
 Route::get('randomizer/options', 'RandomizerController@options');
 Route::get('randomizer/options/default', 'RandomizerController@defaultoptions');
 
-Route::any('randomizer/generate', 'RandomizerController@generate');
+Route::post('randomizer/generate', 'RandomizerController@generate');

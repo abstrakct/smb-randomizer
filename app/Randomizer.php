@@ -739,7 +739,9 @@ class Randomizer
         $flags[2]++;
         $flags[2]++;
         $flags[3] = $options['enemies'][12];
-        $flags[4] = $options['blocks'][10];
+        $flags[4] = $options['blocks'][11];
+        $flags[4]++;
+        $flags[4]++;
         $flags[5] = $options['bowserAbilities'][3];
         $flags[6] = $options['bowserHitpoints'][0];
         $flags[6]++;
@@ -773,7 +775,7 @@ class Randomizer
         $hashstring = $this->flags . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
 
-        print("SeedHash: $this->seedhash\n");
+        // print("SeedHash: $this->seedhash\n");
     }
 
     public function getSeedHash()
@@ -807,7 +809,7 @@ class Randomizer
             '8' => new World8($game, 8),
         ];
 
-        print("\nHere we go! Making randomized SMB ROM with seed $this->rng_seed\n");
+        // print("\nHere we go! Making randomized SMB ROM with seed $this->rng_seed\n");
 
         //  Shuffle Levels
         if ($this->options['shuffleLevels'] == "all") {

@@ -101,6 +101,16 @@ class Rom
         return copy($this->tmpfile, $output_location);
     }
 
+    public function b64()
+    {
+        $data = $this->read(0, self::SIZE);
+        return base64_encode(implode(" ", $data));
+    }
+
+    public function jsonify()
+    {
+    }
+
     /**
      * Write packed data at the given offset
      *
