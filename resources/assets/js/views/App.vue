@@ -42,53 +42,53 @@
                   <b-col>
                     <!-- INPUT FOR SEED NUMBER -->
                     <b-form-group label="Level Randomization" label-for="olr">
-                      <b-select id="olr" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels">
+                      <b-select id="olr" @input="checkSelectedOptions" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="World Length" label-for="owl">
-                      <b-select id="owl" v-model="selectedOptions.normalWorldLength" :options="randomizerOptions.normalWorldLength">
+                      <b-select id="owl" @input="checkSelectedOptions" v-model="selectedOptions.normalWorldLength" :options="randomizerOptions.normalWorldLength">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Pipe Transitions" label-for="opt">
-                      <b-select id="opt" v-model="selectedOptions.pipeTransitions" :options="randomizerOptions.pipeTransitions">
+                      <b-select id="opt" @input="checkSelectedOptions" v-model="selectedOptions.pipeTransitions" :options="randomizerOptions.pipeTransitions">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Warp Zones" label-for="owz">
-                      <b-select id="owz" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones">
+                      <b-select id="owz" @input="checkSelectedOptions" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Blocks" label-for="obl">
-                      <b-select id="obl" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks">
+                      <b-select id="obl" @input="checkSelectedOptions" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Enemies" label-for="oen">
-                      <b-select id="oen" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies">
+                      <b-select id="oen" @input="checkSelectedOptions" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Bowser's Abilities" label-for="oba">
-                      <b-select id="oba" v-model="selectedOptions.bowserAbilities" :options="randomizerOptions.bowserAbilities">
+                      <b-select id="oba" @input="checkSelectedOptions" v-model="selectedOptions.bowserAbilities" :options="randomizerOptions.bowserAbilities">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Bowser's Hitpoints" label-for="obh">
-                      <b-select id="obh" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints">
+                      <b-select id="obh" @input="checkSelectedOptions" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints">
                       </b-select>
                     </b-form-group>
                   </b-col>
                   <b-col>
                     <b-form-group label="Mario Color Scheme" label-for="ocsm">
-                      <b-select id="ocsm" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario">
+                      <b-select id="ocsm" @input="checkSelectedOptions" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Luigi Color Scheme" label-for="ocsl">
-                      <b-select id="ocsl" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi">
+                      <b-select id="ocsl" @input="checkSelectedOptions" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Fire Mario/Luigi Color Scheme" label-for="ocsf">
-                      <b-select id="ocsf" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire">
+                      <b-select id="ocsf" @input="checkSelectedOptions" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Starting Lives" label-for="osl">
-                      <b-select id="osl" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives">
+                      <b-select id="osl" @input="checkSelectedOptions" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives">
                       </b-select>
                     </b-form-group>
                     <p> </p>
@@ -219,6 +219,39 @@ export default {
   },
 
   methods: {
+    checkSelectedOptions() {
+      this.error = false;
+      this.errorMessage = "";
+
+      if (
+        this.selectedOptions.shuffleLevels == "worlds" &&
+        this.selectedOptions.normalWorldLength == "false"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Invalid combination: 'Shuffle world order only' and 'Worlds can have varying length'";
+      }
+
+      if (
+        this.selectedOptions.shuffleLevels == "none" &&
+        this.selectedOptions.normalWorldLength == "false"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Invalid combination: 'Do not shuffle levels' and 'Worlds can have varying length'";
+      }
+
+      if (
+        this.selectedOptions.pipeTransitions == "keep" &&
+        this.selectedOptions.shuffleLevels == "all" &&
+        this.selectedOptions.normalWorldLength == "true"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'";
+      }
+    },
+
     generateSeed() {
       this.error = false;
       axios
