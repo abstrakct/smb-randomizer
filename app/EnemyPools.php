@@ -132,6 +132,9 @@ class EnemyPools
 
         $this->goomba_pool = [
             Enemy::get('Goomba'),
+/*             Enemy::get('Red Flying Cheep-Cheep Generator'),
+Enemy::get('Bowser Fire Generator'),
+Enemy::get('Bullet Bill/Cheep-Cheep Generator'), */
             Enemy::get('2 Goombas V10'),
             Enemy::get('3 Goombas V10'),
             Enemy::get('2 Goombas V6'),

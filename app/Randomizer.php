@@ -201,6 +201,7 @@ class Randomizer
                         if ($in_pools) {
                             $new_data = 0;
                             if (mt_rand(1, 100) <= $percentage) {
+                                $new_object = 0;
                                 if ($o == Enemy::get('Toad')) {
                                     $z = count($this->enemy_pools->toad_pool);
                                     $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];

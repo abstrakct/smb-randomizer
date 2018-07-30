@@ -94,7 +94,7 @@
                     <p> </p>
 
                     <b-button variant="success" @click="generateSeed" class="w-100">Generate!</b-button>
-                    <div v-if="rando.done">
+                    <div v-if="rando.stored">
                       <p></p>
                       <b-button variant="success" @click="saveRandomizedRom" class="w-100">Save
                         <strong>{{ rando.filename }}</strong>
@@ -138,7 +138,8 @@ export default {
         logfullpath: "",
         base64data: "",
         jsondata: null,
-        done: false
+        done: false,
+        stored: false
       },
       // error
       error: false,
@@ -167,9 +168,28 @@ export default {
     };
   },
 
+  mounted() {
+    // see if there's anything in localforage, update data if so
+    localforage.getItem("randomizedrom").then(
+      function(value) {
+        if (value != null) {
+          this.rando.stored = true;
+          localforage.getItem("randomizedromfilename").then(
+            function(value) {
+              this.rando.filename = value;
+            }.bind(this)
+          );
+        }
+      }.bind(this)
+    );
+  },
+
+  updated() {},
+
   created() {
     // Thanks Veetorp!
 
+    console.log("created");
     // Get all available options from the backend
     axios.get("/randomizer/options").then(response => {
       this.randomizerOptions = response.data;
@@ -200,6 +220,7 @@ export default {
 
   methods: {
     generateSeed() {
+      this.error = false;
       axios
         .post("/randomizer/generate", {
           headers: { "content-type": "multipart/form-data" },
@@ -297,6 +318,8 @@ export default {
 
       localforage.setItem("randomizedromfilename", this.rando.filename);
       localforage.setItem("randomizedrom", newRom.getData());
+
+      this.rando.stored = true;
     },
 
     saveRandomizedRom() {
@@ -307,9 +330,9 @@ export default {
           return;
         }
 
+        var rom = new NewROM(value);
+
         localforage.getItem("randomizedromfilename").then(function(value) {
-          var rom = new NewROM(value);
-          console.log(rom);
           rom.save(value);
         });
       });
