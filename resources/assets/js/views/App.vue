@@ -1,9 +1,9 @@
 <template>
   <div id="smbr-main">
-    <b-container class="fluid">
+    <b-container fluid>
       <b-row>
-        <b-col> </b-col>
-        <b-col cols="11">
+        <b-col></b-col>
+        <b-col cols="8">
           <b-card :title="'Super Mario Bros. Randomizer v' + this.version" style="max-width: 150rem;">
 
             <b-alert dismissible fade :show="error" variant="danger">
@@ -18,16 +18,8 @@
                     <b-button @click="unloadRom">Unload ROM file</b-button>
                   </center>
                 </b-alert>
-
               </b-col>
               <b-col>
-                <b-alert dismissible :show="baseRomLoaded" variant="info" class="m-3">
-                  <center>
-                    <h6 class="alert-heading">This is some information</h6>
-                    Let me tell you something...
-                  </center>
-                </b-alert>
-
               </b-col>
             </b-row>
             <smbr-rom-loader v-if="!baseRomLoaded" @update="updateRom" @error="onError"></smbr-rom-loader>
@@ -42,53 +34,53 @@
                   <b-col>
                     <!-- INPUT FOR SEED NUMBER -->
                     <b-form-group label="Level Randomization" label-for="olr">
-                      <b-select id="olr" @input="checkSelectedOptions" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels">
+                      <b-select id="olr" @input="updateInputted" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="World Length" label-for="owl">
-                      <b-select id="owl" @input="checkSelectedOptions" v-model="selectedOptions.normalWorldLength" :options="randomizerOptions.normalWorldLength">
+                      <b-select id="owl" @input="updateInputted" v-model="selectedOptions.normalWorldLength" :options="randomizerOptions.normalWorldLength">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Pipe Transitions" label-for="opt">
-                      <b-select id="opt" @input="checkSelectedOptions" v-model="selectedOptions.pipeTransitions" :options="randomizerOptions.pipeTransitions">
+                      <b-select id="opt" @input="updateInputted" v-model="selectedOptions.pipeTransitions" :options="randomizerOptions.pipeTransitions">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Warp Zones" label-for="owz">
-                      <b-select id="owz" @input="checkSelectedOptions" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones">
+                      <b-select id="owz" @input="updateInputted" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Blocks" label-for="obl">
-                      <b-select id="obl" @input="checkSelectedOptions" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks">
+                      <b-select id="obl" @input="updateInputted" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Enemies" label-for="oen">
-                      <b-select id="oen" @input="checkSelectedOptions" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies">
+                      <b-select id="oen" @input="updateInputted" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Bowser's Abilities" label-for="oba">
-                      <b-select id="oba" @input="checkSelectedOptions" v-model="selectedOptions.bowserAbilities" :options="randomizerOptions.bowserAbilities">
+                      <b-select id="oba" @input="updateInputted" v-model="selectedOptions.bowserAbilities" :options="randomizerOptions.bowserAbilities">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Bowser's Hitpoints" label-for="obh">
-                      <b-select id="obh" @input="checkSelectedOptions" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints">
+                      <b-select id="obh" @input="updateInputted" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints">
                       </b-select>
                     </b-form-group>
                   </b-col>
                   <b-col>
                     <b-form-group label="Mario Color Scheme" label-for="ocsm">
-                      <b-select id="ocsm" @input="checkSelectedOptions" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario">
+                      <b-select id="ocsm" @input="updateInputted" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Luigi Color Scheme" label-for="ocsl">
-                      <b-select id="ocsl" @input="checkSelectedOptions" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi">
+                      <b-select id="ocsl" @input="updateInputted" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Fire Mario/Luigi Color Scheme" label-for="ocsf">
-                      <b-select id="ocsf" @input="checkSelectedOptions" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire">
+                      <b-select id="ocsf" @input="updateInputted" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire">
                       </b-select>
                     </b-form-group>
                     <b-form-group label="Starting Lives" label-for="osl">
-                      <b-select id="osl" @input="checkSelectedOptions" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives">
+                      <b-select id="osl" @input="updateInputted" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives">
                       </b-select>
                     </b-form-group>
                     <p> </p>
@@ -112,7 +104,13 @@
             </p>
           </b-card>
         </b-col>
-        <b-col> </b-col>
+        <b-col>
+          <b-card title="Information">
+            <b-alert dismissible :show="info" variant="info" v-html="infoMessage">
+              {{ infoMessage }}
+            </b-alert>
+          </b-card>
+        </b-col>
       </b-row>
     </b-container>
   </div>
@@ -144,6 +142,9 @@ export default {
       // error
       error: false,
       errorMessage: "",
+      // info
+      info: false,
+      infoMessage: "",
       // options
       optionsLoaded: false,
       defaultLoaded: false,
@@ -201,6 +202,7 @@ export default {
       this.defaultOptions = response.data;
       this.defaultLoaded = true;
       this.selectedOptions = Object.assign({}, this.defaultOptions);
+      this.updateInputted();
     });
 
     // Look for stored option settings in localforage
@@ -219,39 +221,6 @@ export default {
   },
 
   methods: {
-    checkSelectedOptions() {
-      this.error = false;
-      this.errorMessage = "";
-
-      if (
-        this.selectedOptions.shuffleLevels == "worlds" &&
-        this.selectedOptions.normalWorldLength == "false"
-      ) {
-        this.error = true;
-        this.errorMessage +=
-          "Invalid combination: 'Shuffle world order only' and 'Worlds can have varying length'";
-      }
-
-      if (
-        this.selectedOptions.shuffleLevels == "none" &&
-        this.selectedOptions.normalWorldLength == "false"
-      ) {
-        this.error = true;
-        this.errorMessage +=
-          "Invalid combination: 'Do not shuffle levels' and 'Worlds can have varying length'";
-      }
-
-      if (
-        this.selectedOptions.pipeTransitions == "keep" &&
-        this.selectedOptions.shuffleLevels == "all" &&
-        this.selectedOptions.normalWorldLength == "true"
-      ) {
-        this.error = true;
-        this.errorMessage +=
-          "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'";
-      }
-    },
-
     generateSeed() {
       this.error = false;
       axios
@@ -373,6 +342,60 @@ export default {
 
     updateFilename(filename) {
       this.baseRomFilename = filename;
+    },
+
+    updateInputted() {
+      this.updateInfoMessage();
+      this.checkSelectedOptions();
+    },
+
+    updateInfoMessage() {
+      this.info = false;
+      this.infoMessage = "";
+      if (this.selectedOptions.normalWorldLength == "false") {
+        this.infoMessage +=
+          "<p>When not using normal world lengths, there will be no midway points in any level! In other words, if you die you will always restart at the beginning of the level. This is due to limitations in the original game code.</p>";
+        this.info = true;
+      }
+
+      if (this.selectedOptions.shuffleLevels == "worlds") {
+        this.infoMessage +=
+          "<p>When shuffling world order only, there will be no midway points. In other words, if you die you will always restart at the beginning of the level. This will hopefully be fixed in a future version of the randomizer.</p>";
+        this.info = true;
+      }
+    },
+
+    checkSelectedOptions() {
+      this.error = false;
+      this.errorMessage = "";
+
+      if (
+        this.selectedOptions.shuffleLevels == "worlds" &&
+        this.selectedOptions.normalWorldLength == "false"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Invalid combination: 'Shuffle world order only' and 'Worlds can have varying length'";
+      }
+
+      if (
+        this.selectedOptions.shuffleLevels == "none" &&
+        this.selectedOptions.normalWorldLength == "false"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Invalid combination: 'Do not shuffle levels' and 'Worlds can have varying length'";
+      }
+
+      if (
+        this.selectedOptions.pipeTransitions == "keep" &&
+        this.selectedOptions.shuffleLevels == "all" &&
+        this.selectedOptions.normalWorldLength == "true"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'";
+      }
     },
 
     loadDefaults() {

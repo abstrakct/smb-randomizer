@@ -47,7 +47,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.8.2";
+    const VERSION = "0.8.3";
 
     /**
      * Create a new randomizer.
