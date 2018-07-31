@@ -31,17 +31,16 @@
                       <b-select id="olr" @input="updateInputted" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels">
                       </b-select>
                     </b-form-group>
-                    <b-form-group label="World Length" label-for="owl">
-                      <b-select id="owl" @input="updateInputted" v-model="selectedOptions.normalWorldLength" :options="randomizerOptions.normalWorldLength">
-                      </b-select>
-                    </b-form-group>
-                    <b-form-group label="Pipe Transitions" label-for="opt">
-                      <b-select id="opt" @input="updateInputted" v-model="selectedOptions.pipeTransitions" :options="randomizerOptions.pipeTransitions">
-                      </b-select>
+                    <b-form-group>
+                      <b-form-checkbox id="owl" @input="updateInputted" v-model="selectedOptions.normalWorldLength" value="false" unchecked-value="true">Worlds can have varying length</b-form-checkbox>
+                      <b-form-checkbox id="opt" @input="updateInputted" v-model="selectedOptions.pipeTransitions" value="remove" unchecked-value="keep">Remove pipe transitions</b-form-checkbox>
                     </b-form-group>
                     <b-form-group label="Warp Zones" label-for="owz">
                       <b-select id="owz" @input="updateInputted" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones">
                       </b-select>
+                    </b-form-group>
+                    <b-form-group>
+                      <b-form-checkbox id="ohw" @input="updateInputted" v-model="selectedOptions.hiddenWarpDestinations" value="true" unchecked-value="false">Hide Warp Pipe destination worlds</b-form-checkbox>
                     </b-form-group>
                     <b-form-group label="Blocks" label-for="obl">
                       <b-select id="obl" @input="updateInputted" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks">
@@ -51,13 +50,12 @@
                       <b-select id="oen" @input="updateInputted" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies">
                       </b-select>
                     </b-form-group>
-                    <b-form-group label="Bowser's Abilities" label-for="oba">
-                      <b-select id="oba" @input="updateInputted" v-model="selectedOptions.bowserAbilities" :options="randomizerOptions.bowserAbilities">
-                      </b-select>
-                    </b-form-group>
                     <b-form-group label="Bowser's Hitpoints" label-for="obh">
                       <b-select id="obh" @input="updateInputted" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints">
                       </b-select>
+                    </b-form-group>
+                    <b-form-group>
+                      <b-form-checkbox id="oba" @input="updateInputted" v-model="selectedOptions.bowserAbilities" value="true" unchecked-value="false">Randomize which worlds Bowser starts throwing hammers and breathing fire</b-form-checkbox>
                     </b-form-group>
                   </b-col>
                   <b-col>
@@ -150,6 +148,7 @@ export default {
       defaultLoaded: false,
       defaultOptions: null,
       randomizerOptions: null,
+
       selectedOptions: {
         colorscheme: {
           mario: "",
@@ -164,7 +163,8 @@ export default {
         bowserAbilities: "",
         bowserHitpoints: "",
         startingLives: "",
-        warpZones: ""
+        warpZones: "",
+        hiddenWarpDestinations: ""
       }
     };
   },
@@ -239,7 +239,8 @@ export default {
           bowserAbilities: this.selectedOptions.bowserAbilities,
           bowserHitpoints: this.selectedOptions.bowserHitpoints,
           startingLives: this.selectedOptions.startingLives,
-          warpZones: this.selectedOptions.warpZones
+          warpZones: this.selectedOptions.warpZones,
+          hiddenWarpDestinations: this.selectedOptions.hiddenWarpDestinations
         })
         .then(response => {
           this.rando.fullpath = response.data.fullpath;

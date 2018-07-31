@@ -21,6 +21,7 @@ return [
             'bowserAbilities' => 'true',
             'startingLives' => 'normal',
             'warpZones' => 'shuffle',
+            'hiddenWarpDestinations' => 'false',
         ],
 
         'options' => [
@@ -88,6 +89,10 @@ return [
                 'normal' => 'Warp Zones stay as they are in the original game',
                 'random' => 'The destination of warp zone pipes is randomized',
                 'shuffle' => 'There will be one warp pipe to each world, shuffled across the 3 warp zones',
+            ],
+            'hiddenWarpDestinations' => [
+                'true' => 'Warp Zone destination worlds will not be written above the warp pipes',
+                'false' => 'Warp Zone destination worlds will be written above warp pipes as normal',
             ],
         ],
     ],

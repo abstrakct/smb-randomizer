@@ -211,7 +211,7 @@ class Randomizer
                                 if ($o == Enemy::get('Toad')) {
                                     $z = count($this->enemy_pools->toad_pool);
                                     $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                    $new_coord = 0xb8;
+                                    $new_coord = 0xc8;
                                     $game->addData($offset + $i, pack('C*', $new_coord));
                                 } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
                                     $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
@@ -233,7 +233,7 @@ class Randomizer
                             if (mt_rand(1, 100) <= $percentage) {
                                 if ($o == Enemy::get('Toad')) {
                                     $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                    $new_coord = 0xb8;
+                                    $new_coord = 0xc8;
                                     $game->addData($offset + $i, pack('C*', $new_coord));
                                 } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
                                     // TODO: should Bowser Fire Generator be included in this?
@@ -622,6 +622,12 @@ class Randomizer
         } else if ($this->options['warpZones'] == 'shuffle') {
             $this->log->write("Shuffling Warp Zones...\n");
             $destinations = [1, 2, 3, 4, 5, 6, 7, 8, 0x24]; // 0x24 is "blank"
+            if ($this->options['hiddenWarpDestinations'] == "true") {
+                // Make sure ALL pipes have a valid destination,
+                // by replacing the blank with an extra, randomly selected world
+                $destinations[8] = mt_rand(1, 8);
+            }
+
             $shuffled_destinations = mt_shuffle($destinations);
             $index = 0;
 
@@ -634,6 +640,17 @@ class Randomizer
         } else {
             echo "Invalid value for option Warp Zones!";
             exit(1);
+        }
+    }
+
+    public function removeWarpZoneLabels(&$game)
+    {
+        // This takes the routine which prints the warp pipe destination above each pipe,
+        // and replaces it with NOP instructions, thus no pipe destination labels get printed on screen.
+        // The pipes still function normally.
+        $offset = 0x892;
+        for ($i = 0; $i < 22; $i++) {
+            $game->addData($offset + $i, pack('C*', 0xEA));
         }
     }
 
@@ -795,6 +812,10 @@ class Randomizer
         $flags[8]++;
         $flags[8]++;
         $flags[8]++;
+        $flags[9] = $options['hiddenWarpDestinations'][3];
+        $flags[9]++;
+        $flags[9]++;
+        $flags[9]++;
 
         $s = implode("", $flags);
         $f = strtoupper($s);
@@ -932,6 +953,11 @@ class Randomizer
         // Randomize warp zones
         if ($this->options['warpZones'] != "normal") {
             $this->randomizeWarpZones($game);
+        }
+
+        // Remove warp zone destination text if selected
+        if ($this->options['hiddenWarpDestinations'] == "true") {
+            $this->removeWarpZoneLabels($game);
         }
 
         // Fix Pipes

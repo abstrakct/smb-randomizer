@@ -22,21 +22,28 @@ Process for doing randomization frontend to backend back to frontend
 * FRONTEND *
 ************
 BUGS:
-- rom file not recognized after reloading browser
 
 
-BUG: in enemies-randomize-pools Bowser can get randomized to something else!
+BUGS
+BUG: FIXED? in enemies-randomize-pools Bowser can get randomized to something else!
+BUG: Enemy at the end of 8-2 (on the stairs before flag) should never be a firebar
 
 
 TODO: Check this: DONE more or less: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
 
+TODO: Useful warp zone shuffle option (all pipes take you to a higher world number)
+TODO: figure out if it's possible to not write warp pipe destinations above the pipe! for those extra gambles! For example, we could have a mode
+      where you don't know where a pipe leads - but 1 or 2 pipes are guaranteed to be good! yeah!
+      disasm line 1759: replace routine with NOP should work? YES!
+      ROM offset: 0x892 length 22 bytes
 TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
 TODO: Option to leave 8-4 un-randomized.
 TODO/IDEA: is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
 TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
 TODO: Change/randomize y pos of (some) enemies? to prevent stuck enemies
 TODO: Randomize where pipes lead to?
+      -- option to include 4-2 warp zone or not in shuffle - if possible.
 TODO: Shuffle which pipes can be entered?
 TODO: Shuffle scenery? nah... or?
 TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!

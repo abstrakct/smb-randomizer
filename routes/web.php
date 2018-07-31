@@ -12,6 +12,7 @@
  */
 
 Route::get('/', 'HomeController@index');
+Route::get('/about', 'HomeController@about');
 // Route::get('/{any}', 'HomeController@index')->where('any', '.*');
 
 Route::get('settings/base_rom', 'SettingsController@hash');
