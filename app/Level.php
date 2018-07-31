@@ -8,17 +8,23 @@ class Level
     public $level_data_offset;
     public $pipe_pointers = [];
     public $midway_point;
+    public $has_enemies = true;
+    public $world_num = 0;
 
     protected static $levels;
 
-    public function __construct($name, $map, $enemy_data_offset, $level_data_offset, $pipe_pointers = null, $midway_point = -1)
+    public function __construct($name, $map, $enemy_data_offset, $level_data_offset, $pipe_pointers = null, $midway_point, $enemies = true)
     {
         $this->name = $name;
         $this->map = $map;
         $this->enemy_data_offset = $enemy_data_offset;
         $this->level_data_offset = $level_data_offset;
         $this->pipe_pointers = $pipe_pointers;
-        $this->$midway_point = $midway_point;
+        $this->midway_point = $midway_point;
+        $this->has_enemies = $enemies;
+        if (intval($name[0])) {
+            $this->world_num = intval($name[0]);
+        }
     }
 
     public static function get(string $name)
@@ -64,30 +70,30 @@ class Level
             '5-2' => new Level('5-2', 0x31, 0x2045, 0x2aa2, [[0x2045 + 4, 0x2170 + 8],
                 [0x2045 + 17, 0x1fb0 + 7]], 6),
             // level data set to 0 for levels that duplicate to avoid randomizing two times
-            '5-3' => new Level('5-3', 0x26, 0x0000, 0x0000, null, 4),
-            '5-4' => new Level('5-4', 0x62, 0x0000, 0x0000, null, 0),
+            '5-3' => new Level('5-3', 0x26, 0x0000, 0x0000, null, 4, false),
+            '5-4' => new Level('5-4', 0x62, 0x0000, 0x0000, null, 0, false),
             '6-1' => new Level('6-1', 0x2e, 0x2001, 0x296b, null, 6),
             '6-2' => new Level('6-2', 0x23, 0x1eb9, 0x259a, [[0x1eb9 + 2, 0x2143 + 29],
                 [0x1eb9 + 11, 0x2170 + 11],
                 [0x1eb9 + 18, 0x20ba + 7],
                 [0x1eb9 + 25, 0x2143 + 40]], 6), // first, last exit unsure
             '6-3' => new Level('6-3', 0x2d, 0x1fde, 0x2906, null, 6),
-            '6-4' => new Level('6-4', 0x60, 0x0000, 0x0000, null, 0),
+            '6-4' => new Level('6-4', 0x60, 0x0000, 0x0000, null, 0, false),
             '7-1' => new Level('7-1', 0x33, 0x209e, 0x2b8e, [[0x209e + 4, 0x2143 + 8]], 6),
-            '7-2' => new Level('7-2', 0x01, 0x0000, 0x0000, [[0x2181 + 10, null]], 5),
-            '7-3' => new Level('7-3', 0x27, 0x0000, 0x0000, null, 7),
+            '7-2' => new Level('7-2', 0x01, 0x0000, 0x0000, [[0x2181 + 10, null]], 5, false),
+            '7-3' => new Level('7-3', 0x27, 0x0000, 0x0000, null, 7, false),
             '7-4' => new Level('7-4', 0x64, 0x1e1a, 0x237f, null, 0),
             '8-1' => new Level('8-1', 0x30, 0x200b, 0x2a0f, [[0x200b + 6, 0x2143 + 16]], 0),
             '8-2' => new Level('8-2', 0x32, 0x2070, 0x2b15, [[0x2070 + 26, 0x2143 + 43]], 0),
             '8-3' => new Level('8-3', 0x21, 0x1e8e, 0x24de, null, 0),
             '8-4' => new Level('8-4', 0x65, 0x1e2f, 0x240a, null, 0),
-            'Pipe Transition' => new Level('Pipe Transition', 0x29, 0x0000, 0x0000, []), // what is enemy offset?
-            'Cloud Area 1' => new Level('cloud-area-1', 0x2b, 0x1fb0, 0x0000, []),
-            'Cloud Area 2' => new Level('cloud-area-2', 0x34, 0x20ba, 0x0000, []),
-            'Water Area' => new Level('water-area', 0x00, 0x2170, 0x0000, []),
-            'Water Area 8-4' => new Level('water-8-4', 0x02, 0x21ab, 0x0000, []),
-            'Underground Bonus' => new Level('underground-bonus', 0x42, 0x2143, 0x0000, []), // pretty sure this is 0x42, but c2 also works.......
-            '4-2 Warp Zone' => new Level('4-2-warp-zone', 0x2f, 0x200a, 0x0000, []),
+            'Pipe Transition' => new Level('Pipe Transition', 0x29, 0x0000, 0x0000, [], -1, false), // what is enemy offset?
+            'Cloud Area 1' => new Level('cloud-area-1', 0x2b, 0x1fb0, 0x0000, [], -1, false),
+            'Cloud Area 2' => new Level('cloud-area-2', 0x34, 0x20ba, 0x0000, [], -1, false),
+            'Water Area' => new Level('water-area', 0x00, 0x2170, 0x0000, [], -1, false),
+            'Water Area 8-4' => new Level('water-8-4', 0x02, 0x21ab, 0x0000, [], -1, false),
+            'Underground Bonus' => new Level('underground-bonus', 0x42, 0x2143, 0x0000, [], -1, false), // pretty sure this is 0x42, but c2 also works.......
+            '4-2 Warp Zone' => new Level('4-2-warp-zone', 0x2f, 0x200a, 0x0000, [], -1, false),
 
         ];
 

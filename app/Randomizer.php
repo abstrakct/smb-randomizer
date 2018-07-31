@@ -83,6 +83,13 @@ class Randomizer
         }
     }
 
+    public function printOptionsToLog()
+    {
+        foreach ($this->options as $key => $value) {
+            $this->log->write("$key: $value\n");
+        }
+    }
+
     public function getSeed()
     {
         return $this->rng_seed;
@@ -153,9 +160,8 @@ class Randomizer
         $this->log->write("Randomizing enemies" . ($in_pools ? " in pools." : ".") . "\n");
         $vanilla = Level::all();
         foreach ($vanilla as $level) {
-            if ($level->enemy_data_offset > 0x0000) {
-                $m = "Randomizing enemies on level " . $level->name . "\n";
-                $this->log->write($m);
+            if ($level->has_enemies) {
+                $this->log->write("Randomizing enemies on level " . $level->name . "\n");
                 $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game, $in_pools);
             }
         }
@@ -298,24 +304,25 @@ class Randomizer
     {
         $all_levels = ['1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4', '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3'];
 
-        $this->log->write("Shuffling ALL levels\n");
+        $this->log->write("Shuffling all levels...\n");
         $shuffledlevels = mt_shuffle($all_levels);
         //print_r($shuffledlevels);
 
         $lastlevelindex = 0;
-        $levelindex = 1;
-        $worldindex = 1;
+        $levelindex = 0;
+        $worldindex = 0;
         $shuffleindex = 0;
 
         // TODO: reduce code duplication!
         if ($this->options['pipeTransitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
+                $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
                 if (Level::get($shuffledlevels[$shuffleindex])->map >= 0x60 and Level::get($shuffledlevels[$shuffleindex])->map <= 0x65) {
                     // it's a castle, so increase the world index and reset the level index
                     $worldindex++;
-                    if ($worldindex > 8) {
-                        $worldindex = 8;
+                    if ($worldindex > 7) {
+                        $worldindex = 7;
                     }
 
                     $levelindex = 0;
@@ -324,17 +331,19 @@ class Randomizer
                 $levelindex++;
                 $shuffleindex++;
             }
-            $game->worlds[8]->levels[$lastlevelindex + 1] = Level::get('8-4');
+            $game->worlds[7]->levels[$lastlevelindex + 1] = Level::get('8-4');
+            $game->worlds[7]->levels[$lastlevelindex + 1]->world_num = 8;
         } else if ($this->options['pipeTransitions'] == 'keep') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
+                $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
                 $levelindex++;
 
                 if (Level::get($shuffledlevels[$shuffleindex])->map >= 0x60 and Level::get($shuffledlevels[$shuffleindex])->map <= 0x65) {
                     // it's a castle, so increase the world index and reset the level index
                     $worldindex++;
-                    if ($worldindex > 8) {
-                        $worldindex = 8;
+                    if ($worldindex > 7) {
+                        $worldindex = 7;
                     }
 
                     $levelindex = 0;
@@ -349,8 +358,9 @@ class Randomizer
                 $levelindex++;
                 $shuffleindex++;
             }
-            $lastlevelindex = count($game->worlds[8]->levels) + 2;
-            $game->worlds[8]->levels[$lastlevelindex] = Level::get('8-4');
+            $lastlevelindex = count($game->worlds[7]->levels) + 2;
+            $game->worlds[7]->levels[$lastlevelindex] = Level::get('8-4');
+            $game->worlds[7]->levels[$lastlevelindex]->world_num = 8;
         }
     }
 
@@ -361,61 +371,62 @@ class Randomizer
      */
     public function shuffleWorldOrder(&$game)
     {
-        $worlds = [1, 2, 3, 4, 5, 6, 7];
+        $worlds = [0, 1, 2, 3, 4, 5, 6];
         $shuffledworlds = mt_shuffle($worlds);
 
+        $this->log->write('Shuffling world order...');
         // shuffle worlds 1-7
-        for ($i = 1; $i <= 7; $i++) {
-            switch ($shuffledworlds[$i - 1]) {
-                case 1:
+        for ($i = 0; $i <= 6; $i++) {
+            switch ($shuffledworlds[$i]) {
+                case 0:
                     if ($this->options['pipeTransitions'] == 'keep') {
-                        $game->worlds[$i] = new World1($game, $i);
+                        $game->worlds[$i] = new World1($i + 1);
                     }
 
                     if ($this->options['pipeTransitions'] == 'remove') {
-                        $game->worlds[$i] = new World1NoPipeTransition($game, $i);
+                        $game->worlds[$i] = new World1NoPipeTransition($i + 1);
+                    }
+
+                    break;
+                case 1:
+                    if ($this->options['pipeTransitions'] == 'keep') {
+                        $game->worlds[$i] = new World2($i + 1);
+                    }
+
+                    if ($this->options['pipeTransitions'] == 'remove') {
+                        $game->worlds[$i] = new World2NoPipeTransition($i + 1);
                     }
 
                     break;
                 case 2:
-                    if ($this->options['pipeTransitions'] == 'keep') {
-                        $game->worlds[$i] = new World2($game, $i);
-                    }
-
-                    if ($this->options['pipeTransitions'] == 'remove') {
-                        $game->worlds[$i] = new World2NoPipeTransition($game, $i);
-                    }
-
+                    $game->worlds[$i] = new World3($i + 1);
                     break;
                 case 3:
-                    $game->worlds[$i] = new World3($game, $i);
-                    break;
-                case 4:
                     if ($this->options['pipeTransitions'] == 'keep') {
-                        $game->worlds[$i] = new World4($game, $i);
+                        $game->worlds[$i] = new World4($i + 1);
                     }
 
                     if ($this->options['pipeTransitions'] == 'remove') {
-                        $game->worlds[$i] = new World4NoPipeTransition($game, $i);
+                        $game->worlds[$i] = new World4NoPipeTransition($i + 1);
                     }
 
                     break;
+                case 4:
+                    $game->worlds[$i] = new World5($i + 1);
+                    break;
                 case 5:
-                    $game->worlds[$i] = new World5($game, $i);
+                    $game->worlds[$i] = new World6($i + 1);
                     break;
                 case 6:
-                    $game->worlds[$i] = new World6($game, $i);
-                    break;
-                case 7:
-                    $game->worlds[$i] = new World7($game, $i);
+                    $game->worlds[$i] = new World7($i + 1);
                     break;
             }
         }
 
         // set world 8 as world 8
-        $game->worlds[8] = new World8($game, 8);
+        $game->worlds[7] = new World8(8);
         // set the shuffled worlds to their vanilla layout
-        $game->setVanilla();
+        $game->setVanillaWorldData();
         //print_r($game);
     }
 
@@ -429,7 +440,7 @@ class Randomizer
         $levels = ['1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3'];
         $castles = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4'];
 
-        $this->log->write("Shuffling levels (normal world length)\n");
+        $this->log->write("Shuffling all levels (normal world length)...\n");
 
         $shuffledlevels = mt_shuffle($levels);
         $shuffledcastles = mt_shuffle($castles);
@@ -438,7 +449,7 @@ class Randomizer
             $this->log->write("Removing pipe transitions\n");
             $levelindex = 0;
             $castleindex = 0;
-            for ($w = 1; $w <= 8; $w++) {
+            for ($w = 0; $w < 8; $w++) {
                 for ($i = 0; $i < 3; $i++) {
                     $game->worlds[$w]->levels[$i] = Level::get($shuffledlevels[$levelindex]);
                     $levelindex++;
@@ -449,7 +460,7 @@ class Randomizer
 
                 $castleindex++;
             }
-            $game->worlds[8]->levels[3] = Level::get('8-4');
+            $game->worlds[7]->levels[3] = Level::get('8-4');
         } else if ($this->options['pipeTransitions'] == 'keep') {
             // TODO: implement this.
             // Probably needs a better structure where we can insert a level in between others!
@@ -510,9 +521,24 @@ class Randomizer
         }
     }
 
+    public function sanityCheckLevels(&$game)
+    {
+        $result = true;
+
+        // Theory: pipes get messed up if 1-1 and 2-1 are in the same world
+
+        foreach ($game->worlds as $world) {
+            if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
+                $result = false;
+            }
+        }
+
+        return $result;
+    }
+
     public function randomizeBowserAbilities(&$game)
     {
-        $this->log->write("Randomizing Bowser's abilities.\n");
+        $this->log->write("Randomizing Bowser's abilities...\n");
 
         $new_hammer_world = mt_rand(0, 6);
         $new_fire_world = mt_rand($new_hammer_world, 7);
@@ -525,7 +551,7 @@ class Randomizer
 
     public function randomizeBowserHitpoints(&$game)
     {
-        $this->log->write("Randomizing Bowser's hitpoints.\n");
+        $this->log->write("Randomizing Bowser's hitpoints...\n");
 
         if ($this->options['bowserHitpoints'] == "easy") {
             $new_hitpoints = mt_rand(1, 5);
@@ -572,7 +598,7 @@ class Randomizer
         $offset = 0x802;
 
         if ($this->options['warpZones'] == 'random') {
-            $this->log->write("Randomizing Warp Zones.\n");
+            $this->log->write("Randomizing Warp Zones...\n");
             for ($i = 0; $i < 11; $i++) {
                 $new_warp = mt_rand(1, 8);
                 $game->addData($offset + $i, pack('C*', $new_warp));
@@ -582,7 +608,7 @@ class Randomizer
             $game->addData(0x805, pack('C*', $new_warp));
             $game->addData(0x809, pack('C*', $new_warp));
         } else if ($this->options['warpZones'] == 'shuffle') {
-            $this->log->write("Shuffling Warp Zones.\n");
+            $this->log->write("Shuffling Warp Zones...\n");
             $destinations = [1, 2, 3, 4, 5, 6, 7, 8, 0x24]; // 0x24 is "blank"
             $shuffled_destinations = mt_shuffle($destinations);
             $index = 0;
@@ -602,13 +628,13 @@ class Randomizer
     public function fixPipes(Game &$game)
     {
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
-        $this->log->write("Fixing Pipes\n");
+        $this->log->write("Fixing Pipes...\n");
         foreach ($game->worlds as $world) {
+            // print_r($world);
             foreach ($world->levels as $level) {
                 if (in_array($level->name, $levels)) {
                     if ($level->pipe_pointers) {
                         foreach ($level->pipe_pointers as list($entry, $exit)) {
-                            $this->log->write("Fixing pipe in " . $level->name . " - new world is " . $world->num . "\n");
                             $new_world = $world->num - 1;
 
                             // entry
@@ -623,6 +649,10 @@ class Randomizer
                                 $new_exit_data = (($new_world << 5) | ($exit_data & 0b00011111));
                                 $game->addData($exit, pack('C*', $new_exit_data));
                             }
+                            $this->log->write("Fixing pipe in " . $level->name . " - New world is " . $new_world . "\n");
+                            $this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
+                            $this->log->write(sprintf("Old entry: %02x  Old exit: %02x\n", $entry_data, $exit_data));
+                            $this->log->write(sprintf("New entry: %02x  New exit: %02x\n", $new_entry_data, $new_exit_data));
                         }
                     }
                 }
@@ -634,18 +664,18 @@ class Randomizer
     {
         $this->log->write("Fixing midway points:\n");
 
-        if (($this->options['shuffleLevels'] == 'all' && $this->options['normalWorldLength'] == 'false') ||
-            ($this->options['shuffleLevels'] == 'worlds')) {
+        if (($this->options['shuffleLevels'] == 'all' && $this->options['normalWorldLength'] == 'false')) {
             // Remove midway points
-            $this->log->write("Removing all midway points!\n");
+            $this->log->write("Removing all midway points.\n");
             for ($i = 0; $i < 0xF; $i++) {
                 $game->midway_points[$i] = 0x00;
             }
         }
 
-        if ($this->options['shuffleLevels'] == 'all' && $this->options['normalWorldLength'] == 'true') {
+        if (($this->options['shuffleLevels'] == 'all' && $this->options['normalWorldLength'] == 'true') ||
+            ($this->options['shuffleLevels'] == 'worlds')) {
             // Fix midway points
-            $this->log->write("Moving midway points around to correct positions!\n");
+            $this->log->write("Moving midway points around to correct positions.\n");
             $mpindex = 0;
             foreach ($game->worlds as $world) {
                 $game->midway_points[$mpindex] = ($world->levels[0]->midway_point << 4) | ($world->levels[1]->midway_point);
@@ -659,7 +689,7 @@ class Randomizer
     public function setTextSeedhash(string $text, Game &$game)
     {
         $offset = 0x9fa5;
-        $this->log->write("Writing Seedhash on title screen\n");
+        $this->log->write("Writing Seedhash on title screen...\n");
 
         $game->addData($offset, pack('C*', $this->trans->asciitosmb('H')));
         $game->addData($offset + 1, pack('C*', $this->trans->asciitosmb('A')));
@@ -799,18 +829,17 @@ class Randomizer
         $game = new Game($this->options);
         $item_pools = new ItemPools();
 
-        $game->worlds = [
-            '1' => new World1($game, 1),
-            '2' => new World2($game, 2),
-            '3' => new World3($game, 3),
-            '4' => new World4($game, 4),
-            '5' => new World5($game, 5),
-            '6' => new World6($game, 6),
-            '7' => new World7($game, 7),
-            '8' => new World8($game, 8),
-        ];
+        // Set up 8 worlds in game structure
+        $game->resetWorlds();
 
         // print("\nHere we go! Making randomized SMB ROM with seed $this->rng_seed\n");
+        $this->log->write("SMB Randomizer v" . self::VERSION . "\n");
+        $this->log->write("Seed: " . $this->rng_seed . "\n");
+        $this->log->write("Flags: " . $this->flags . "\n");
+        $this->log->write("Seedhash: " . strtoupper($this->seedhash) . "\n\n");
+        $this->log->write("OPTIONS:\n");
+        $this->printOptionsToLog();
+        $this->log->write("\nStarting randomization...\n");
 
         //  Shuffle Levels
         if ($this->options['shuffleLevels'] == "all") {
@@ -818,14 +847,19 @@ class Randomizer
                 $this->shuffleLevelsWithNormalWorldLength($game);
             } else {
                 $this->shuffleAllLevels($game);
+                while (!$this->sanityCheckLevels($game)) {
+                    $this->log->write('Failed world layout sanity check! Reshuffling...\n');
+                    $game->resetWorlds();
+                    $this->shuffleAllLevels($game);
+                }
             }
         } else if ($this->options['shuffleLevels'] == "worlds") {
-            $game->setVanilla();
             $this->shuffleWorldOrder($game);
+            $game->setVanillaWorldData();
         } else if ($this->options['shuffleLevels'] == "none") {
-            $game->setVanilla();
+            $game->setVanillaWorldData();
         } else {
-            print("Unrecognized option " . $this->options['shuffle-levels'] . " for Shuffle Levels! Exiting...");
+            print("Unrecognized option " . $this->options['shuffleLevels'] . " for Shuffle Levels! Exiting...");
             exit(1);
         }
 
@@ -892,6 +926,9 @@ class Randomizer
         $this->setMarioColorScheme($this->options['mariocolors'], $game);
         $this->setLuigiColorScheme($this->options['luigicolors'], $game);
         $this->setFireColorScheme($this->options['firecolors'], $game);
+
+        // write "pretty" world layout to logfile
+        $this->log->write($game->prettyprint());
 
         return $game;
     }

@@ -12,12 +12,6 @@
 
             <b-row>
               <b-col>
-                <b-alert :show="baseRomLoaded" variant="success" class="m-3">
-                  <center>
-                    <h6 class="alert-heading">ROM file loaded OK!</h6>
-                    <b-button @click="unloadRom">Unload ROM file</b-button>
-                  </center>
-                </b-alert>
               </b-col>
               <b-col>
               </b-col>
@@ -105,6 +99,12 @@
           </b-card>
         </b-col>
         <b-col>
+          <b-alert :show="baseRomLoaded" variant="success" class="m-3">
+            <center>
+              <h6 class="alert-heading">ROM file loaded OK!</h6>
+              <b-button @click="unloadRom">Unload ROM file</b-button>
+            </center>
+          </b-alert>
           <b-card title="Information">
             <b-alert dismissible :show="info" variant="info" v-html="infoMessage">
               {{ infoMessage }}
@@ -120,7 +120,7 @@
 export default {
   props: ["version"],
 
-  // TODO: Store selected options in localforage
+  // TODO: Store selected options in localNorage
   // TODO: Disable certain options when certain options are selected!
   data() {
     return {
@@ -355,12 +355,6 @@ export default {
       if (this.selectedOptions.normalWorldLength == "false") {
         this.infoMessage +=
           "<p>When not using normal world lengths, there will be no midway points in any level! In other words, if you die you will always restart at the beginning of the level. This is due to limitations in the original game code.</p>";
-        this.info = true;
-      }
-
-      if (this.selectedOptions.shuffleLevels == "worlds") {
-        this.infoMessage +=
-          "<p>When shuffling world order only, there will be no midway points. In other words, if you die you will always restart at the beginning of the level. This will hopefully be fixed in a future version of the randomizer.</p>";
         this.info = true;
       }
     },

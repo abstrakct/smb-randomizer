@@ -38,11 +38,26 @@ class Game
         $this->options = $options;
     }
 
-    public function setVanilla()
+    public function setVanillaWorldData()
     {
         foreach ($this->worlds as $world) {
             $world->setVanilla();
         }
+    }
+
+    public function resetWorlds()
+    {
+        unset($this->worlds);
+        $this->worlds = [
+            new World1(1),
+            new World2(2),
+            new World3(3),
+            new World4(4),
+            new World5(5),
+            new World6(6),
+            new World7(7),
+            new World8(8),
+        ];
     }
 
     public function addData($offset, $data)

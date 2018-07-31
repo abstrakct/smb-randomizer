@@ -67,13 +67,10 @@ class RandomizerController extends Controller
         $rom->save($outfilename);
 
         // write JSON formatted data to logfile
-        $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
-        $log->write("\nJSON:\n\n");
-        $log->write($game_json);
-        $log->write("\n\n");
-
-        // write "pretty" world layout to logfile
-        //$log->write($randomized_game->prettyprint());
+        // $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
+        // $log->write("\nJSON:\n\n");
+        // $log->write($game_json);
+        // $log->write("\n\n");
 
         $log->close();
 

@@ -33,9 +33,12 @@ TODO: Check this: DONE more or less: Option to only randomize world order, but l
 
 TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
 TODO: Option to leave 8-4 un-randomized.
-TODO/IDEA: is it possible to change how high Bowser jumps? to make it more difficult to just run under him.
+TODO/IDEA: is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
 TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
+TODO: Change/randomize y pos of (some) enemies? to prevent stuck enemies
 TODO: Randomize where pipes lead to?
+TODO: Shuffle which pipes can be entered?
+TODO: Shuffle scenery? nah... or?
 TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!
 TODO: Option to randomize music? (line 2790 in disasm)
 TODO: Randomize when fireworks appear? (line 10469 of disasm)
@@ -43,11 +46,17 @@ TODO: shuffle all coins/powerups in vanilla in one big pool, so that you in tota
 TODO: shuffle enemies? or keep the randomization as it is now?
 TODO: disappearing trampolines
 TODO: disappearing powerup blocks sometimes - might be related to stuff around line 5860 in disasm
-TODO: randomize y pos of (some) enemies? as option? to prevent stuck enemies
+TODO: disappearing enemies/objects
+      (goes for enemies and objects) "The level format is divided into "pages", so that only a small amount
+      of level data is in RAM at any given time. The new page flag bit tells the game
+      that the object it is set on is the first object in the page. Then, every object after that will
+      appear on the same page until a new page bit is found. However,
+      there are limits to this. If 3 objects are on the same x position for the same
+      page, every object following that will not show up."
 TODO: option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
 TODO: option to not randomize texts
 TODO: keep randomized texts independent of game seed? or make it an option?
-TODO: option to keep castles in vanilla order?
+TODO: option to keep castles in vanilla order? why? just because we can?
 TODO: no level shuffle + remove pipe transitions combo does not remove pipe transitions. can be fixed.
 TODO: randomize enemies in pools better! from-/to-pools
 TODO: check that all options are set to a valid value!
@@ -59,6 +68,7 @@ TODO: disasm line  8405: cheep cheep data -- can be randomized!?
 TODO: disasm line  8698: enemy frenzy thing that checks for world 2 - should be changed??
 TODO: disasm line 11440: it's possible/easy(?) to change which enemies can be stomped and not!
 TODO: disasm line 13475: it's possible/easy(?) to change the appearance of a powerup!!!    NOPE DOESN'T WORK (sprites get weird)
+TODO: disasm line  8549: randomize fire Y positions?
 TODO: A way to let individual options not change other aspects of randomization?!
       So that if you e.g. generate a new rom with the same seed, but enemy randomization turned off, all other aspects should be the same as before.
       Might be done by creating individual seeds for each aspect at the start of the program.

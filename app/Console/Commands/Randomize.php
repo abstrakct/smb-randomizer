@@ -24,8 +24,8 @@ class Randomize extends Command
         . '{--pipe-transitions=remove : keep or remove pipe transitions}'
         . '{--shuffle-levels=all : level randomization}'
         . '{--normal-world-length=false : world length options}'
-        . '{--enemies=randomize-full : enemy randomization}'
-        . '{--blocks=randomize-all : block randomization}'
+        . '{--enemies=randomizeFull : enemy randomization}'
+        . '{--blocks=randomizeAll : block randomization}'
         . '{--bowser-abilities=true : randomize Bowser abilities}'
         . '{--bowser-hitpoints=random : randomize Bowser hitpoints}'
         . '{--starting-lives=random : randomize player starting lives}'
@@ -64,15 +64,15 @@ class Randomize extends Command
             return $this->error('Output directory is not writeable.');
         }
 
-        $smbrOptions['pipe-transitions'] = $this->option('pipe-transitions');
-        $smbrOptions['shuffle-levels'] = $this->option('shuffle-levels');
-        $smbrOptions['normal-world-length'] = $this->option('normal-world-length');
+        $smbrOptions['pipeTransitions'] = $this->option('pipe-transitions');
+        $smbrOptions['shuffleLevels'] = $this->option('shuffle-levels');
+        $smbrOptions['normalWorldLength'] = $this->option('normal-world-length');
         $smbrOptions['enemies'] = $this->option('enemies');
         $smbrOptions['blocks'] = $this->option('blocks');
-        $smbrOptions['bowser-abilities'] = $this->option('bowser-abilities');
-        $smbrOptions['bowser-hitpoints'] = $this->option('bowser-hitpoints');
-        $smbrOptions['starting-lives'] = $this->option('starting-lives');
-        $smbrOptions['warp-zones'] = $this->option('warp-zones');
+        $smbrOptions['bowserAbilities'] = $this->option('bowser-abilities');
+        $smbrOptions['bowserHitpoints'] = $this->option('bowser-hitpoints');
+        $smbrOptions['startingLives'] = $this->option('starting-lives');
+        $smbrOptions['warpZones'] = $this->option('warp-zones');
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');
@@ -131,11 +131,11 @@ class Randomize extends Command
                 mkdir($dir, 0744);
             }
 
-            $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
-            $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
+            $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
+            $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
         } else {
-            $outfilename = $output_dir . "/roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".nes";
-            $logfilename = $output_dir . "/logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->getFlags()) . ".log";
+            $outfilename = $output_dir . "/roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
+            $logfilename = $output_dir . "/logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
         }
 
         // Start the logger
