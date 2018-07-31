@@ -316,8 +316,12 @@ class Randomizer
         // TODO: reduce code duplication!
         if ($this->options['pipeTransitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
+
+                // Select next level in list of shuffled levels, set its data
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
+
+                // Is this level a castle?
                 if (Level::get($shuffledlevels[$shuffleindex])->map >= 0x60 and Level::get($shuffledlevels[$shuffleindex])->map <= 0x65) {
                     // it's a castle, so increase the world index and reset the level index
                     $worldindex++;
@@ -325,19 +329,20 @@ class Randomizer
                         $worldindex = 7;
                     }
 
-                    $levelindex = 0;
+                    $levelindex = -1;
                 }
+
                 $lastlevelindex = $levelindex;
                 $levelindex++;
                 $shuffleindex++;
             }
-            $game->worlds[7]->levels[$lastlevelindex + 1] = Level::get('8-4');
-            $game->worlds[7]->levels[$lastlevelindex + 1]->world_num = 8;
+            $game->worlds[7]->levels[$lastlevelindex] = Level::get('8-4');
+            $game->worlds[7]->levels[$lastlevelindex]->world_num = 8;
         } else if ($this->options['pipeTransitions'] == 'keep') {
+            // This part is a mess
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
-                $levelindex++;
 
                 if (Level::get($shuffledlevels[$shuffleindex])->map >= 0x60 and Level::get($shuffledlevels[$shuffleindex])->map <= 0x65) {
                     // it's a castle, so increase the world index and reset the level index
@@ -346,11 +351,12 @@ class Randomizer
                         $worldindex = 7;
                     }
 
-                    $levelindex = 0;
+                    $levelindex = -1;
                 }
 
                 if ($shuffleindex < 30) {
-                    if (in_array(Level::get($shuffledlevels[$shuffleindex + 1])->map, [Level::get('1-2')->map, Level::get('2-2')->map, Level::get('4-2')->map])) {
+                    if (in_array(Level::get($shuffledlevels[$shuffleindex + 1])->name, ['1-2', '2-2', '4-2'])) {
+                        $levelindex++;
                         $game->worlds[$worldindex]->levels[$levelindex] = Level::get('Pipe Transition');
                     }
                 }
@@ -358,7 +364,7 @@ class Randomizer
                 $levelindex++;
                 $shuffleindex++;
             }
-            $lastlevelindex = count($game->worlds[7]->levels) + 2;
+            $lastlevelindex = count($game->worlds[7]->levels);
             $game->worlds[7]->levels[$lastlevelindex] = Level::get('8-4');
             $game->worlds[7]->levels[$lastlevelindex]->world_num = 8;
         }
@@ -427,6 +433,7 @@ class Randomizer
         $game->worlds[7] = new World8(8);
         // set the shuffled worlds to their vanilla layout
         $game->setVanillaWorldData();
+        // TODO: Set world_num if we need it for sanity checks!
         //print_r($game);
     }
 
@@ -521,16 +528,21 @@ class Randomizer
         }
     }
 
-    public function sanityCheckLevels(&$game)
+    public function sanityCheckWorldLayout(&$game)
     {
         $result = true;
 
         // Theory: pipes get messed up if 1-1 and 2-1 are in the same world
-
+        // So let's avoid that
         foreach ($game->worlds as $world) {
             if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
                 $result = false;
             }
+        }
+
+        // Check that 8-4 is the last level
+        if ($game->worlds[7]->levels[count($game->worlds[7]->levels) - 1] != Level::get('8-4')) {
+            $result = false;
         }
 
         return $result;
@@ -842,22 +854,37 @@ class Randomizer
         $this->log->write("\nStarting randomization...\n");
 
         //  Shuffle Levels
+        // This part can be optimized / written less strangely. Callback functions seems like a good idea.
         if ($this->options['shuffleLevels'] == "all") {
             if ($this->options['normalWorldLength'] == "true") {
                 $this->shuffleLevelsWithNormalWorldLength($game);
+                while (!$this->sanityCheckWorldLayout($game)) {
+                    $this->log->write("World Layout sanity check failed! Reshuffling...\n");
+                    $game->resetWorlds();
+                    $this->shuffleLevelsWithNormalWorldLength($game);
+                }
             } else {
                 $this->shuffleAllLevels($game);
-                while (!$this->sanityCheckLevels($game)) {
-                    $this->log->write('Failed world layout sanity check! Reshuffling...\n');
+                while (!$this->sanityCheckWorldLayout($game)) {
+                    $this->log->write("World Layout sanity check failed! Reshuffling...\n");
                     $game->resetWorlds();
                     $this->shuffleAllLevels($game);
                 }
             }
         } else if ($this->options['shuffleLevels'] == "worlds") {
             $this->shuffleWorldOrder($game);
+            while (!$this->sanityCheckWorldLayout($game)) {
+                $this->log->write("World Layout sanity check failed! Reshuffling...\n");
+                $game->resetWorlds();
+                $this->shuffleWorldOrder($game);
+            }
             $game->setVanillaWorldData();
         } else if ($this->options['shuffleLevels'] == "none") {
             $game->setVanillaWorldData();
+            while (!$this->sanityCheckWorldLayout($game)) {
+                $this->log->write("World Layout sanity check failed! This shouldn't happen...\n");
+                exit(1);
+            }
         } else {
             print("Unrecognized option " . $this->options['shuffleLevels'] . " for Shuffle Levels! Exiting...");
             exit(1);
