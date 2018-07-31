@@ -22,7 +22,16 @@
 
             <div v-if="baseRomLoaded && optionsLoaded">
               <b-card title="Options" style="max-width: 150rem;">
-                <b-button @click="loadDefaults" variant="info">Load default options</b-button>
+                <b-row>
+                  <b-col>
+                    <b-button @click="loadDefaults" variant="info">Load default options</b-button>
+                  </b-col>
+                  <b-col>
+                  </b-col>
+                  <b-col>
+                    <b-form-input v-model="selectedOptions.seed" id="inputseed" type="number" placeholder="Input seed number (leave blank for random)"></b-form-input>
+                  </b-col>
+                </b-row>
                 <p></p>
                 <b-row>
                   <b-col>
@@ -133,7 +142,6 @@ export default {
         filename: "",
         logfullpath: "",
         base64data: "",
-        jsondata: null,
         done: false,
         stored: false
       },
@@ -150,6 +158,7 @@ export default {
       randomizerOptions: null,
 
       selectedOptions: {
+        seed: null,
         colorscheme: {
           mario: "",
           luigi: "",
@@ -228,6 +237,7 @@ export default {
           headers: { "content-type": "multipart/form-data" },
           rom: this.baseRom.getData(),
           romfilename: this.baseRomFilename,
+          seed: this.selectedOptions.seed,
           mario: this.selectedOptions.colorscheme.mario,
           luigi: this.selectedOptions.colorscheme.luigi,
           fire: this.selectedOptions.colorscheme.fire,
@@ -247,7 +257,6 @@ export default {
           this.rando.filename = response.data.filename;
           this.rando.logfullpath = response.data.logfullpath;
           this.rando.base64data = response.data.base64data;
-          this.rando.jsondata = response.data.jsondata;
           this.rando.done = true;
         })
         .then(() => {

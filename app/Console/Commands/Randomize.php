@@ -30,6 +30,7 @@ class Randomize extends Command
         . '{--bowser-hitpoints=random : randomize Bowser hitpoints}'
         . '{--starting-lives=random : randomize player starting lives}'
         . '{--warp-zones=random : randomize warp zones}'
+        . '{--hidden-warp-destinations=false : hidden warp destinations}'
         . '{--mariocolors=random : Mario Color Scheme}'
         . '{--luigicolors=random : Luigi Color Scheme}'
         . '{--firecolors=random : Fire Color Scheme}'
@@ -73,6 +74,7 @@ class Randomize extends Command
         $smbrOptions['bowserHitpoints'] = $this->option('bowser-hitpoints');
         $smbrOptions['startingLives'] = $this->option('starting-lives');
         $smbrOptions['warpZones'] = $this->option('warp-zones');
+        $smbrOptions['hiddenWarpDestinations'] = $this->option('hidden-warp-destinations');
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');

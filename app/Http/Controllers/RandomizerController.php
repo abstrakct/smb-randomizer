@@ -23,7 +23,7 @@ class RandomizerController extends Controller
         $rom = new Rom($tmpfilename);
 
         // TODO: set options here
-        $seed = null;
+        $seed = $request->input('seed');
         $options['pipeTransitions'] = $request->input('pipeTransitions');
         $options['shuffleLevels'] = $request->input('shuffleLevels');
         $options['normalWorldLength'] = $request->input('normalWorldLength');

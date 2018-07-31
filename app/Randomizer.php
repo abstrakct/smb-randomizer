@@ -336,6 +336,9 @@ class Randomizer
                 $levelindex++;
                 $shuffleindex++;
             }
+            if ($lastlevelindex <= 0) {
+                $lastlevelindex = 0;
+            }
             $game->worlds[7]->levels[$lastlevelindex] = Level::get('8-4');
             $game->worlds[7]->levels[$lastlevelindex]->world_num = 8;
         } else if ($this->options['pipeTransitions'] == 'keep') {
@@ -365,6 +368,9 @@ class Randomizer
                 $shuffleindex++;
             }
             $lastlevelindex = count($game->worlds[7]->levels);
+            if ($lastlevelindex <= 0) {
+                $lastlevelindex = 0;
+            }
             $game->worlds[7]->levels[$lastlevelindex] = Level::get('8-4');
             $game->worlds[7]->levels[$lastlevelindex]->world_num = 8;
         }
@@ -679,9 +685,9 @@ class Randomizer
                                 $game->addData($exit, pack('C*', $new_exit_data));
                             }
                             $this->log->write("Fixing pipe in " . $level->name . " - New world is " . $new_world . "\n");
-                            $this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
-                            $this->log->write(sprintf("Old entry: %02x  Old exit: %02x\n", $entry_data, $exit_data));
-                            $this->log->write(sprintf("New entry: %02x  New exit: %02x\n", $new_entry_data, $new_exit_data));
+                            //$this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
+                            //$this->log->write(sprintf("Old entry: %02x  Old exit: %02x\n", $entry_data, $exit_data));
+                            //$this->log->write(sprintf("New entry: %02x  New exit: %02x\n", $new_entry_data, $new_exit_data));
                         }
                     }
                 }
