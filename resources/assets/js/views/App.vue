@@ -35,11 +35,13 @@
                 <p></p>
                 <b-row>
                   <b-col>
-                    <!-- INPUT FOR SEED NUMBER -->
-                    <b-form-group label="Level Randomization" label-for="olr">
+                    <!--                     <b-form-group label="Level Randomization" label-for="olr">
                       <b-select id="olr" @input="updateInputted" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels">
                       </b-select>
-                    </b-form-group>
+                    </b-form-group> -->
+
+                    <smbr-select id="osl" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :selected="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
+
                     <b-form-group>
                       <b-form-checkbox id="owl" @input="updateInputted" v-model="selectedOptions.normalWorldLength" value="false" unchecked-value="true">Worlds can have varying length</b-form-checkbox>
                       <b-form-checkbox id="opt" @input="updateInputted" v-model="selectedOptions.pipeTransitions" value="remove" unchecked-value="keep">Remove pipe transitions</b-form-checkbox>
@@ -180,11 +182,11 @@ export default {
 
   mounted() {
     // see if there's anything in localforage, update data if so
-    localforage.getItem("randomizedrom").then(
+    localforage.getItem("smbr.rom.randomized.data").then(
       function(value) {
         if (value != null) {
           this.rando.stored = true;
-          localforage.getItem("randomizedromfilename").then(
+          localforage.getItem("smbr.rom.randomized.filename").then(
             function(value) {
               this.rando.filename = value;
             }.bind(this)
@@ -199,7 +201,6 @@ export default {
   created() {
     // Thanks Veetorp!
 
-    console.log("created");
     // Get all available options from the backend
     axios.get("/randomizer/options").then(response => {
       this.randomizerOptions = response.data;
@@ -210,14 +211,15 @@ export default {
     axios.get("/randomizer/options/default").then(response => {
       this.defaultOptions = response.data;
       this.defaultLoaded = true;
-      this.selectedOptions = Object.assign({}, this.defaultOptions);
+      this.loadDefaults();
       this.updateInputted();
     });
 
     // Look for stored option settings in localforage
+    this.loadLocalOptions();
 
     // Look for stored ROM in localforage, and load it if found.
-    localforage.getItem("rom").then(function(blob) {
+    localforage.getItem("smbr.rom.base.data").then(function(blob) {
       if (blob == null) {
         EventBus.$emit("noBlob");
         return;
@@ -292,7 +294,7 @@ export default {
       this.baseRom = rom;
       this.baseRomHash = current_rom_hash;
       this.baseRomLoaded = true;
-      localforage.getItem("romfilename").then(
+      localforage.getItem("smbr.rom.base.filename").then(
         function(value) {
           if (value != null) {
             this.baseRomFilename = value;
@@ -304,8 +306,8 @@ export default {
 
     unloadRom() {
       this.baseRomLoaded = false;
-      localforage.removeItem("rom").then(function() {});
-      localforage.removeItem("romfilename").then(function() {});
+      localforage.removeItem("smbr.rom.base.data").then(function() {});
+      localforage.removeItem("smbr.rom.base.filename").then(function() {});
     },
 
     storeRandomizedRom() {
@@ -328,14 +330,14 @@ export default {
       var arr = new Uint8Array(data);
       var newRom = new NewROM(arr.buffer);
 
-      localforage.setItem("randomizedromfilename", this.rando.filename);
-      localforage.setItem("randomizedrom", newRom.getData());
+      localforage.setItem("smbr.rom.randomized.filename", this.rando.filename);
+      localforage.setItem("smbr.rom.randomized.data", newRom.getData());
 
       this.rando.stored = true;
     },
 
     saveRandomizedRom() {
-      localforage.getItem("randomizedrom").then(function(value) {
+      localforage.getItem("smbr.rom.randomized.data").then(function(value) {
         if (value == null) {
           this.error = true;
           this.errorMessage = "No randomized ROM found!";
@@ -344,9 +346,11 @@ export default {
 
         var rom = new NewROM(value);
 
-        localforage.getItem("randomizedromfilename").then(function(value) {
-          rom.save(value);
-        });
+        localforage
+          .getItem("smbr.rom.randomized.filename")
+          .then(function(value) {
+            rom.save(value);
+          });
       });
     },
 
@@ -405,6 +409,8 @@ export default {
     loadDefaults() {
       this.selectedOptions = Object.assign({}, this.defaultOptions);
     },
+
+    loadLocalOptions() {},
 
     onError(error) {
       this.error = true;
