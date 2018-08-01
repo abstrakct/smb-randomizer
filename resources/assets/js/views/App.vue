@@ -52,36 +52,19 @@
                     </b-form-group>
 
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
+                    <smbr-select id="oen" label="Enemies" @input="updateInputted" storage-key="smbr.opt.enemies" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies"></smbr-select>
+                    <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserHitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
 
-                    <b-form-group label="Enemies" label-for="oen">
-                      <b-select id="oen" @input="updateInputted" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies">
-                      </b-select>
-                    </b-form-group>
-                    <b-form-group label="Bowser's Hitpoints" label-for="obh">
-                      <b-select id="obh" @input="updateInputted" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints">
-                      </b-select>
-                    </b-form-group>
                     <b-form-group>
                       <b-form-checkbox id="oba" @input="updateInputted" v-model="selectedOptions.bowserAbilities" value="true" unchecked-value="false">Randomize which worlds Bowser starts throwing hammers and breathing fire</b-form-checkbox>
                     </b-form-group>
                   </b-col>
+
                   <b-col>
-                    <b-form-group label="Mario Color Scheme" label-for="ocsm">
-                      <b-select id="ocsm" @input="updateInputted" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario">
-                      </b-select>
-                    </b-form-group>
-                    <b-form-group label="Luigi Color Scheme" label-for="ocsl">
-                      <b-select id="ocsl" @input="updateInputted" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi">
-                      </b-select>
-                    </b-form-group>
-                    <b-form-group label="Fire Mario/Luigi Color Scheme" label-for="ocsf">
-                      <b-select id="ocsf" @input="updateInputted" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire">
-                      </b-select>
-                    </b-form-group>
-                    <b-form-group label="Starting Lives" label-for="osl">
-                      <b-select id="osl" @input="updateInputted" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives">
-                      </b-select>
-                    </b-form-group>
+                    <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
+                    <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
+                    <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
+
                     <p> </p>
 
                     <b-button variant="success" @click="generateSeed" class="w-100">Generate!</b-button>
@@ -415,7 +398,24 @@ export default {
       var arr = [
         { key: "smbr.opt.levels", val: this.defaultOptions.shuffleLevels },
         { key: "smbr.opt.warpzones", val: this.defaultOptions.warpZones },
-        { key: "smbr.opt.blocks", val: this.defaultOptions.blocks }
+        { key: "smbr.opt.blocks", val: this.defaultOptions.blocks },
+        { key: "smbr.opt.enemies", val: this.defaultOptions.enemies },
+        {
+          key: "smbr.opt.bowserHitpoints",
+          val: this.defaultOptions.bowserHitpoints
+        },
+        {
+          key: "smbr.opt.mariocolors",
+          val: this.defaultOptions.colorscheme.mario
+        },
+        {
+          key: "smbr.opt.luigicolors",
+          val: this.defaultOptions.colorscheme.luigi
+        },
+        {
+          key: "smbr.opt.firecolors",
+          val: this.defaultOptions.colorscheme.fire
+        }
       ];
 
       arr.forEach(function(entry) {
