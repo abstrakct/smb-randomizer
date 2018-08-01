@@ -1,8 +1,9 @@
 <template>
   <div>
-    <b-form-group :label="label">
-      <b-form-select @input="onInput" v-model="value" :options="options">
-      </b-form-select>
+    <b-form-group>
+      <b-form-checkbox @input="onInput" v-model="value" :value="checkedValue" :unchecked-value="uncheckedValue">
+        <slot></slot>
+      </b-form-checkbox>
     </b-form-group>
   </div>
 </template>
@@ -13,7 +14,9 @@ export default {
     label: { default: "Label" },
     options: { default: () => [] },
     storageKey: { default: null },
-    selected: { default: null }
+    selected: { default: null },
+    checkedValue: { default: null },
+    uncheckedValue: { default: null }
   },
 
   data() {

@@ -33,31 +33,15 @@
                 <p></p>
                 <b-row>
                   <b-col>
-                    <!--                     <b-form-group label="Level Randomization" label-for="olr">
-                      <b-select id="olr" @input="updateInputted" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels">
-                      </b-select>
-                    </b-form-group> -->
-
                     <smbr-select id="osl" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
-
-                    <b-form-group>
-                      <b-form-checkbox id="owl" @input="updateInputted" v-model="selectedOptions.normalWorldLength" value="false" unchecked-value="true">Worlds can have varying length</b-form-checkbox>
-                      <b-form-checkbox id="opt" @input="updateInputted" v-model="selectedOptions.pipeTransitions" value="remove" unchecked-value="keep">Remove pipe transitions</b-form-checkbox>
-                    </b-form-group>
-
+                    <smbr-checkbox id="owl" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true">Worlds can have varying length</smbr-checkbox>
+                    <smbr-checkbox id="opt" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep">Remove pipe transitions</smbr-checkbox>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
-
-                    <b-form-group>
-                      <b-form-checkbox id="ohw" @input="updateInputted" v-model="selectedOptions.hiddenWarpDestinations" value="true" unchecked-value="false">Hide Warp Pipe destination worlds</b-form-checkbox>
-                    </b-form-group>
-
+                    <smbr-checkbox id="ohw" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false">Hide warp pipe destinations</smbr-checkbox>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
                     <smbr-select id="oen" label="Enemies" @input="updateInputted" storage-key="smbr.opt.enemies" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies"></smbr-select>
                     <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserHitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
-
-                    <b-form-group>
-                      <b-form-checkbox id="oba" @input="updateInputted" v-model="selectedOptions.bowserAbilities" value="true" unchecked-value="false">Randomize which worlds Bowser starts throwing hammers and breathing fire</b-form-checkbox>
-                    </b-form-group>
+                    <smbr-checkbox id="oba" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false">Randomize which worlds Bowser starts throwing hammers and breathing fire</smbr-checkbox>
                   </b-col>
 
                   <b-col>
@@ -415,6 +399,22 @@ export default {
         {
           key: "smbr.opt.firecolors",
           val: this.defaultOptions.colorscheme.fire
+        },
+        {
+          key: "smbr.opt.hiddenwarpdestinations",
+          val: this.defaultOptions.hiddenWarpDestinations
+        },
+        {
+          key: "smbr.opt.normalworldlength",
+          val: this.defaultOptions.normalWorldLength
+        },
+        {
+          key: "smbr.opt.pipetransitions",
+          val: this.defaultOptions.pipeTransitions
+        },
+        {
+          key: "smbr.opt.bowserabilities",
+          val: this.defaultOptions.bowserAbilities
         }
       ];
 
