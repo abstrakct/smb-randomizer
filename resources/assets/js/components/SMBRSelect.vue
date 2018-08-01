@@ -18,7 +18,7 @@ export default {
 
   data() {
     return {
-      value: this.selected
+      value: ""
     };
   },
 
@@ -27,17 +27,19 @@ export default {
       // If we have a storage key, look for option stored in localforage
       localforage.getItem(this.storageKey).then(
         function(localvalue) {
-          this.value = localvalue;
+          if (localvalue != null) {
+            this.value = localvalue;
+          }
         }.bind(this)
       );
     }
-
-    // EventBus.$on("change-" + this.storageKey, this.changeSelected);
   },
 
   methods: {
     onInput() {
-      localforage.setItem(this.storageKey, this.value);
+      if (this.value != null) {
+        localforage.setItem(this.storageKey, this.value);
+      }
       this.$emit("input", this.value);
     },
 

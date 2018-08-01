@@ -24,12 +24,10 @@
               <b-card title="Options" style="max-width: 150rem;">
                 <b-row>
                   <b-col>
-                    <b-button @click="loadDefaults" variant="info">Load default options</b-button>
-                  </b-col>
-                  <b-col>
-                  </b-col>
-                  <b-col>
+                    <!-- <b-button @click="loadDefaults" variant="info">Load default options</b-button> -->
                     <b-form-input v-model="selectedOptions.seed" id="inputseed" type="number" placeholder="Input seed number (leave blank for random)"></b-form-input>
+                  </b-col>
+                  <b-col>
                   </b-col>
                 </b-row>
                 <p></p>
@@ -40,23 +38,21 @@
                       </b-select>
                     </b-form-group> -->
 
-                    <smbr-select id="osl" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :selected="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
+                    <smbr-select id="osl" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
 
                     <b-form-group>
                       <b-form-checkbox id="owl" @input="updateInputted" v-model="selectedOptions.normalWorldLength" value="false" unchecked-value="true">Worlds can have varying length</b-form-checkbox>
                       <b-form-checkbox id="opt" @input="updateInputted" v-model="selectedOptions.pipeTransitions" value="remove" unchecked-value="keep">Remove pipe transitions</b-form-checkbox>
                     </b-form-group>
-                    <b-form-group label="Warp Zones" label-for="owz">
-                      <b-select id="owz" @input="updateInputted" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones">
-                      </b-select>
-                    </b-form-group>
+
+                    <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
+
                     <b-form-group>
                       <b-form-checkbox id="ohw" @input="updateInputted" v-model="selectedOptions.hiddenWarpDestinations" value="true" unchecked-value="false">Hide Warp Pipe destination worlds</b-form-checkbox>
                     </b-form-group>
-                    <b-form-group label="Blocks" label-for="obl">
-                      <b-select id="obl" @input="updateInputted" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks">
-                      </b-select>
-                    </b-form-group>
+
+                    <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
+
                     <b-form-group label="Enemies" label-for="oen">
                       <b-select id="oen" @input="updateInputted" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies">
                       </b-select>
@@ -208,14 +204,23 @@ export default {
     });
 
     // Get the default option settings from the backend
-    axios.get("/randomizer/options/default").then(response => {
-      this.defaultOptions = response.data;
-      this.defaultLoaded = true;
-      this.loadDefaults();
-      this.updateInputted();
-    });
+    axios
+      .get("/randomizer/options/default")
+      .then(response => {
+        this.defaultOptions = response.data;
+        this.defaultLoaded = true;
+        this.loadDefaults();
+        this.updateInputted();
+      })
+      .then(() => {
+        this.storeDefaultsLocally();
+      });
 
+    // if no local option stored
+    // store it
+    // if local option exists use that
     // Look for stored option settings in localforage
+
     this.loadLocalOptions();
 
     // Look for stored ROM in localforage, and load it if found.
@@ -404,6 +409,24 @@ export default {
         this.errorMessage +=
           "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'";
       }
+    },
+
+    storeDefaultsLocally() {
+      var arr = [
+        { key: "smbr.opt.levels", val: this.defaultOptions.shuffleLevels },
+        { key: "smbr.opt.warpzones", val: this.defaultOptions.warpZones },
+        { key: "smbr.opt.blocks", val: this.defaultOptions.blocks }
+      ];
+
+      arr.forEach(function(entry) {
+        localforage.getItem(entry.key).then(
+          function(value) {
+            if (value == null) {
+              localforage.setItem(entry.key, entry.val);
+            }
+          }.bind(this)
+        );
+      });
     },
 
     loadDefaults() {
