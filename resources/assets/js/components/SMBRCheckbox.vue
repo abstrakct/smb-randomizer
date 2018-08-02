@@ -2,7 +2,7 @@
   <div>
     <b-form-group>
       <b-form-checkbox @input="onInput" v-model="value" :value="checkedValue" :unchecked-value="uncheckedValue">
-        <slot></slot>
+        {{ label }}
       </b-form-checkbox>
     </b-form-group>
   </div>

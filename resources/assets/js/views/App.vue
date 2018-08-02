@@ -34,14 +34,14 @@
                 <b-row>
                   <b-col>
                     <smbr-select id="osl" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
-                    <smbr-checkbox id="owl" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true">Worlds can have varying length</smbr-checkbox>
-                    <smbr-checkbox id="opt" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep">Remove pipe transitions</smbr-checkbox>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
-                    <smbr-checkbox id="ohw" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false">Hide warp pipe destinations</smbr-checkbox>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
                     <smbr-select id="oen" label="Enemies" @input="updateInputted" storage-key="smbr.opt.enemies" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies"></smbr-select>
                     <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserHitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
-                    <smbr-checkbox id="oba" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false">Randomize which worlds Bowser starts throwing hammers and breathing fire</smbr-checkbox>
+                    <smbr-checkbox id="owl" label="Worlds can have varying lengths" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true"></smbr-checkbox>
+                    <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
+                    <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
                   </b-col>
 
                   <b-col>
@@ -52,22 +52,22 @@
                     <p> </p>
 
                     <b-button variant="success" @click="generateSeed" class="w-100">Generate!</b-button>
+
                     <div v-if="rando.stored">
                       <p></p>
+
                       <b-button variant="success" @click="saveRandomizedRom" class="w-100">Save
                         <strong>{{ rando.filename }}</strong>
                       </b-button>
+
                       <p></p>
+
                       <b-button variant="info" class="w-100" :href="rando.logfullpath">View log (contains spoilers!)</b-button>
                     </div>
                   </b-col>
                 </b-row>
               </b-card>
             </div>
-
-            <p class="card-text">
-
-            </p>
           </b-card>
         </b-col>
         <b-col>
