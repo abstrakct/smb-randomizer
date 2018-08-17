@@ -22,6 +22,10 @@ const HammerTimeOffset2 = 0x5161;
 const FireTimeOffset = 0x515d;
 const BowserHPOffset = 0x457c;
 const StartingLivesOffset = 0x107a;
+const WarpZonesOffset = 0x0802;
+const WarpZone12Offset = 0x0802;
+const WarpZone42SkyOffset = 0x080a;
+const WarpZone42EndOffset = 0x0807;
 
 function enemyIsInPool($o, $pool)
 {
@@ -613,36 +617,148 @@ class Randomizer
 
     public function randomizeWarpZones(&$game)
     {
-        $offset = 0x802;
+        $offset = WarpZonesOffset;
 
         if ($this->options['warpZones'] == 'random') {
             $this->log->write("Randomizing Warp Zones...\n");
             for ($i = 0; $i < 11; $i++) {
                 $new_warp = mt_rand(1, 8);
                 $game->addData($offset + $i, pack('C*', $new_warp));
+                if ($i != 3 && $i != 4 && $i != 6 && $i != 7) {
+                    $this->log->write("Warp pipe randomized to $new_warp\n");
+                }
             }
             // cheap and easy fix
             $new_warp = 0x00;
             $game->addData(0x805, pack('C*', $new_warp));
             $game->addData(0x809, pack('C*', $new_warp));
+            $new_warp = 0x24;
+            $game->addData(0x806, pack('C*', $new_warp));
+            $game->addData(0x808, pack('C*', $new_warp));
         } else if ($this->options['warpZones'] == 'shuffle') {
-            $this->log->write("Shuffling Warp Zones...\n");
-            $destinations = [1, 2, 3, 4, 5, 6, 7, 8, 0x24]; // 0x24 is "blank"
-            if ($this->options['hiddenWarpDestinations'] == "true") {
-                // Make sure ALL pipes have a valid destination,
-                // by replacing the blank with an extra, randomly selected world
-                $destinations[8] = mt_rand(1, 8);
-            }
-
+            $this->log->write("Shuffling Warp Pipes...\n");
+            $destinations = [2, 3, 4, 5, 6, 7, 8]; // 0x24 is "blank"
             $shuffled_destinations = mt_shuffle($destinations);
             $index = 0;
-
-            for ($i = 0; $i <= 9; $i += 4) {
-                $game->addData($offset + $i, pack('C*', $shuffled_destinations[$index]));
-                $game->addData($offset + $i + 1, pack('C*', $shuffled_destinations[$index + 1]));
-                $game->addData($offset + $i + 2, pack('C*', $shuffled_destinations[$index + 2]));
-                $index += 3;
+            $game->addData($offset, pack('C*', $shuffled_destinations[0]));
+            $game->addData($offset + 1, pack('C*', $shuffled_destinations[1]));
+            $game->addData($offset + 2, pack('C*', $shuffled_destinations[2]));
+            $game->addData($offset + 5, pack('C*', $shuffled_destinations[3]));
+            $game->addData($offset + 8, pack('C*', $shuffled_destinations[4]));
+            $game->addData($offset + 9, pack('C*', $shuffled_destinations[5]));
+            $game->addData($offset + 10, pack('C*', $shuffled_destinations[6]));
+            $this->log->write("Warp pipes shuffled to ");
+            for ($i = 0; $i < 7; $i++) {
+                $this->log->write($shuffled_destinations[$i] . " ");
             }
+            $this->log->write("\n");
+        } else if ($this->options['warpZones'] == 'useful') {
+            /*
+            We have 3 warp zones available
+            a) One in 1-2
+            b) One in 4-2 (via beanstalk)
+            c) One in 4-2 (accessed like 1-2)
+
+            In the future, b) can be randomized so that it's accessed from a pipe or beanstalk elsewhere.
+            So we need to look at the game object, and find what world each warp zone is in.
+            Then, for each warp zone:
+            - get 3 random numbers that are > world number and <= 8
+            - apply those numbers to the correct offset in rom
+             */
+
+            // TODO: we could make sure there are 3 different destinations - when possible
+            // it's a bit silly when all pipes lead to world 8.....
+
+            /*
+             * disasm line 3566
+             * BIG PROBLEM!!!!: game expects one warp zone in world 1, the others in a later world
+             * I can't find a reliable way to check what the current map is
+             * Therefore we need to either
+             * a) force 1-2 to be in world 1 and force 4-2 to not be in world 1
+             * or
+             * b) change something in the game code
+             * or
+             * c) write the warp zone table differently
+             *
+             * because (right now) 1-2 and 4-2 could be anywhere
+             *
+             * EASY SOLUTION:
+             * force 1-2 to be in world 1
+             * IDEA: warps in 1-2 will not take your further than what world 4-2 is in
+             * so like mt_rand($world->num + 1, world4->num)
+             *
+             */
+            foreach ($game->worlds as $world) {
+                foreach ($world->levels as $level) {
+                    if ($level->name == '1-2') {
+                        for ($i = 0; $i < 3; $i++) {
+                            $new_warp = mt_rand($world->num + 1, 8);
+                            $game->addData($offset + $i, pack('C*', $new_warp));
+                            $this->log->write("Warp pipe in 1-2 (world $world->num) randomized to $new_warp\n");
+                        }
+                    }
+                    if ($level->name == '4-2') {
+                        // area accessed by beanstalk
+                        for ($i = 8; $i < 11; $i++) {
+                            $new_warp = mt_rand($world->num + 1, 8);
+                            $game->addData($offset + $i, pack('C*', $new_warp));
+                            $this->log->write("Warp pipe in 4-2 (beanstalk area) (world $world->num) randomized to $new_warp\n");
+                        }
+                        // area at end of level (only one pipe there)
+                        $new_warp = mt_rand($world->num + 1, 8);
+                        $game->addData($offset + 5, pack('C*', $new_warp));
+                        $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
+                    }
+                }
+            }
+        } else if ($this->options['warpZones'] == 'gamble') {
+            if ($this->options['hiddenWarpDestinations'] != 'true') {
+                print("warp zone gamble requires hidden warp destinations set to true!\n");
+                exit(1);
+            }
+            // warp zones in 1-2 and 4-2 will have 2 guaranteed good pipes, 1 guaranteed bad.
+            // TODO: less code duplication
+            foreach ($game->worlds as $world) {
+                foreach ($world->levels as $level) {
+                    if ($level->name == '1-2') {
+                        $good_warp[0] = mt_rand($world->num + 1, 8);
+                        $good_warp[1] = mt_rand($world->num + 1, 8);
+                        $bad_warp = mt_rand(1, $world->num);
+                        // make sure we shuffle the order so you can't know which pipe is which
+                        $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
+
+                        $offset = WarpZonesOffset;
+                        for ($i = 0; $i < 3; $i++) {
+                            $game->addData($offset + $i, pack('C*', $shuffled[$i]));
+                            $this->log->write("Warp pipe in 1-2 (world $world->num) randomized to $shuffled[$i]\n");
+                        }
+                    }
+                    if ($level->name == '4-2') {
+                        // area accessed by beanstalk
+                        $good_warp[0] = mt_rand($world->num + 1, 8);
+                        $good_warp[1] = mt_rand($world->num + 1, 8);
+                        $bad_warp = mt_rand(1, $world->num);
+                        $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
+
+                        $offset = WarpZonesOffset + 8;
+                        for ($i = 0; $i < 3; $i++) {
+                            $game->addData($offset + $i, pack('C*', $shuffled[$i]));
+                            $this->log->write("Warp pipe in 4-2 (beanstalk area) (world $world->num) randomized to $shuffled[$i]\n");
+                        }
+
+                        // warp zone at end of 4-2 will be 50/50 good or bad
+                        $chance = mt_rand(1, 100);
+                        if ($chance <= 50) {
+                            $new_warp = mt_rand($world->num + 1, 8);
+                        } else {
+                            $new_warp = mt_rand(1, $world->num);
+                        }
+                        $game->addData($offset + 5, pack('C*', $new_warp));
+                        $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
+                    }
+                }
+            }
+
         } else {
             echo "Invalid value for option Warp Zones!";
             exit(1);
@@ -652,8 +768,8 @@ class Randomizer
     public function removeWarpZoneLabels(&$game)
     {
         // This takes the routine which prints the warp pipe destination above each pipe,
-        // and replaces it with NOP instructions, thus no pipe destination labels get printed on screen.
-        // The pipes still function normally.
+        // and replaces it with NOP instructions, thus no pipe destination labels get printed on screen,
+        // but the pipes still function normally.
         $offset = 0x892;
         for ($i = 0; $i < 22; $i++) {
             $game->addData($offset + $i, pack('C*', 0xEA));

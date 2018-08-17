@@ -56,10 +56,16 @@ although I haven't personally come across an unwinable seed at this point, I can
                         are all shuffled.<br>
                         <b>Random</b> makes each warp zone pipe have a random destination world. The world number will show
                         above the pipe as normal.<br>
-                        <b>Shuffle</b> will make sure generate one warp pipe to each world, and shuffle those across the
-                        3 warp zones. There is, however, no guarantee that the warps will be useful! For example, you could
-                        find level 4-2 in world 5, but the warp pipes take you to world 2, 3 or 4! The destination of each
-                        pipe will still show above the pipe.<br>
+                        <b>Shuffle</b> will make sure one warp pipe to each world (except world 1!) is generated, and shuffle
+                        those across the 3 warp zones. There is, however, no guarantee that the warps will be useful! For
+                        example, you could find level 4-2 in world 5, but the warp pipes take you to world 2, 3 or 4! The
+                        destination of each pipe will still show above the pipe.<br>
+                        <b>Useful</b> will make sure all warp pipes are randomized, but useful. That means all warp pipes
+                        will take you to a higher world number than you're currently in.<br>
+                        <b>Gamble</b> means warp pipe destinations will be hidden, and in the two warp zones that have three
+                        pipes, two of the pipes will be useful, and one pipe will be bad. Bad means the pipe will take you
+                        to the beginning of your current world, or to an earlier world! Also, the single warp pipe at the
+                        end of 4-2 will be a pure gamble - 50/50 good or bad! Are you feeling lucky?
                         <p> </p>
                         <b>Hide Warp Pipe destination worlds</b> - selecting this option will make it so that the game does
                         NOT print what world a warp pipe takes you to above the pipe! The warp pipe itself will function

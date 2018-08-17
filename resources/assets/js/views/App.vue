@@ -16,6 +16,7 @@
               <b-col>
               </b-col>
             </b-row>
+
             <smbr-rom-loader v-if="!baseRomLoaded" @update="updateRom" @error="onError"></smbr-rom-loader>
 
             <p> </p>
@@ -33,11 +34,12 @@
                 <p></p>
                 <b-row>
                   <b-col>
-                    <smbr-select id="osl" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
+                    <smbr-select id="olw" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
                     <smbr-select id="oen" label="Enemies" @input="updateInputted" storage-key="smbr.opt.enemies" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies"></smbr-select>
                     <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserHitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
+                    <smbr-select id="osl" label="Starting Lives" @input="updateInputted" storage-key="smbr.opt.startingLives" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives"></smbr-select>
                     <smbr-checkbox id="owl" label="Worlds can have varying lengths" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true"></smbr-checkbox>
                     <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
                     <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
@@ -78,6 +80,8 @@
             </center>
           </b-alert>
           <b-card title="Information">
+            <b-button variant="info" href="/about">About/Help</b-button>
+            <p></p>
             <b-alert dismissible :show="info" variant="info" v-html="infoMessage">
               {{ infoMessage }}
             </b-alert>
@@ -350,6 +354,15 @@ export default {
       this.errorMessage = "";
 
       if (
+        this.selectedOptions.warpZones == "gamble" &&
+        this.selectedOptions.hiddenWarpDestinations == "false"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Warp Zones Gamble require 'Hide warp pipe destinations' to be selected.";
+      }
+
+      if (
         this.selectedOptions.shuffleLevels == "worlds" &&
         this.selectedOptions.normalWorldLength == "false"
       ) {
@@ -387,6 +400,10 @@ export default {
         {
           key: "smbr.opt.bowserHitpoints",
           val: this.defaultOptions.bowserHitpoints
+        },
+        {
+          key: "smbr.opt.startingLives",
+          val: this.defaultOptions.startingLives
         },
         {
           key: "smbr.opt.mariocolors",
