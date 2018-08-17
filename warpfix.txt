@@ -1,0 +1,45 @@
+
+ScrollLockObject_Warp:
+         2 ldx #$04            ;load value of 4 for game text routine as default
+         2 lda WorldNumber     ;warp zone (4-3-2), then check world number
+         2 beq WarpNum
+         1 inx                 ;if world number > 1, increment for next warp zone (5)
+         2 ldy AreaType        ;check area type
+         1 dey
+         2 bne WarpNum         ;if ground area type, increment for last warp zone
+         1 inx                 ;(8-7-6) and move on
+
+total: 13 bytes
+
+         2 ldx #$04
+         2 lda WorldNumber
+         2 cmp [world where 1-2 is]
+         2 beq WarpNum
+          
+
+
+SO: we can replace unused code for "flag ball" thing
+
+        3 jmp NewRoutine
+        1 nop
+        2 beq WarpNum
+        1 inx                 ;if world number > 1, increment for next warp zone (5)
+        2 ldy AreaType        ;check area type
+        1 dey
+        2 bne WarpNum         ;if ground area type, increment for last warp zone
+        1 inx                 ;(8-7-6) and move on
+
+NewRoutine:
+; 10 bytes
+2 lda WorldNumber
+2 cmp [world where 1-2 is]
+1 rts
+; question: could we set a byte in ram, and check for that back in ScrollLockObject_Warp routine?
+
+
+; in print text:
+; x == 4 means print warp zone text
+; so  we need x to be correct based on where the warp zones are
+; 
+; yada yada yada
+; conclusion:  force 1-2 to be in world 1 and 4-2 to be in world 2+
