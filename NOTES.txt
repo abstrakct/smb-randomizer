@@ -40,6 +40,7 @@ TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generat
 TODO: Option to leave 8-4 un-randomized.
 IDEA: Is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
 TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
+....... MAYBE JUST NOT RANDOMIZE PIRANHA PLANTS!?!?!?!?!?!?!?!?!?!?!? that's probably the solution!
 TODO: Change/randomize y pos of (some) enemies? to prevent stuck enemies
 TODO: Randomize where pipes lead to?
       -- option to include 4-2 warp zone or not in shuffle - if possible.

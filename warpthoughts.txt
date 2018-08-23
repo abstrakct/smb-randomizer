@@ -1,0 +1,10 @@
+possibility:
+
+
+loadareapointer:
+- jump to 10 bytes of unused code
+- sta areapointer
+- sta $0755 (seems unused)
+
+then, in warp zone:
+cmp 0755 to maps, set offset accordingly

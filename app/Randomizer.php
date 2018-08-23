@@ -11,6 +11,7 @@
  * http://php.net/manual/en/migration72.incompatible.php#migration72.incompatible.rand-mt_rand-output
  */
 
+use SMBR\Colorscheme;
 use SMBR\Game;
 use SMBR\ItemPools;
 use SMBR\Level;
@@ -53,6 +54,9 @@ class Randomizer
     public $enemy_pools;
     const VERSION = "0.8.3";
 
+    // Color schemes. TODO: improve
+    public $colorschemes = [];
+
     /**
      * Create a new randomizer.
      *
@@ -71,6 +75,17 @@ class Randomizer
         $this->rom = $rom;
         $this->trans = new Translator();
         $this->enemy_pools = new \SMBR\EnemyPools();
+        $this->colorschemes = array('random' => new Colorscheme(0, 0, 0),
+            'Vanilla Mario' => new Colorscheme(0x16, 0x27, 0x18),
+            'Vanilla Luigi' => new Colorscheme(0x30, 0x27, 0x19),
+            'Vanilla Fire' => new Colorscheme(0x37, 0x27, 0x16),
+            'Pale Ninja' => new Colorscheme(0xce, 0xd0, 0x1e),
+            'All Black' => new Colorscheme(0x8d, 0x8d, 0x8d),
+            'Black & Blue' => new Colorscheme(0xcc, 0x18, 0x2f),
+            'Black & Blue 2' => new Colorscheme(0x51, 0xf8, 0x6e),
+            'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
+            'Mustard Man' => new Colorscheme(0xd8, 0x27, 0x28),
+        );
     }
 
     public function setLogger($log)
@@ -99,9 +114,8 @@ class Randomizer
         return $this->rng_seed;
     }
 
-    public function setMarioColorScheme(string $colorscheme, Game &$game): self
+    public function setMarioColorScheme(string $colorscheme, Game &$game)
     {
-        global $colorschemes;
         $this->log->write("Mario Color Scheme: " . $colorscheme . "\n");
         if ($colorscheme == "random") {
             $this->setSeed();
@@ -109,17 +123,16 @@ class Randomizer
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
-            $outer = $colorschemes[$colorscheme]->outer;
-            $skin = $colorschemes[$colorscheme]->skin;
-            $inner = $colorschemes[$colorscheme]->inner;
+            $outer = $this->colorschemes[$colorscheme]->outer;
+            $skin = $this->colorschemes[$colorscheme]->skin;
+            $inner = $this->colorschemes[$colorscheme]->inner;
         }
         $this->rom->setMarioOuterColor($outer, $game);
         $this->rom->setMarioSkinColor($skin, $game);
         $this->rom->setMarioInnerColor($inner, $game);
-        return $this;
     }
 
-    public function setFireColorScheme(string $colorscheme, Game &$game): self
+    public function setFireColorScheme(string $colorscheme, Game &$game)
     {
         global $colorschemes;
         $this->log->write("Fire Mario/Luigi Color Scheme: " . $colorscheme . "\n");
@@ -129,17 +142,16 @@ class Randomizer
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
-            $outer = $colorschemes[$colorscheme]->outer;
-            $skin = $colorschemes[$colorscheme]->skin;
-            $inner = $colorschemes[$colorscheme]->inner;
+            $outer = $this->colorschemes[$colorscheme]->outer;
+            $skin = $this->colorschemes[$colorscheme]->skin;
+            $inner = $this->colorschemes[$colorscheme]->inner;
         }
         $this->rom->setFireOuterColor($outer, $game);
         $this->rom->setFireSkinColor($skin, $game);
         $this->rom->setFireInnerColor($inner, $game);
-        return $this;
     }
 
-    public function setLuigiColorScheme(string $colorscheme, Game &$game): self
+    public function setLuigiColorScheme(string $colorscheme, Game &$game)
     {
         global $colorschemes;
         $this->log->write("Luigi Color Scheme: " . $colorscheme . "\n");
@@ -149,14 +161,13 @@ class Randomizer
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else {
-            $outer = $colorschemes[$colorscheme]->outer;
-            $skin = $colorschemes[$colorscheme]->skin;
-            $inner = $colorschemes[$colorscheme]->inner;
+            $outer = $this->colorschemes[$colorscheme]->outer;
+            $skin = $this->colorschemes[$colorscheme]->skin;
+            $inner = $this->colorschemes[$colorscheme]->inner;
         }
         $this->rom->setLuigiOuterColor($outer, $game);
         $this->rom->setLuigiSkinColor($skin, $game);
         $this->rom->setLuigiInnerColor($inner, $game);
-        return $this;
     }
 
     public function randomizeEnemies(&$game, $in_pools = false)
@@ -306,7 +317,7 @@ class Randomizer
      */
     public function shuffleAllLevels(&$game)
     {
-        $all_levels = ['1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4', '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3'];
+        $all_levels = ['1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4', '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3', '8-4'];
 
         $this->log->write("Shuffling all levels...\n");
         $shuffledlevels = mt_shuffle($all_levels);
@@ -340,11 +351,6 @@ class Randomizer
                 $levelindex++;
                 $shuffleindex++;
             }
-            if ($lastlevelindex <= 0) {
-                $lastlevelindex = 0;
-            }
-            $game->worlds[7]->levels[$lastlevelindex] = Level::get('8-4');
-            $game->worlds[7]->levels[$lastlevelindex]->world_num = 8;
         } else if ($this->options['pipeTransitions'] == 'keep') {
             // This part is a mess
             for ($i = 0; $i < count($shuffledlevels); $i++) {
@@ -371,12 +377,6 @@ class Randomizer
                 $levelindex++;
                 $shuffleindex++;
             }
-            $lastlevelindex = count($game->worlds[7]->levels);
-            if ($lastlevelindex <= 0) {
-                $lastlevelindex = 0;
-            }
-            $game->worlds[7]->levels[$lastlevelindex] = Level::get('8-4');
-            $game->worlds[7]->levels[$lastlevelindex]->world_num = 8;
         }
     }
 
@@ -449,13 +449,13 @@ class Randomizer
 
     /*
      * Shuffle levels, but make sure each -4 is a castle.
-     * Castles are also shuffled, except the 8-4 which is 8-4
+     * Castles are also shuffled, except the 8-4 which is 8-4 (handled by sanity check)
      * TODO: add keeping pipe transitions in place.
      */
     public function shuffleLevelsWithNormalWorldLength(&$game)
     {
         $levels = ['1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3'];
-        $castles = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4'];
+        $castles = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
 
         $this->log->write("Shuffling all levels (normal world length)...\n");
 
@@ -477,7 +477,6 @@ class Randomizer
 
                 $castleindex++;
             }
-            $game->worlds[7]->levels[3] = Level::get('8-4');
         } else if ($this->options['pipeTransitions'] == 'keep') {
             // TODO: implement this.
             // Probably needs a better structure where we can insert a level in between others!
@@ -547,6 +546,31 @@ class Randomizer
         foreach ($game->worlds as $world) {
             if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
                 $result = false;
+            }
+        }
+
+        /* Easy fix for the Warp Zone Conundrum:
+         * When changing warp zone destinations in any way, we have to
+         * force 1-2 to be in world 1, and 4-2 to not be in world 1
+         * Making changed warp destinations work with any layout
+         * requires changes/additions to the game code that I (so far)
+         * haven't been able to figure out how to do
+         *
+         * TODO: even if we don't randomize warp zones, we need to have 1-2 in world 1 and 4-2 in world > 1
+         * because otherwise it can get weird.
+         */
+        if ($this->options['warpZones'] != "normal") {
+            foreach ($game->worlds as $world) {
+                if ($world->hasLevel('1-2') && $world->num != 1) {
+                    return false;
+                }
+            }
+
+            // If we pass the previous test, now check 4-2
+            foreach ($game->worlds as $world) {
+                if ($world->hasLevel('4-2') && $world->num == 1) {
+                    return false;
+                }
             }
         }
 
@@ -1007,6 +1031,7 @@ class Randomizer
                     $this->shuffleLevelsWithNormalWorldLength($game);
                 }
             } else {
+                // any world length
                 $this->shuffleAllLevels($game);
                 while (!$this->sanityCheckWorldLayout($game)) {
                     $this->log->write("World Layout sanity check failed! Reshuffling...\n");
