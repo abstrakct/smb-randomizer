@@ -2,6 +2,10 @@
 
 /*
  * Inspired by the alttp randomizer
+ *
+ * but my implementation is a bit bad
+ * get should return enemy object
+ * getNum? should return number
  */
 
 class Enemy
@@ -23,6 +27,16 @@ class Enemy
         foreach ($enemies as $e) {
             if ($e->name == $name) {
                 return $e->num;
+            }
+        }
+    }
+
+    public static function getName($num)
+    {
+        $enemies = static::all();
+        foreach ($enemies as $e) {
+            if ($e->num == $num) {
+                return $e->name;
             }
         }
     }

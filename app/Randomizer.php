@@ -242,6 +242,7 @@ class Randomizer
 
                                 $new_data = (($p | $h) | $new_object);
                                 $game->addData($offset + $i + 1, pack('C*', $new_data));
+                                $this->log->write("Changed an enemy to " . Enemy::getName($new_object) . "\n");
                             }
                         } else {
                             $new_data = 0;
@@ -259,6 +260,7 @@ class Randomizer
 
                                 $new_data = (($p | $h) | $new_object);
                                 $game->addData($offset + $i + 1, pack('C*', $new_data));
+                                $this->log->write("Changed an enemy to " . Enemy::getName($new_object) . "\n");
                             }
                         }
                     }
@@ -539,17 +541,23 @@ class Randomizer
 
     public function sanityCheckWorldLayout(&$game)
     {
-        $result = true;
+        // Check that 8-4 is the last level
+        if ($game->worlds[7]->levels[count($game->worlds[7]->levels) - 1] != Level::get('8-4')) {
+            $this->log->write("8-4 is not the last level!\n");
+            return false;
+        }
 
         // Theory: pipes get messed up if 1-1 and 2-1 are in the same world
         // So let's avoid that
         foreach ($game->worlds as $world) {
             if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
-                $result = false;
+                $this->log->write("1-1 and 1-2 are in the same world!\n");
+                return false;
             }
         }
 
-        /* Easy fix for the Warp Zone Conundrum:
+        /*
+         * Easy fix for the Warp Zone Conundrum:
          * When changing warp zone destinations in any way, we have to
          * force 1-2 to be in world 1, and 4-2 to not be in world 1
          * Making changed warp destinations work with any layout
@@ -558,10 +566,14 @@ class Randomizer
          *
          * TODO: even if we don't randomize warp zones, we need to have 1-2 in world 1 and 4-2 in world > 1
          * because otherwise it can get weird.
+         *
+         * TODO: can the randomizer write custom code with knowledge of
+         * which world has 1-2/4-2?
          */
         if ($this->options['warpZones'] != "normal") {
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('1-2') && $world->num != 1) {
+                    $this->log->write("1-2 is not in world 1!\n");
                     return false;
                 }
             }
@@ -569,17 +581,13 @@ class Randomizer
             // If we pass the previous test, now check 4-2
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('4-2') && $world->num == 1) {
+                    $this->log->write("4-2 is in world 1!\n");
                     return false;
                 }
             }
         }
 
-        // Check that 8-4 is the last level
-        if ($game->worlds[7]->levels[count($game->worlds[7]->levels) - 1] != Level::get('8-4')) {
-            $result = false;
-        }
-
-        return $result;
+        return true;
     }
 
     public function randomizeBowserAbilities(&$game)
