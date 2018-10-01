@@ -27,6 +27,9 @@ const WarpZonesOffset = 0x0802;
 const WarpZone12Offset = 0x0802;
 const WarpZone42SkyOffset = 0x080a;
 const WarpZone42EndOffset = 0x0807;
+const FireworksOffset1 = 0x5308;
+const FireworksOffset2 = 0x530e;
+const FireworksOffset3 = 0x5314;
 
 function enemyIsInPool($o, $pool)
 {
@@ -52,7 +55,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.8.3";
+    const VERSION = "0.8.4";
 
     // Color schemes. TODO: improve
     public $colorschemes = [];
@@ -319,7 +322,10 @@ class Randomizer
      */
     public function shuffleAllLevels(&$game)
     {
-        $all_levels = ['1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4', '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3', '8-4'];
+        $all_levels = [
+            '1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4',
+            '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3', '8-4',
+        ];
 
         $shuffledlevels = mt_shuffle($all_levels);
         //print_r($shuffledlevels);
@@ -454,7 +460,10 @@ class Randomizer
      */
     public function shuffleLevelsWithNormalWorldLength(&$game)
     {
-        $levels = ['1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3'];
+        $levels = [
+            '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3',
+            '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3',
+        ];
         $castles = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
 
         $shuffledlevels = mt_shuffle($levels);
@@ -547,7 +556,7 @@ class Randomizer
         // So let's avoid that
         foreach ($game->worlds as $world) {
             if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
-                $this->log->write("Sanity check fail: 1-1 and 1-2 are in the same world!\n");
+                $this->log->write("Sanity check fail: 1-1 and 2-1 are in the same world!\n");
                 return false;
             }
         }
@@ -565,6 +574,11 @@ class Randomizer
          *
          * TODO: can the randomizer write custom code with knowledge of
          * which world has 1-2/4-2?
+         *
+         * TODO: uhm, we need to do this even if we're not shuffling warp zones, don't we?
+         * Or do we just leave that be?
+         * If we do, then warp zones can get a bit strange, but as long as that's communicated
+         * to the player that might be ok?
          */
         if ($this->options['warpZones'] != "normal") {
             foreach ($game->worlds as $world) {
@@ -804,6 +818,19 @@ class Randomizer
         }
     }
 
+    public function randomizeFireworks(&$game)
+    {
+        $this->log->write("Randomizing fireworks...\n");
+        $digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        $random_digits = mt_shuffle($digits);
+
+        // use the first 3 shuffled digits. good enough? or use 1,3,6 just because fun?
+        $game->addData(FireworksOffset1, pack('C*', $random_digits[0]));
+        $game->addData(FireworksOffset2, pack('C*', $random_digits[1]));
+        $game->addData(FireworksOffset3, pack('C*', $random_digits[2]));
+        $this->log->write("Fireworks will appear when last digit of timer is " . $random_digits[0] . ", " . $random_digits[1] . " or " . $random_digits[2] . "\n");
+    }
+
     public function fixPipes(Game &$game)
     {
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
@@ -966,6 +993,10 @@ class Randomizer
         $flags[9]++;
         $flags[9]++;
         $flags[9]++;
+        $flags[10] = $options['fireworks'][3];
+        $flags[10]--;
+        $flags[10]--;
+        $flags[10]--;
 
         $s = implode("", $flags);
         $f = strtoupper($s);
@@ -1112,6 +1143,10 @@ class Randomizer
         // Remove warp zone destination text if selected
         if ($this->options['hiddenWarpDestinations'] == "true") {
             $this->removeWarpZoneLabels($game);
+        }
+
+        if ($this->options['fireworks'] == "true") {
+            $this->randomizeFireworks($game);
         }
 
         // Fix Pipes

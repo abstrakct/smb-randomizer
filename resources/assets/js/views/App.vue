@@ -5,7 +5,7 @@
         <b-col></b-col>
         <b-col cols="8">
           <b-card :title="'Super Mario Bros. Randomizer v' + this.version" style="max-width: 150rem;">
-            <b-alert :show="true" variant="danger">Warning: this software is in a beta/testing stage (at best), and development is far from finished! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
+            <b-alert :show="true" variant="info">NOTE: this software is in a beta/testing stage (at best), and development is far from finished! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
             <b-alert dismissible fade :show="error" variant="danger">
               Error: {{ this.errorMessage }}
             </b-alert>
@@ -44,6 +44,7 @@
                     <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
                     <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ofw" label="Randomize fireworks" @input="updateInputted" storage-key="smbr.opt.fireworks" v-model="selectedOptions.fireworks" checked-value="true" unchecked-value="false"></smbr-checkbox>
                   </b-col>
 
                   <b-col>
@@ -142,7 +143,8 @@ export default {
         bowserHitpoints: "",
         startingLives: "",
         warpZones: "",
-        hiddenWarpDestinations: ""
+        hiddenWarpDestinations: "",
+        fireworks: ""
       }
     };
   },
@@ -228,7 +230,8 @@ export default {
           bowserHitpoints: this.selectedOptions.bowserHitpoints,
           startingLives: this.selectedOptions.startingLives,
           warpZones: this.selectedOptions.warpZones,
-          hiddenWarpDestinations: this.selectedOptions.hiddenWarpDestinations
+          hiddenWarpDestinations: this.selectedOptions.hiddenWarpDestinations,
+          fireworks: this.selectedOptions.fireworks
         })
         .then(response => {
           this.rando.fullpath = response.data.fullpath;
@@ -253,8 +256,7 @@ export default {
                 break;
               default:
                 this.error = true;
-                this.errorMessage =
-                  "Generating seed failed! No one knows why :(";
+                this.errorMessage = "Something went wrong!";
                 break;
             }
           }
@@ -432,6 +434,10 @@ export default {
         {
           key: "smbr.opt.bowserabilities",
           val: this.defaultOptions.bowserAbilities
+        },
+        {
+          key: "smbr.opt.fireworks",
+          val: this.defaultOptions.fireworks
         }
       ];
 

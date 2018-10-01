@@ -3,7 +3,7 @@ SELF
 *********
 * Learn about localforage
 --- Mostly done
-* Learn about javascript promise thing
+* Learn about javascript promises
 --- Done: I have read about it, know what it is
 
 ************************************************************************
@@ -32,17 +32,18 @@ BUGS
 BUG: FIXED? in enemies-randomize-pools Bowser can get randomized to something else!
 BUG: Enemy at the end of 8-2 (on the stairs before flag) should never be a firebar
 BUG: Set Y pos of Lakitu to correct value
-BUG: shuffle levels with normal world order = infinite loop now (after adding 8-4 to sanity checks)
 
       TODO
+TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
+TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
 TODO: Technically, could we warp to a level that is NOT level 1 of a world?
+      - No, not without code changes/additions
 TODO: Useful warp zone shuffle option (all pipes take you to a higher world number)
-TODO: Warp zone shuffle mode where you don't know where a pipe leads - but 1 or 2 pipes are guaranteed to be good! yeah!
 TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
 TODO: Option to leave 8-4 un-randomized.
 IDEA: Is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
 TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
-....... MAYBE JUST NOT RANDOMIZE PIRANHA PLANTS!?!?!?!?!?!?!?!?!?!?!? that's probably the solution!
+....... MAYBE JUST NOT RANDOMIZE PIRANHA PLANTS!?! that's probably the solution!
 TODO: Change/randomize y pos of (some) enemies? to prevent stuck enemies
 TODO: Randomize where pipes lead to?
       -- option to include 4-2 warp zone or not in shuffle - if possible.
@@ -50,6 +51,7 @@ TODO: Shuffle which pipes can be entered?
 TODO: Shuffle scenery? nah... or?
 TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!
 TODO: Option to randomize music? (line 2790 in disasm)
+      -- ROM offset 0x10f7 - 0x10fc - star power music = line 11254 in disasm
 TODO: Randomize when fireworks appear? (line 10469 of disasm)
 --------- YES IT WORKS!
 --------- Offsets: 0x5308 0x530e 0x5314
@@ -109,6 +111,10 @@ DONE: hidden warp pipe destinations
       ROM offset: 0x892 length 22 bytes
 DONE: Option to only randomize world order, but leave levels normal - e.g. the first world can be vanilla world 3,
      containing vanilla 3-1, 3-2, 3-3, 3-4, second world can be vanilla world 5, with levels 5-1 - 5-4, etc.
+DONE: Warp zone gamble mode where you don't know where warp pipes lead - but 1 or 2 pipes are guaranteed to be good! yeah!
+
+FIXED: shuffle levels with normal world order = infinite loop now (after adding 8-4 to sanity checks)
+
 
 
 

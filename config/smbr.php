@@ -120,6 +120,10 @@ return [
                 'true' => 'Warp Zone destination worlds will not be written above the warp pipes',
                 'false' => 'Warp Zone destination worlds will be written above warp pipes as normal',
             ],
+            'fireworks' => [
+                'true' => 'Randomize when and how many fireworks appear after beating a level',
+                'false' => 'Do not randomize fireworks',
+            ],
         ],
     ],
 ];
