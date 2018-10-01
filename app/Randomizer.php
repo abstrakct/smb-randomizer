@@ -55,7 +55,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.8.4";
+    const VERSION = "0.8.5";
 
     // Color schemes. TODO: improve
     public $colorschemes = [];
@@ -824,11 +824,11 @@ class Randomizer
         $digits = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         $random_digits = mt_shuffle($digits);
 
-        // use the first 3 shuffled digits. good enough? or use 1,3,6 just because fun?
-        $game->addData(FireworksOffset1, pack('C*', $random_digits[0]));
-        $game->addData(FireworksOffset2, pack('C*', $random_digits[1]));
-        $game->addData(FireworksOffset3, pack('C*', $random_digits[2]));
-        $this->log->write("Fireworks will appear when last digit of timer is " . $random_digits[0] . ", " . $random_digits[1] . " or " . $random_digits[2] . "\n");
+        // use indexes 1, 3, 6 just as a nod to the original game :)
+        $game->addData(FireworksOffset1, pack('C*', $random_digits[1]));
+        $game->addData(FireworksOffset2, pack('C*', $random_digits[3]));
+        $game->addData(FireworksOffset3, pack('C*', $random_digits[6]));
+        $this->log->write("Fireworks will appear when last digit of timer is " . $random_digits[1] . ", " . $random_digits[3] . " or " . $random_digits[6] . "\n");
     }
 
     public function fixPipes(Game &$game)
