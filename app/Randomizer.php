@@ -321,7 +321,6 @@ class Randomizer
     {
         $all_levels = ['1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4', '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3', '8-4'];
 
-        $this->log->write("Shuffling all levels...\n");
         $shuffledlevels = mt_shuffle($all_levels);
         //print_r($shuffledlevels);
 
@@ -392,7 +391,6 @@ class Randomizer
         $worlds = [0, 1, 2, 3, 4, 5, 6];
         $shuffledworlds = mt_shuffle($worlds);
 
-        $this->log->write('Shuffling world order...');
         // shuffle worlds 1-7
         for ($i = 0; $i <= 6; $i++) {
             switch ($shuffledworlds[$i]) {
@@ -459,8 +457,6 @@ class Randomizer
         $levels = ['1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3'];
         $castles = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
 
-        $this->log->write("Shuffling all levels (normal world length)...\n");
-
         $shuffledlevels = mt_shuffle($levels);
         $shuffledcastles = mt_shuffle($castles);
 
@@ -473,7 +469,7 @@ class Randomizer
                     $game->worlds[$w]->levels[$i] = Level::get($shuffledlevels[$levelindex]);
                     $levelindex++;
                 }
-                if ($castleindex < 7) {
+                if ($castleindex < 8) {
                     $game->worlds[$w]->levels[3] = Level::get($shuffledcastles[$castleindex]);
                 }
 
@@ -543,7 +539,7 @@ class Randomizer
     {
         // Check that 8-4 is the last level
         if ($game->worlds[7]->levels[count($game->worlds[7]->levels) - 1] != Level::get('8-4')) {
-            $this->log->write("8-4 is not the last level!\n");
+            $this->log->write("Sanity check fail: 8-4 is not the last level!\n");
             return false;
         }
 
@@ -551,7 +547,7 @@ class Randomizer
         // So let's avoid that
         foreach ($game->worlds as $world) {
             if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
-                $this->log->write("1-1 and 1-2 are in the same world!\n");
+                $this->log->write("Sanity check fail: 1-1 and 1-2 are in the same world!\n");
                 return false;
             }
         }
@@ -573,7 +569,7 @@ class Randomizer
         if ($this->options['warpZones'] != "normal") {
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('1-2') && $world->num != 1) {
-                    $this->log->write("1-2 is not in world 1!\n");
+                    $this->log->write("Sanity check fail: 1-2 is not in world 1!\n");
                     return false;
                 }
             }
@@ -581,7 +577,7 @@ class Randomizer
             // If we pass the previous test, now check 4-2
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('4-2') && $world->num == 1) {
-                    $this->log->write("4-2 is in world 1!\n");
+                    $this->log->write("Sanity check fail: 4-2 is in world 1!\n");
                     return false;
                 }
             }
@@ -1032,25 +1028,28 @@ class Randomizer
         // This part can be optimized / written less strangely. Callback functions seems like a good idea.
         if ($this->options['shuffleLevels'] == "all") {
             if ($this->options['normalWorldLength'] == "true") {
+                $this->log->write("Shuffling all levels (normal world length)...\n");
                 $this->shuffleLevelsWithNormalWorldLength($game);
                 while (!$this->sanityCheckWorldLayout($game)) {
-                    $this->log->write("World Layout sanity check failed! Reshuffling...\n");
+                    //$this->log->write("World Layout sanity check failed! Reshuffling...\n");
                     $game->resetWorlds();
                     $this->shuffleLevelsWithNormalWorldLength($game);
                 }
             } else {
                 // any world length
+                $this->log->write("Shuffling all levels (varying world length)...\n");
                 $this->shuffleAllLevels($game);
                 while (!$this->sanityCheckWorldLayout($game)) {
-                    $this->log->write("World Layout sanity check failed! Reshuffling...\n");
+                    //$this->log->write("World Layout sanity check failed! Reshuffling...\n");
                     $game->resetWorlds();
                     $this->shuffleAllLevels($game);
                 }
             }
         } else if ($this->options['shuffleLevels'] == "worlds") {
+            $this->log->write('Shuffling world order...');
             $this->shuffleWorldOrder($game);
             while (!$this->sanityCheckWorldLayout($game)) {
-                $this->log->write("World Layout sanity check failed! Reshuffling...\n");
+                //$this->log->write("World Layout sanity check failed! Reshuffling...\n");
                 $game->resetWorlds();
                 $this->shuffleWorldOrder($game);
             }
@@ -1058,7 +1057,7 @@ class Randomizer
         } else if ($this->options['shuffleLevels'] == "none") {
             $game->setVanillaWorldData();
             while (!$this->sanityCheckWorldLayout($game)) {
-                $this->log->write("World Layout sanity check failed! This shouldn't happen...\n");
+                $this->log->write("Vanilla World Layout sanity check failed?!! In a way that shouldn't happen...\n");
                 exit(1);
             }
         } else {
