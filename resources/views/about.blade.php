@@ -117,6 +117,11 @@ although I haven't personally come across an unwinable seed at this point, I can
                         <b>Hard</b> rndomizes starting lives between 1-3.
                         <br>
                         <b>Random</b> randomizes starting lives between 1 and 19.
+                        <p></p>
+                        <b>Fireworks</b> randomizes when fireworks appear after beating a level, and how many. The randomizer
+                        will select 3 different digits, and if the last digit of your timer is one of those digits when you
+                        jump on the flagpole, you will get that many fireworks! Are you ready to win or lose because you
+                        or your opponent had to sit through 9 fireworks explosions?<br>
                         <br>
                         <p></p>
 
@@ -143,8 +148,8 @@ although I haven't personally come across an unwinable seed at this point, I can
                             that Mario doesn't start autowalking, so that will be added in a future version.</li>
                         <li>Warp Pipes (if left unchanged) can be wonky, depending on which world they show up in. The ones that
                             have a number above them work correctly. A pipe in a Warp Zone without a number above it will
-                            (probably) take you to world -1 and you'll be stuck there.</li>
-                        <li>Randomized enemies sometimes get stuck inside blocks/walls/pipes. I'm looking into a way to fix this.</li>
+                            (probably) take you to world -1 and you'll be stuck there. A fix is coming for this.</li>
+                        <li>Randomized enemies sometimes get stuck inside blocks/walls/pipes. This will be fixed.</li>
                         <li>Sometimes (very rarely) you can get invisible enemies - they are probably hiding behing scenery.
                             This should be fixed, if it still happens.</li>
                         <li>When "Block Shuffle" is set to <i>All</i> a small number of blocks seem to disappear completely.
@@ -156,14 +161,28 @@ although I haven't personally come across an unwinable seed at this point, I can
                         </li>
                         <li>If Normal World Length is <i>false</i>, there will be no midway points in any level! In other words:
                             No matter where you die on a level, you will respawn at the beginning of the level! This is due
-                            to limitations in the original game code.</li>
+                            to limitations in the original game code, and a fix would require some serious romhacking.</li>
                         <li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too
-                            many other enemies on screen. Fix is needed.</li>
+                            many other enemies on screen. This must be fixed.</li>
                         <p></p>
                         <h2>TODO / Upcoming Features / Ideas</h2>
                         <del><li>Require user to upload a ROM instead of providing one</li></del>
                         <del><li>Improve web interface</li></del>
                         <del><li>Randomize Bowser's abilities</li></del>
+                        <del> <li>Fix/Randomize Warp Pipes</li></del>
+                        <del><li>Add option to not generate spoiler/log.</li></del>
+                        <li>Exclude certain blocks from randomization.</li>
+                        <li>Improve block randomization algorithm.</li>
+                        <li>Improve enemy randomization algorithm.</li>
+                        <li>Be more careful about enemy randomization, to avoid despawning a.o. platforms because of too many
+                            sprites onscreen. That will probably solve the problem of disappearing trampolines too.
+                        </li>
+                        <li>Add option to randomize music.</li>
+                        <li>Add option to disable warp pipes - if possible</li>
+                        <li>Add option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the
+                            same number of coins/powerups, but don't know where they are</li>
+                        <li>Option to start game in hard mode, i.e. as the game is after you have won once. In this case we might
+                            want to disable the world select function.</li>
                         <li>Improve this about page!</li>
                         <li>Randomize texts better?</li>
                         <li>Add option to not randomize texts.</li>
@@ -174,18 +193,9 @@ although I haven't personally come across an unwinable seed at this point, I can
                         <li>Fix color schemes</li>
                         <li>Custom color schemes!</li>
                         <li>More color schemes!</li>
-                        <li>Add option to not generate spoiler/log.</li>
-                        <del> <li>Fix/Randomize Warp Pipes (if possible)</li></del>
-                        <li>Add option to disable warp pipes - if possible</li>
-                        <li>Exclude certain blocks from randomization</li>
-                        <li>Add option to shuffle all coins/powerups in vanilla in one big pool, so that you in total get the
-                            same number of coins/powerups, but don't know where they are</li>
                         <li>Add option to include continous Cheep-Cheeps/Bullet Bills in randomization pools.</li>
-                        <li>Be more careful about enemy randomization, to avoid despawning a.o. platforms because of too many
-                            sprites onscreen. That will probably solve the problem of disappearing trampolines too.
-                        </li>
-                        <li>Randomize music? If possible.</li>
                         <li>Make it an option to have randomized texts independent of game seed?</li>
+                        <li>Many other ideas and possibilites!</li>
                         <del><li>[kinda done] Better / more readable log</li></del>
                         <del><li>Store a cookie or something when user has uploaded a valid ROM so they don't have to repeat it every
                             time they use the randomizer. Note: base rom gets stored in your browser's local storage.</li></del>
