@@ -25,36 +25,30 @@
               <b-card title="Options" style="max-width: 150rem;">
                 <b-row>
                   <b-col>
-                    <!-- <b-button @click="loadDefaults" variant="info">Load default options</b-button> -->
-                    <b-form-input v-model="selectedOptions.seed" id="inputseed" type="number" placeholder="Input seed number (leave blank for random)"></b-form-input>
-                  </b-col>
-                  <b-col>
-                  </b-col>
-                </b-row>
-                <p></p>
-                <b-row>
-                  <b-col>
                     <smbr-select id="olw" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
                     <smbr-select id="oen" label="Enemies" @input="updateInputted" storage-key="smbr.opt.enemies" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies"></smbr-select>
                     <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserHitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
                     <smbr-select id="osl" label="Starting Lives" @input="updateInputted" storage-key="smbr.opt.startingLives" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives"></smbr-select>
+                  </b-col>
+
+                  <b-col>
                     <smbr-checkbox id="owl" label="Worlds can have varying lengths" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true"></smbr-checkbox>
                     <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
                     <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ofw" label="Randomize fireworks" @input="updateInputted" storage-key="smbr.opt.fireworks" v-model="selectedOptions.fireworks" checked-value="true" unchecked-value="false"></smbr-checkbox>
-                  </b-col>
-
-                  <b-col>
                     <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
                     <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
                     <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
+                    <b-form-input v-model="selectedOptions.seed" id="inputseed" type="number" placeholder="Input seed number here, or leave blank for random"></b-form-input>
 
                     <p> </p>
 
-                    <b-button variant="success" @click="generateSeed" class="w-100">Generate!</b-button>
+                    <b-button variant="success" @click="generateSeedWithLog" class="w-100">Generate!</b-button>
+                    <p> </p>
+                    <b-button variant="success" @click="generateSeedNoLog" class="w-100">Generate ROM without the spoiler log (suitable for races etc.)</b-button>
 
                     <div v-if="rando.stored">
                       <p></p>
@@ -65,7 +59,9 @@
 
                       <p></p>
 
-                      <b-button variant="info" class="w-100" :href="rando.logfullpath">View log (contains spoilers!)</b-button>
+                      <div v-if="generateLog">
+                        <b-button variant="info" class="w-100" :href="rando.logfullpath">View log (contains spoilers!)</b-button>
+                      </div>
                     </div>
                   </b-col>
                 </b-row>
@@ -126,6 +122,7 @@ export default {
       defaultLoaded: false,
       defaultOptions: null,
       randomizerOptions: null,
+      generateLog: true,
 
       selectedOptions: {
         seed: null,
@@ -210,6 +207,16 @@ export default {
   },
 
   methods: {
+    generateSeedNoLog() {
+      this.generateLog = false;
+      this.generateSeed();
+    },
+
+    generateSeedWithLog() {
+      this.generateLog = true;
+      this.generateSeed();
+    },
+
     generateSeed() {
       this.error = false;
       axios
@@ -218,6 +225,7 @@ export default {
           rom: this.baseRom.getData(),
           romfilename: this.baseRomFilename,
           seed: this.selectedOptions.seed,
+          generateLog: this.generateLog,
           mario: this.selectedOptions.colorscheme.mario,
           luigi: this.selectedOptions.colorscheme.luigi,
           fire: this.selectedOptions.colorscheme.fire,

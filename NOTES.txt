@@ -24,6 +24,9 @@ aka There and Back Again
 ************
 BUGS
 
+TODO
+- Spoiler free generation (don't write a log file at all, or write one and set permissions to g-r group minus read ?)
+- A way to share seeds via a link or similar (use database?)
 
 **************
 * RANDOMIZER *

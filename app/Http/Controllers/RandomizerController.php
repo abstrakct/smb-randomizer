@@ -53,7 +53,7 @@ class RandomizerController extends Controller
         $outfilebasename = substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . strtoupper($rando->getFlags($options)) . ".nes";
 
         // Start the logger
-        $log = new Logger($logfilename);
+        $log = new Logger($logfilename, $request->input('generateLog'));
         $rom->setLogger($log);
         $rando->setLogger($log);
 
