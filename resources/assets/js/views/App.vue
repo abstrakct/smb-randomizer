@@ -35,14 +35,14 @@
                   </b-col>
 
                   <b-col>
+                    <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
+                    <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
+                    <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
                     <smbr-checkbox id="owl" label="Worlds can have varying lengths" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true"></smbr-checkbox>
                     <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
                     <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ofw" label="Randomize fireworks" @input="updateInputted" storage-key="smbr.opt.fireworks" v-model="selectedOptions.fireworks" checked-value="true" unchecked-value="false"></smbr-checkbox>
-                    <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
-                    <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
-                    <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
 
                     <p> </p>
 
