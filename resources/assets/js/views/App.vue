@@ -5,7 +5,7 @@
         <b-col></b-col>
         <b-col cols="8">
           <b-card :title="'Super Mario Bros. Randomizer v' + this.version" style="max-width: 150rem;">
-            <b-alert :show="true" variant="info">NOTE: this software is in a beta/testing stage (at best), and development is far from finished! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
+            <b-alert :show="true" variant="info">NOTE: this software is still under development, and currently in a beta/testing stage (at best)! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
             <b-alert dismissible fade :show="error" variant="danger">
               Error: {{ this.errorMessage }}
             </b-alert>

@@ -5,7 +5,7 @@
         <b-row>
             <b-col>
                 <div>
-                    <h1>About {!! SMBR\Randomizer::VERSION !!}</h1>
+                    <h1>About SMB Randomizer v{!! SMBR\Randomizer::VERSION !!}</h1>
                     <h2>aka useful information before diving in</h2>
                 </div>
                 <div>
@@ -15,11 +15,11 @@
                         playing the game you know and love? Well, look no further! This randomizer will take the original
                         Super Mario Bros. game for the NES and randomize certain elements of the game, kinda like shuffling
                         a deck of cards, providing you with a new and (hopefully) exciting and challenging experience each
-                        time! You can even choose various options for which elements are randomized, giving you even more
-                        possibilities for variation!
+                        time! You can choose various options for which elements you want to be randomized or shuffled, giving
+                        you even more possibilities for variation!
                         <br><b><i>Goodbye muscle memory, hello SMB Randomizer!</i></b><br><br>
                         <i>Please read the Guide, Notes and Bugs/Todo sections before playing for the first time. The randomizer is still in a beta stage, and
-although I haven't personally come across an unwinable seed at this point, I cannot guarantee 100% that every seed will produce a winable seed, and there is still room (and plans) for improvement.</i><br>
+although I haven't personally come across an impossible/unwinable seed at this point, I cannot guarantee 100% that every seed will produce a winable seed.</i><br>
                         <p></p>
                         <h1>Guide</h1>
                         <p></p>
@@ -27,6 +27,7 @@ although I haven't personally come across an unwinable seed at this point, I can
                         <p></p>
                         Most options are rather self-explanatory, but here are some details. Also, the randomizer will let you know if you choose
                         an invalid combination of options.
+                        <p></p>
                         <b>Seed</b> is the seed for the RNG. Leave empty to get a random seed, or input a number you want
                         to use as the seed.
                         <p></p>
@@ -150,6 +151,7 @@ although I haven't personally come across an unwinable seed at this point, I can
                             have a number above them work correctly. A pipe in a Warp Zone without a number above it will
                             (probably) take you to world -1 and you'll be stuck there. A fix is coming for this.</li>
                         <li>Randomized enemies sometimes get stuck inside blocks/walls/pipes. This will be fixed.</li>
+                        <li>The enemy randomization algorithm is not very good at this point, and will be improved!</li>
                         <li>Sometimes (very rarely) you can get invisible enemies - they are probably hiding behing scenery.
                             This should be fixed, if it still happens.</li>
                         <li>When "Block Shuffle" is set to <i>All</i> a small number of blocks seem to disappear completely.
