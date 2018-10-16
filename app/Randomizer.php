@@ -245,7 +245,7 @@ class Randomizer
 
                                 $new_data = (($p | $h) | $new_object);
                                 $game->addData($offset + $i + 1, pack('C*', $new_data));
-                                $this->log->write("Changed an enemy to " . Enemy::getName($new_object) . "\n");
+                                $this->log->write("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
                             }
                         } else {
                             $new_data = 0;
@@ -263,7 +263,7 @@ class Randomizer
 
                                 $new_data = (($p | $h) | $new_object);
                                 $game->addData($offset + $i + 1, pack('C*', $new_data));
-                                $this->log->write("Changed an enemy to " . Enemy::getName($new_object) . "\n");
+                                $this->log->write("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
                             }
                         }
                     }
