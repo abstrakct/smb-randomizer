@@ -1,0 +1,29 @@
+Hello Big Jon!
+I'm developing a randomizer for the first Super Mario Bros game, and was wondering if you would be interested in testing it?
+You can of course stream the playtesting if you want to.
+Briefly about me: I discovered the randomizer gaming community during the fantastic SMB3R tournament earlier this year, and later
+I got into ALTTPR. Both these have given me many many hours of fun both watching and playing. I've also been a hobby programmer for
+many years, and this last year I've been studying modern web development in my spare time. I quickly decided I wanted to try to make
+a randomizer of my own, and SMB seemed to be a good target for several reasons:
+- I couldn't find any randomizers for SMB that did what I wanted to do
+- I played this game a lot in my childhood
+- It's a fairly small and simple game code-wise
+
+The result is a web-based randomizer, and in that regard it's very much inspired by ALTTPR. I only use Linux on my computers, and didn't
+want to deal with cross-compiling linux/windows/mac binaries and all that nonsense, so it made sense to make it web-based so that the
+randomizer would be accessible for anyone. Also, as mentioned, I was learning web development, so it worked out for that as well.
+
+The randomizer itself though is more inspired by Fred's SMB3 randomizer. Some things you can do:
+- shuffle levels (and worlds can now have more than 4 levels if you want to)
+- randomize enemies
+- randomize power-up blocks
+- randomize warp pipe destinations, in several ways
+- for example, there's a gamble mode for warp zones, where you don't know the destinations of each pipe, but you know that 2 pipes will be useful and 1 will be bad!
+
+There are other features as well, and more are planned!
+As you know, SMB isn't a very complicated/big game, so there are limits to what things you can randomize, but I'm happy with the results so far.
+The randomizer isn't finished though, and there are many areas for improvement that I'll be working on.
+
+For now it would be very helpful if I could find some testers to play around with the randomizer and give me feedback.
+One big question: is it fun to play randomized SMB? Is it interesting? Challenging? Boring?
+And of course I welcome any bug reports, suggestions for improvements/changes, etc.

@@ -36,6 +36,7 @@ BUG: Enemy at the end of 8-2 (on the stairs before flag) should never be a fireb
 BUG: Set Y pos of Lakitu to correct value
 
       TODO
+TODO: Deceptive warp pipes? Possible? Will need changing code. 
 TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
 TODO: Technically, could we warp to a level that is NOT level 1 of a world?
