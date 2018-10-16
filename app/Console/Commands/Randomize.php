@@ -143,7 +143,7 @@ class Randomize extends Command
         }
 
         // Start the logger
-        $log = new Logger($logfilename);
+        $log = new Logger($logfilename, true);
         $rom->setLogger($log);
         $rando->setLogger($log);
 

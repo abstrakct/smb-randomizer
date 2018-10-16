@@ -328,7 +328,7 @@ class Randomizer
         ];
 
         $shuffledlevels = mt_shuffle($all_levels);
-        //print_r($shuffledlevels);
+        print_r($shuffledlevels);
 
         $lastlevelindex = 0;
         $levelindex = 0;
@@ -339,6 +339,7 @@ class Randomizer
         if ($this->options['pipeTransitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
 
+                //print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex is $worldindex levelindex = $levelindex\n");
                 // Select next level in list of shuffled levels, set its data
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
@@ -359,7 +360,7 @@ class Randomizer
                 $shuffleindex++;
             }
         } else if ($this->options['pipeTransitions'] == 'keep') {
-            // This part is a mess
+            // This part is a mess (?)
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
@@ -546,6 +547,22 @@ class Randomizer
 
     public function sanityCheckWorldLayout(&$game)
     {
+        // Check that number of worlds == 8
+        if (count($game->worlds) != 8) {
+            $this->log->write("Sanity check fail: Not 8 worlds in world layout!\n");
+            return false;
+        }
+
+        // Check that number of levels == 32
+        $levels = 0;
+        foreach ($game->worlds as $world) {
+            $levels += count($world->levels);
+        }
+        if ($levels != 32) {
+            $this->log->write("Sanity check fail: Not 32 levels in world layout!\n");
+            return false;
+        }
+
         // Check that 8-4 is the last level
         if ($game->worlds[7]->levels[count($game->worlds[7]->levels) - 1] != Level::get('8-4')) {
             $this->log->write("Sanity check fail: 8-4 is not the last level!\n");

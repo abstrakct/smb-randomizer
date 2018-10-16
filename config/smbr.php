@@ -22,6 +22,7 @@ return [
             'startingLives' => 'normal',
             'warpZones' => 'shuffle',
             'hiddenWarpDestinations' => 'false',
+            'fireworks' => 'true',
         ],
 
         'options' => [
