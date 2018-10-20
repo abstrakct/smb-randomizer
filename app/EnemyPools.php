@@ -63,7 +63,7 @@ class EnemyPools
             Enemy::get('Green Cheep-Cheep (slow)'),
             Enemy::get('Red Cheep-Cheep (fast)'),
             Enemy::get('Podoboo'),
-            Enemy::get('Pirhana Plant'),
+            //Enemy::get('Pirhana Plant'),
             Enemy::get('Green Koopa Paratroopa (leaping)'),
             Enemy::get('Red Koopa Troopa (down then up)'),
             Enemy::get('Green Koopa Troopa (left then right)'),

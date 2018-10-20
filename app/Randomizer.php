@@ -55,7 +55,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.8.7";
+    const VERSION = "0.8.8";
 
     // Color schemes. TODO: improve
     public $colorschemes = [];
@@ -328,7 +328,7 @@ class Randomizer
         ];
 
         $shuffledlevels = mt_shuffle($all_levels);
-        print_r($shuffledlevels);
+        //print_r($shuffledlevels);
 
         $lastlevelindex = 0;
         $levelindex = 0;
@@ -578,6 +578,14 @@ class Randomizer
             }
         }
 
+        // Theory: pipes get messed up if 4-1 and 6-2 are in the same world
+        // So let's avoid that
+        foreach ($game->worlds as $world) {
+            if ($world->hasLevel('4-1') && $world->hasLevel('6-2')) {
+                $this->log->write("Sanity check fail: 4-1 and 6-2 are in the same world!\n");
+                return false;
+            }
+        }
         /*
          * Easy fix for the Warp Zone Conundrum:
          * When changing warp zone destinations in any way, we have to
@@ -859,6 +867,10 @@ class Randomizer
                     if ($level->pipe_pointers) {
                         foreach ($level->pipe_pointers as list($entry, $exit)) {
                             $new_world = $world->num - 1;
+                            $entry_data = 0;
+                            $exit_data = 0;
+                            $new_entry_data = 0;
+                            $new_exit_data = 0;
 
                             // entry
                             if ($entry != null) {
@@ -872,10 +884,15 @@ class Randomizer
                                 $new_exit_data = (($new_world << 5) | ($exit_data & 0b00011111));
                                 $game->addData($exit, pack('C*', $new_exit_data));
                             }
+
+                            $map_pointer_entry = $this->rom->read($entry - 1, 1);
+                            $map_pointer_exit = $this->rom->read($exit - 1, 1);
                             $this->log->write("Fixing pipe in " . $level->name . " - New world is " . $new_world . "\n");
-                            //$this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
-                            //$this->log->write(sprintf("Old entry: %02x  Old exit: %02x\n", $entry_data, $exit_data));
-                            //$this->log->write(sprintf("New entry: %02x  New exit: %02x\n", $new_entry_data, $new_exit_data));
+                            $this->log->write(sprintf("Entry map pointer: %02x\n", ($map_pointer_entry & 0b01111111)));
+                            $this->log->write(sprintf("Exit  map pointer: %02x\n", ($map_pointer_exit & 0b01111111)));
+                            $this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
+                            $this->log->write(sprintf("Old entry: %02x (%08b) Old exit: %02x (%08b)\n", $entry_data, $entry_data, $exit_data, $exit_data));
+                            $this->log->write(sprintf("New entry: %02x (%08b) New exit: %02x (%08b)\n", $new_entry_data, $new_entry_data, $new_exit_data, $new_exit_data));
                         }
                     }
                 }

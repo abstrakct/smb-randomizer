@@ -33,7 +33,9 @@ TODO
      BUGS
 BUG: FIXED? in enemies-randomize-pools Bowser can get randomized to something else!
 BUG: Enemy at the end of 8-2 (on the stairs before flag) should never be a firebar
-BUG: Set Y pos of Lakitu to correct value
+BUG: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
+BUG: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQVE 
+------ possible "fix": don't put 4-1 and 6-2 in the same world
 
       TODO
   ENEMIES 
