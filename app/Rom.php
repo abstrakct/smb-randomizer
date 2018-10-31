@@ -84,8 +84,14 @@ class Rom
      */
     public function read(int $offset, int $length = 1)
     {
+        // if ($length == 1) {
+        //     printf("Reading from %04x - ", $offset);
+        // }
         fseek($this->rom, $offset);
         $unpacked = unpack('C*', fread($this->rom, $length));
+        // if (count($unpacked) == 1) {
+            // printf("Returning %02x\n", $unpacked[1]);
+        // }
         return count($unpacked) == 1 ? $unpacked[1] : array_values($unpacked);
     }
 

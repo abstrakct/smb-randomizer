@@ -571,21 +571,21 @@ class Randomizer
 
         // Theory: pipes get messed up if 1-1 and 2-1 are in the same world
         // So let's avoid that
-        foreach ($game->worlds as $world) {
-            if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
-                $this->log->write("Sanity check fail: 1-1 and 2-1 are in the same world!\n");
-                return false;
-            }
-        }
+        //foreach ($game->worlds as $world) {
+        //    if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
+        //        $this->log->write("Sanity check fail: 1-1 and 2-1 are in the same world!\n");
+        //        return false;
+        //    }
+        //}
 
         // Theory: pipes get messed up if 4-1 and 6-2 are in the same world
         // So let's avoid that
-        foreach ($game->worlds as $world) {
-            if ($world->hasLevel('4-1') && $world->hasLevel('6-2')) {
-                $this->log->write("Sanity check fail: 4-1 and 6-2 are in the same world!\n");
-                return false;
-            }
-        }
+        //foreach ($game->worlds as $world) {
+        //    if ($world->hasLevel('4-1') && $world->hasLevel('6-2')) {
+        //        $this->log->write("Sanity check fail: 4-1 and 6-2 are in the same world!\n");
+        //        return false;
+        //    }
+        //}
         /*
          * Easy fix for the Warp Zone Conundrum:
          * When changing warp zone destinations in any way, we have to
@@ -874,22 +874,22 @@ class Randomizer
 
                             // entry
                             if ($entry != null) {
-                                $entry_data = $this->rom->read($entry, 1);
+                                $entry_data = $this->rom->read($entry);
                                 $new_entry_data = (($new_world << 5) | ($entry_data & 0b00011111));
                                 $game->addData($entry, pack('C*', $new_entry_data));
                             }
                             // exit
                             if ($exit != null) {
-                                $exit_data = $this->rom->read($exit, 1);
+                                $exit_data = $this->rom->read($exit);
                                 $new_exit_data = (($new_world << 5) | ($exit_data & 0b00011111));
                                 $game->addData($exit, pack('C*', $new_exit_data));
                             }
 
-                            $map_pointer_entry = $this->rom->read($entry - 1, 1);
-                            $map_pointer_exit = $this->rom->read($exit - 1, 1);
+                            // $map_pointer_entry = $this->rom->read($entry - 1);
+                            // $map_pointer_exit = $this->rom->read($exit - 1);
                             $this->log->write("Fixing pipe in " . $level->name . " - New world is " . $new_world . "\n");
-                            $this->log->write(sprintf("Entry map pointer: %02x\n", ($map_pointer_entry & 0b01111111)));
-                            $this->log->write(sprintf("Exit  map pointer: %02x\n", ($map_pointer_exit & 0b01111111)));
+                            // $this->log->write(sprintf("Entry map pointer: %02x\n", ($map_pointer_entry & 0b01111111)));
+                            // $this->log->write(sprintf("Exit  map pointer: %02x\n", ($map_pointer_exit & 0b01111111)));
                             $this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
                             $this->log->write(sprintf("Old entry: %02x (%08b) Old exit: %02x (%08b)\n", $entry_data, $entry_data, $exit_data, $exit_data));
                             $this->log->write(sprintf("New entry: %02x (%08b) New exit: %02x (%08b)\n", $new_entry_data, $new_entry_data, $new_exit_data, $new_exit_data));
