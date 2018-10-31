@@ -569,6 +569,17 @@ class Randomizer
             return false;
         }
 
+
+        /*                         PLAN
+         * Add option for randomizing underground bonus area types
+         * If that option is false:
+         * Do sanity checks to make sure we don't have collisions in the underground bonus area pipe pointers
+         * (We can't have multiple pipes active in the same world in the same page)
+         * 
+         * If that option is true:
+         * Shuffle pipe pointers in underground bonus area around so that we have no collisions.
+         */
+
         // Theory: pipes get messed up if 1-1 and 2-1 are in the same world
         // So let's avoid that
         //foreach ($game->worlds as $world) {
@@ -887,12 +898,12 @@ class Randomizer
 
                             // $map_pointer_entry = $this->rom->read($entry - 1);
                             // $map_pointer_exit = $this->rom->read($exit - 1);
-                            $this->log->write("Fixing pipe in " . $level->name . " - New world is " . $new_world . "\n");
+                            // $this->log->write("Fixing pipe in " . $level->name . " - New world is " . $new_world . "\n");
                             // $this->log->write(sprintf("Entry map pointer: %02x\n", ($map_pointer_entry & 0b01111111)));
                             // $this->log->write(sprintf("Exit  map pointer: %02x\n", ($map_pointer_exit & 0b01111111)));
-                            $this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
-                            $this->log->write(sprintf("Old entry: %02x (%08b) Old exit: %02x (%08b)\n", $entry_data, $entry_data, $exit_data, $exit_data));
-                            $this->log->write(sprintf("New entry: %02x (%08b) New exit: %02x (%08b)\n", $new_entry_data, $new_entry_data, $new_exit_data, $new_exit_data));
+                            // $this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
+                            // $this->log->write(sprintf("Old entry: %02x (%08b) Old exit: %02x (%08b)\n", $entry_data, $entry_data, $exit_data, $exit_data));
+                            // $this->log->write(sprintf("New entry: %02x (%08b) New exit: %02x (%08b)\n", $new_entry_data, $new_entry_data, $new_exit_data, $new_exit_data));
                         }
                     }
                 }
