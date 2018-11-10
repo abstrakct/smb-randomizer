@@ -23,6 +23,7 @@ return [
             'warpZones' => 'shuffle',
             'hiddenWarpDestinations' => 'false',
             'fireworks' => 'true',
+            'shuffleUndergroundBonus' => 'false',
         ],
 
         'options' => [
@@ -38,6 +39,7 @@ return [
                     'Black & Blue 2' => 'Black & Blue 2',
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
+                    'Pretty In Pink' => 'Pretty In Pink',
                 ],
                 'luigi' => [
                     'random' => 'Totally random color scheme',
@@ -50,6 +52,7 @@ return [
                     'Black & Blue 2' => 'Black & Blue 2',
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
+                    'Pretty In Pink' => 'Pretty In Pink',
                 ],
                 'fire' => [
                     'random' => 'Totally random color scheme',
@@ -62,6 +65,7 @@ return [
                     'Black & Blue 2' => 'Black & Blue 2',
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
+                    'Pretty In Pink' => 'Pretty In Pink',
                 ],
             ],
             'pipeTransitions' => [
@@ -124,6 +128,10 @@ return [
             'fireworks' => [
                 'true' => 'Randomize when and how many fireworks appear after beating a level',
                 'false' => 'Do not randomize fireworks',
+            ],
+            'shuffleUndergroundBonus' => [
+                'true' => 'Shuffle the destinations of pipes going to underground bonus levels',
+                'false' => 'Do not shuffle underground bonus levels',
             ],
         ],
     ],

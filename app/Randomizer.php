@@ -61,7 +61,7 @@ class Randomizer
     public $colorschemes = [];
 
     /**
-     * Create a new randomizer.
+     * Create a new randomzer.
      *
      * TODO: error checking etc.
      *
@@ -88,6 +88,7 @@ class Randomizer
             'Black & Blue 2' => new Colorscheme(0x51, 0xf8, 0x6e),
             'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
             'Mustard Man' => new Colorscheme(0xd8, 0x27, 0x28),
+            'Pretty In Pink' => new Colorscheme(0xe3, 0xb2, 0x14),
         );
     }
 
@@ -330,7 +331,6 @@ class Randomizer
         $shuffledlevels = mt_shuffle($all_levels);
         //print_r($shuffledlevels);
 
-        $lastlevelindex = 0;
         $levelindex = 0;
         $worldindex = 0;
         $shuffleindex = 0;
@@ -339,7 +339,7 @@ class Randomizer
         if ($this->options['pipeTransitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
 
-                //print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex is $worldindex levelindex = $levelindex\n");
+                // print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex is $worldindex levelindex = $levelindex\n");
                 // Select next level in list of shuffled levels, set its data
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
@@ -355,7 +355,6 @@ class Randomizer
                     $levelindex = -1;
                 }
 
-                $lastlevelindex = $levelindex;
                 $levelindex++;
                 $shuffleindex++;
             }
@@ -403,51 +402,51 @@ class Randomizer
             switch ($shuffledworlds[$i]) {
                 case 0:
                     if ($this->options['pipeTransitions'] == 'keep') {
-                        $game->worlds[$i] = new World1($i + 1);
+                        $game->worlds[$i] = new World1($i);
                     }
 
                     if ($this->options['pipeTransitions'] == 'remove') {
-                        $game->worlds[$i] = new World1NoPipeTransition($i + 1);
+                        $game->worlds[$i] = new World1NoPipeTransition($i);
                     }
 
                     break;
                 case 1:
                     if ($this->options['pipeTransitions'] == 'keep') {
-                        $game->worlds[$i] = new World2($i + 1);
+                        $game->worlds[$i] = new World2($i);
                     }
 
                     if ($this->options['pipeTransitions'] == 'remove') {
-                        $game->worlds[$i] = new World2NoPipeTransition($i + 1);
+                        $game->worlds[$i] = new World2NoPipeTransition($i);
                     }
 
                     break;
                 case 2:
-                    $game->worlds[$i] = new World3($i + 1);
+                    $game->worlds[$i] = new World3($i);
                     break;
                 case 3:
                     if ($this->options['pipeTransitions'] == 'keep') {
-                        $game->worlds[$i] = new World4($i + 1);
+                        $game->worlds[$i] = new World4($i);
                     }
 
                     if ($this->options['pipeTransitions'] == 'remove') {
-                        $game->worlds[$i] = new World4NoPipeTransition($i + 1);
+                        $game->worlds[$i] = new World4NoPipeTransition($i);
                     }
 
                     break;
                 case 4:
-                    $game->worlds[$i] = new World5($i + 1);
+                    $game->worlds[$i] = new World5($i);
                     break;
                 case 5:
-                    $game->worlds[$i] = new World6($i + 1);
+                    $game->worlds[$i] = new World6($i);
                     break;
                 case 6:
-                    $game->worlds[$i] = new World7($i + 1);
+                    $game->worlds[$i] = new World7($i);
                     break;
             }
         }
 
         // set world 8 as world 8
-        $game->worlds[7] = new World8(8);
+        $game->worlds[7] = new World8(7);
         // set the shuffled worlds to their vanilla layout
         $game->setVanillaWorldData();
         // TODO: Set world_num if we need it for sanity checks!
@@ -545,8 +544,162 @@ class Randomizer
         }
     }
 
+    /*
+     * Without making any other changes, these are the restraints we have to work within:
+     * For exit pipes from the underground area,
+     * page 0: 3 pipes
+     * page 2: 2 pipes
+     * page 4: 1 pipe
+     * page 6: 2 pipes
+     * page 8: 4 pipes
+     * = 12 pipes
+     *
+     * On each page, each pipe needs to go to a different world than the other pipes in that page
+     * We also have to change the entry pipe to match the exit pipe, obviously.
+     *
+     *
+     * entry: change page pointer
+     * exit:
+     *
+     *
+     * algorithm:
+     * for each page
+     *   - select the appropriate number n of entry pipes
+     *   - try to find n pipes in different worlds
+     *   - push to array, use in_array to check
+     *   - if that's not possible, re-shuffle
+     *
+     *
+     *   OK SO
+     * this algorithm now works, in that it selects some usable pipes for each page
+     * and there are no collisions
+     * So now all we need to do is set/write the correct new data
+     */
+    public function shuffleUndergroundBonusAreaDestinations(&$game)
+    {
+        $this->log->write("Shuffling Underground Bonus Area Destinations...\n");
+
+        $exitsByPage = [
+            0 => [Pipe::get('1-1 Exit 1'), Pipe::get('2-1 Exit 1'), Pipe::get('7-1 Exit 1')],
+            2 => [Pipe::get('1-2 Exit 1'), Pipe::get('8-1 Exit 1')],
+            4 => [Pipe::get('3-1 Exit 1')],
+            6 => [Pipe::get('4-1 Exit 1'), Pipe::get('6-2 Exit 2')],
+            8 => [Pipe::get('4-2 Exit 1'), Pipe::get('5-1 Exit 1'), Pipe::get('6-2 Exit 1'), Pipe::get('8-2 Exit 1')],
+        ];
+        $vanillaExitsByPage = [
+            0 => [VanillaPipe::get('1-1 Exit 1'), VanillaPipe::get('2-1 Exit 1'), VanillaPipe::get('7-1 Exit 1')],
+            2 => [VanillaPipe::get('1-2 Exit 1'), VanillaPipe::get('8-1 Exit 1')],
+            4 => [VanillaPipe::get('3-1 Exit 1')],
+            6 => [VanillaPipe::get('4-1 Exit 1'), VanillaPipe::get('6-2 Exit 2')],
+            8 => [VanillaPipe::get('4-2 Exit 1'), VanillaPipe::get('5-1 Exit 1'), VanillaPipe::get('6-2 Exit 1'), VanillaPipe::get('8-2 Exit 1')],
+        ];
+        $pipeList = [];
+        $pageCount = [
+            0 => 3,
+            2 => 2,
+            4 => 1,
+            6 => 2,
+            8 => 4,
+        ];
+        $newPipes = [];
+
+        print("exitsByPage:\n");
+        print_r($exitsByPage);
+
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                if ($level->pipe_pointers) {
+                    foreach ($level->pipe_pointers as list($entry, $exit)) {
+                        if ($entry) {
+                            if ($entry->getMap() == 0x42) {
+                                array_push($pipeList, [$entry, $exit]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        print("pipeList:\n");
+        print_r($pipeList);
+        print("\n");
+
+        $this->fixPipes($game);
+
+        for ($page = 0; $page <= 8; $page += 2) {
+            print("page: $page\n");
+            $used_worlds = [];
+            $done = false;
+            $n = 0;
+            $fail = 0;
+            while (!$done) {
+                $key = mt_rand(0, count($pipeList) - 1);
+                if (!in_array($pipeList[$key][0]->getWorldActive(), $used_worlds)) {
+                    $used_worlds[] = $pipeList[$key][0]->getWorldActive();
+                    $newPipes[$page][] = $pipeList[$key];
+
+                    // print info
+                    $w = $pipeList[$key][0]->getWorldActive();
+                    $this->log->write("found usable pipe for page $page in world $w\n");
+
+                    // end
+                    $n++;
+                    array_splice($pipeList, $key, 1);
+                } else {
+                    $fail++;
+                    if ($fail > 10) {
+                        $this->log->write("Failed more than 10 attempts - giving up...\n");
+                        return false;
+                    }
+                }
+                if ($n == $pageCount[$page]) {
+                    $done = true;
+                }
+            }
+        }
+
+        print("newPipes:\n");
+        print_r($newPipes);
+        print("\n");
+        // Set new data
+        // Problem: we are not translating correctly from newPipes to entry/exit pipes
+        for ($page = 0; $page <= 8; $page += 2) {
+            print("page: $page\n");
+            for ($i = 0; $i < $pageCount[$page]; $i++) {
+                print("i: $i\n");
+                $entry = $newPipes[$page][$i][0];
+                $entry->setPage($page);
+//                $originalExit = $vanillaExitsByPage[$page][$i];
+                $originalExit = VanillaPipe::get($newPipes[$page][$i][1]->name);
+
+                $newExit = $exitsByPage[$page][$i];
+
+                print("BEFORE entry / originalExit / newExit\n");
+                print_r($entry);
+                print_r($originalExit);
+                print_r($newExit);
+                print("\n");
+
+                $newExit->setWorldActive($entry->getWorldActive());
+                $newExit->setMap($originalExit->getMap());
+                $newExit->setPage($originalExit->getPage());
+                $newExit->setNewPageFlag($originalExit->getNewPageFlag());
+                //$newExit->setOffset($originalExit->getOffset());
+
+                print("AFTER entry / originalExit / newExit\n");
+                print_r($entry);
+                print_r($originalExit);
+                print_r($newExit);
+                print("\n");
+            }
+        }
+
+        return true;
+    }
+
     public function sanityCheckWorldLayout(&$game)
     {
+        // TODO: move all sanity check fail log messages to a verbose log option
         // Check that number of worlds == 8
         if (count($game->worlds) != 8) {
             $this->log->write("Sanity check fail: Not 8 worlds in world layout!\n");
@@ -554,12 +707,19 @@ class Randomizer
         }
 
         // Check that number of levels == 32
+        // TODO: 32 IS NOT ALWAYS CORRECT!!! because of pipe transitions etc
+        // therefore: handle all variations here.
         $levels = 0;
+        if ($this->options["shuffleLevels"] == "none") {
+            $num_levels = 35;
+        } else {
+            $num_levels = 32;
+        }
         foreach ($game->worlds as $world) {
             $levels += count($world->levels);
         }
-        if ($levels != 32) {
-            $this->log->write("Sanity check fail: Not 32 levels in world layout!\n");
+        if ($levels != $num_levels) {
+            $this->log->write("Sanity check fail: Not $num_levels levels in world layout (levels = $levels)!\n");
             return false;
         }
 
@@ -569,34 +729,111 @@ class Randomizer
             return false;
         }
 
-
         /*                         PLAN
          * Add option for randomizing underground bonus area types
          * If that option is false:
          * Do sanity checks to make sure we don't have collisions in the underground bonus area pipe pointers
          * (We can't have multiple pipes active in the same world in the same page)
-         * 
+         *
          * If that option is true:
          * Shuffle pipe pointers in underground bonus area around so that we have no collisions.
+         *
          */
 
-        // Theory: pipes get messed up if 1-1 and 2-1 are in the same world
-        // So let's avoid that
-        //foreach ($game->worlds as $world) {
-        //    if ($world->hasLevel('1-1') && $world->hasLevel('2-1')) {
-        //        $this->log->write("Sanity check fail: 1-1 and 2-1 are in the same world!\n");
-        //        return false;
-        //    }
-        //}
+        if ($this->options["shuffleUndergroundBonus"] == "false") {
+            foreach ($game->worlds as $world) {
+                if (
+                    ($world->hasLevel('1-1') && $world->hasLevel('2-1')) ||
+                    ($world->hasLevel('1-1') && $world->hasLevel('7-1')) ||
+                    ($world->hasLevel('2-1') && $world->hasLevel('7-1')) ||
+                    ($world->hasLevel('1-1') && $world->hasLevel('2-1') && $world->hasLevel('7-1'))
+                ) {
+                    $this->log->write("Sanity check fail: 1-1 and/or 2-1 and/or 7-1 are in the same world!\n");
+                    return false;
+                }
+            }
 
-        // Theory: pipes get messed up if 4-1 and 6-2 are in the same world
-        // So let's avoid that
-        //foreach ($game->worlds as $world) {
-        //    if ($world->hasLevel('4-1') && $world->hasLevel('6-2')) {
-        //        $this->log->write("Sanity check fail: 4-1 and 6-2 are in the same world!\n");
-        //        return false;
-        //    }
-        //}
+            foreach ($game->worlds as $world) {
+                if (($world->hasLevel('1-2') && $world->hasLevel('8-1'))) {
+                    $this->log->write("Sanity check fail: 1-2 and 8-1 are in the same world!\n");
+                    return false;
+                }
+            }
+
+            foreach ($game->worlds as $world) {
+                if (($world->hasLevel('4-1') && $world->hasLevel('6-2'))) {
+                    $this->log->write("Sanity check fail: 4-1 and 6-2 are in the same world!\n");
+                    return false;
+                }
+            }
+
+            foreach ($game->worlds as $world) {
+                if (($world->hasLevel('4-2') && $world->hasLevel('5-1'))) {
+                    $this->log->write("Sanity check fail: 4-2 and 5-1 are in the same world!\n");
+                    return false;
+                }
+            }
+
+            foreach ($game->worlds as $world) {
+                if (($world->hasLevel('6-2') && $world->hasLevel('5-1'))) {
+                    $this->log->write("Sanity check fail: 6-2 and 5-1 are in the same world!\n");
+                    return false;
+                }
+            }
+
+            foreach ($game->worlds as $world) {
+                if (($world->hasLevel('8-2') && $world->hasLevel('5-1'))) {
+                    $this->log->write("Sanity check fail: 6-2 and 5-1 are in the same world!\n");
+                    return false;
+                }
+            }
+
+            foreach ($game->worlds as $world) {
+                if (($world->hasLevel('6-2') && $world->hasLevel('8-2'))) {
+                    $this->log->write("Sanity check fail: 6-2 and 8-2 are in the same world!\n");
+                    return false;
+                }
+            }
+
+            foreach ($game->worlds as $world) {
+                if (($world->hasLevel('4-2') && $world->hasLevel('6-2'))) {
+                    $this->log->write("Sanity check fail: 4-2 and 6-2 are in the same world!\n");
+                    return false;
+                }
+            }
+
+            foreach ($game->worlds as $world) {
+                if (($world->hasLevel('4-2') && $world->hasLevel('8-2'))) {
+                    $this->log->write("Sanity check fail: 4-2 and 8-2 are in the same world!\n");
+                    return false;
+                }
+            }
+        }
+
+        // Levels with cloud area 1 must be in different worlds
+        // TODO: add option to include these areas (and water area) in shuffle
+        foreach ($game->worlds as $world) {
+            if (($world->hasLevel('5-2') && $world->hasLevel('2-1'))) {
+                $this->log->write("Sanity check fail: 5-2 and 2-1 are in the same world!\n");
+                return false;
+            }
+        }
+
+        // Levels with cloud area 2 must be in different worlds
+        foreach ($game->worlds as $world) {
+            if (($world->hasLevel('6-2') && $world->hasLevel('3-1'))) {
+                $this->log->write("Sanity check fail: 6-2 and 3-1 are in the same world!\n");
+                return false;
+            }
+        }
+
+        // Levels with pipe to water area must be in different worlds
+        foreach ($game->worlds as $world) {
+            if (($world->hasLevel('6-2') && $world->hasLevel('5-2'))) {
+                $this->log->write("Sanity check fail: 6-2 and 5-2 are in the same world!\n");
+                return false;
+            }
+        }
         /*
          * Easy fix for the Warp Zone Conundrum:
          * When changing warp zone destinations in any way, we have to
@@ -618,18 +855,34 @@ class Randomizer
          */
         if ($this->options['warpZones'] != "normal") {
             foreach ($game->worlds as $world) {
-                if ($world->hasLevel('1-2') && $world->num != 1) {
+                if ($world->hasLevel('1-2') && $world->num != 0) {
                     $this->log->write("Sanity check fail: 1-2 is not in world 1!\n");
                     return false;
                 }
             }
 
-            // If we pass the previous test, now check 4-2
+            // If we pass the previous test, now check 4-2 - it has to not be in world 1
             foreach ($game->worlds as $world) {
-                if ($world->hasLevel('4-2') && $world->num == 1) {
+                if ($world->hasLevel('4-2') && $world->num == 0) {
                     $this->log->write("Sanity check fail: 4-2 is in world 1!\n");
                     return false;
                 }
+            }
+
+            // 4-2 also should not be in world 8
+            foreach ($game->worlds as $world) {
+                if ($world->hasLevel('4-2') && $world->num == 7) {
+                    $this->log->write("Sanity check fail: 4-2 is in world 8!\n");
+                    return false;
+                }
+            }
+        }
+
+        if ($this->options['shuffleUndergroundBonus'] == 'true') {
+            $this->fixPipes($game);
+            if (!$this->shuffleUndergroundBonusAreaDestinations($game)) {
+                $this->log->write("shuffle underground bonus area FAILED\n");
+                return false;
             }
         }
 
@@ -770,7 +1023,7 @@ class Randomizer
                 foreach ($world->levels as $level) {
                     if ($level->name == '1-2') {
                         for ($i = 0; $i < 3; $i++) {
-                            $new_warp = mt_rand($world->num + 1, 8);
+                            $new_warp = mt_rand($world->num + 2, 8);
                             $game->addData($offset + $i, pack('C*', $new_warp));
                             $this->log->write("Warp pipe in 1-2 (world $world->num) randomized to $new_warp\n");
                         }
@@ -778,12 +1031,12 @@ class Randomizer
                     if ($level->name == '4-2') {
                         // area accessed by beanstalk
                         for ($i = 8; $i < 11; $i++) {
-                            $new_warp = mt_rand($world->num + 1, 8);
+                            $new_warp = mt_rand($world->num + 2, 8);
                             $game->addData($offset + $i, pack('C*', $new_warp));
                             $this->log->write("Warp pipe in 4-2 (beanstalk area) (world $world->num) randomized to $new_warp\n");
                         }
                         // area at end of level (only one pipe there)
-                        $new_warp = mt_rand($world->num + 1, 8);
+                        $new_warp = mt_rand($world->num + 2, 8);
                         $game->addData($offset + 5, pack('C*', $new_warp));
                         $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
                     }
@@ -799,9 +1052,9 @@ class Randomizer
             foreach ($game->worlds as $world) {
                 foreach ($world->levels as $level) {
                     if ($level->name == '1-2') {
-                        $good_warp[0] = mt_rand($world->num + 1, 8);
-                        $good_warp[1] = mt_rand($world->num + 1, 8);
-                        $bad_warp = mt_rand(1, $world->num);
+                        $good_warp[0] = mt_rand($world->num + 2, 8);
+                        $good_warp[1] = mt_rand($world->num + 2, 8);
+                        $bad_warp = mt_rand(1, $world->num + 1);
                         // make sure we shuffle the order so you can't know which pipe is which
                         $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
 
@@ -813,9 +1066,9 @@ class Randomizer
                     }
                     if ($level->name == '4-2') {
                         // area accessed by beanstalk
-                        $good_warp[0] = mt_rand($world->num + 1, 8);
-                        $good_warp[1] = mt_rand($world->num + 1, 8);
-                        $bad_warp = mt_rand(1, $world->num);
+                        $good_warp[0] = mt_rand($world->num + 2, 8);
+                        $good_warp[1] = mt_rand($world->num + 2, 8);
+                        $bad_warp = mt_rand(1, $world->num + 1);
                         $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
 
                         $offset = WarpZonesOffset + 8;
@@ -827,9 +1080,9 @@ class Randomizer
                         // warp zone at end of 4-2 will be 50/50 good or bad
                         $chance = mt_rand(1, 100);
                         if ($chance <= 50) {
-                            $new_warp = mt_rand($world->num + 1, 8);
+                            $new_warp = mt_rand($world->num + 2, 8);
                         } else {
-                            $new_warp = mt_rand(1, $world->num);
+                            $new_warp = mt_rand(1, $world->num + 1);
                         }
                         $game->addData($offset + 5, pack('C*', $new_warp));
                         $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
@@ -867,34 +1120,41 @@ class Randomizer
         $this->log->write("Fireworks will appear when last digit of timer is " . $random_digits[1] . ", " . $random_digits[3] . " or " . $random_digits[6] . "\n");
     }
 
+    // TODO: rewrite!
     public function fixPipes(Game &$game)
     {
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
         $this->log->write("Fixing Pipes...\n");
         foreach ($game->worlds as $world) {
-            // print_r($world);
             foreach ($world->levels as $level) {
                 if (in_array($level->name, $levels)) {
                     if ($level->pipe_pointers) {
                         foreach ($level->pipe_pointers as list($entry, $exit)) {
-                            $new_world = $world->num - 1;
-                            $entry_data = 0;
-                            $exit_data = 0;
-                            $new_entry_data = 0;
-                            $new_exit_data = 0;
-
-                            // entry
                             if ($entry != null) {
-                                $entry_data = $this->rom->read($entry);
-                                $new_entry_data = (($new_world << 5) | ($entry_data & 0b00011111));
-                                $game->addData($entry, pack('C*', $new_entry_data));
+                                $entry->setWorldActive($world->num);
                             }
-                            // exit
+
                             if ($exit != null) {
-                                $exit_data = $this->rom->read($exit);
-                                $new_exit_data = (($new_world << 5) | ($exit_data & 0b00011111));
-                                $game->addData($exit, pack('C*', $new_exit_data));
+                                $exit->setWorldActive($world->num);
                             }
+                            //$new_world = $world->num - 1;
+                            //$entry_data = 0;
+                            //$exit_data = 0;
+                            //$new_entry_data = 0;
+                            //$new_exit_data = 0;
+
+                            //// entry
+                            //if ($entry != null) {
+                            //    $entry_data = $this->rom->read($entry);
+                            //    $new_entry_data = (($new_world << 5) | ($entry_data & 0b00011111));
+                            //    $game->addData($entry, pack('C*', $new_entry_data));
+                            //}
+                            //// exit
+                            //if ($exit != null) {
+                            //    $exit_data = $this->rom->read($exit);
+                            //    $new_exit_data = (($new_world << 5) | ($exit_data & 0b00011111));
+                            //    $game->addData($exit, pack('C*', $new_exit_data));
+                            //}
 
                             // $map_pointer_entry = $this->rom->read($entry - 1);
                             // $map_pointer_exit = $this->rom->read($exit - 1);
@@ -1042,6 +1302,11 @@ class Randomizer
         $flags[10]--;
         $flags[10]--;
         $flags[10]--;
+        $flags[11] = $options['shuffleUndergroundBonus'][2];
+        $flags[11]++;
+        $flags[11]++;
+        $flags[11]++;
+        $flags[11]++;
 
         $s = implode("", $flags);
         $f = strtoupper($s);
@@ -1107,7 +1372,6 @@ class Randomizer
                 $this->log->write("Shuffling all levels (normal world length)...\n");
                 $this->shuffleLevelsWithNormalWorldLength($game);
                 while (!$this->sanityCheckWorldLayout($game)) {
-                    //$this->log->write("World Layout sanity check failed! Reshuffling...\n");
                     $game->resetWorlds();
                     $this->shuffleLevelsWithNormalWorldLength($game);
                 }
@@ -1116,7 +1380,6 @@ class Randomizer
                 $this->log->write("Shuffling all levels (varying world length)...\n");
                 $this->shuffleAllLevels($game);
                 while (!$this->sanityCheckWorldLayout($game)) {
-                    //$this->log->write("World Layout sanity check failed! Reshuffling...\n");
                     $game->resetWorlds();
                     $this->shuffleAllLevels($game);
                 }
@@ -1125,7 +1388,6 @@ class Randomizer
             $this->log->write('Shuffling world order...');
             $this->shuffleWorldOrder($game);
             while (!$this->sanityCheckWorldLayout($game)) {
-                //$this->log->write("World Layout sanity check failed! Reshuffling...\n");
                 $game->resetWorlds();
                 $this->shuffleWorldOrder($game);
             }
@@ -1133,12 +1395,17 @@ class Randomizer
         } else if ($this->options['shuffleLevels'] == "none") {
             $game->setVanillaWorldData();
             while (!$this->sanityCheckWorldLayout($game)) {
-                $this->log->write("Vanilla World Layout sanity check failed?!! In a way that shouldn't happen...\n");
+                $this->log->write("Vanilla World Layout sanity check failed?!! Something is very wrong - that shouldn't happen!\n");
                 exit(1);
             }
         } else {
             print("Unrecognized option " . $this->options['shuffleLevels'] . " for Shuffle Levels! Exiting...");
             exit(1);
+        }
+
+        // Fix pipes
+        if ($this->options['shuffleUndergroundBonus'] == 'false') {
+            $this->fixPipes($game);
         }
 
         //  Shuffle Enemies
@@ -1193,9 +1460,6 @@ class Randomizer
         if ($this->options['fireworks'] == "true") {
             $this->randomizeFireworks($game);
         }
-
-        // Fix Pipes
-        $this->fixPipes($game);
 
         // Fix Midway Points
         $this->fixMidwayPoints($game);

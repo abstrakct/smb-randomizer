@@ -49,14 +49,14 @@ class Game
     {
         unset($this->worlds);
         $this->worlds = [
-            new World1(1),
-            new World2(2),
-            new World3(3),
-            new World4(4),
-            new World5(5),
-            new World6(6),
-            new World7(7),
-            new World8(8),
+            new World1(0),
+            new World2(1),
+            new World3(2),
+            new World4(3),
+            new World5(4),
+            new World6(5),
+            new World7(6),
+            new World8(7),
         ];
     }
 
@@ -79,7 +79,7 @@ class Game
             $ret .= sprintf($world->getName() . "\n");
             $l = 1;
             foreach ($world->levels as $level) {
-                $ret .= sprintf("\t" . $world->num . "-" . $trans->smbtoascii($l) . ": " . $level->name . "\n");
+                $ret .= sprintf("\t" . $world->num + 1 . "-" . $trans->smbtoascii($l) . ": " . $level->name . "\n");
                 $l++;
             }
         }

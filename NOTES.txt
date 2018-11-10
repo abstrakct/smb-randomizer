@@ -25,6 +25,8 @@ aka There and Back Again
 BUGS
 
 TODO
+- Show feedback that something is happening when seed is being generated
+-- like, a little text or animation, "generating..." 
 - A way to share seeds via a link or similar (use database?)
 
 **************
@@ -34,7 +36,8 @@ TODO
 BUG: FIXED? in enemies-randomize-pools Bowser can get randomized to something else!
 BUG: Enemy at the end of 8-2 (on the stairs before flag) should never be a firebar
 BUG: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
-BUG: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQVE 
+BUG: No level shuffle + remove pipe transitions doesn't work together.
+WIP - BUG: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQVE 
 ------ possible "fix": don't put 4-1 and 6-2 in the same world
 
       TODO
@@ -59,6 +62,8 @@ BUG: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQVE
   RARE: Sometimes enemies "hide" behind scenery?
   TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
 
+TODO: Option to disable beating Bowser by removing the bridge under him? So that you must shoot Bowser with fireballs.....
+----- Can lead to softlocks, will need to guarantee powerups in the castles...
 TODO: Deceptive warp pipes? Possible? Will need changing code. 
 TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
@@ -123,6 +128,7 @@ DONE: Spoiler free generation (don't write a log file at all, or write one and s
       - for now we don't write a log at all.
 
 FIXED: shuffle levels with normal world order = infinite loop now (after adding 8-4 to sanity checks)
+FIXED: 6-2 vine to cloud area goes to underwater area (at least in seed 6754485723-MNCLNESTQVEY )
 
 
 

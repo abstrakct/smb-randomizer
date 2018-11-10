@@ -90,7 +90,7 @@ class Rom
         fseek($this->rom, $offset);
         $unpacked = unpack('C*', fread($this->rom, $length));
         // if (count($unpacked) == 1) {
-            // printf("Returning %02x\n", $unpacked[1]);
+        // printf("Returning %02x\n", $unpacked[1]);
         // }
         return count($unpacked) == 1 ? $unpacked[1] : array_values($unpacked);
     }
@@ -178,6 +178,28 @@ class Rom
             $offset = MidwayPointsOffset;
             for ($i = 0; $i < 0xF; $i++) {
                 $this->write($offset + $i, pack('C*', $game->midway_points[$i]));
+            }
+        }
+
+        // Write fixed pipes
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                if ($level->pipe_pointers) {
+                    foreach ($level->pipe_pointers as list($entry, $exit)) {
+                        if ($entry != null) {
+                            $bytes = $entry->translateValuesToBytes();
+                            $this->write($entry->getOffset(), pack('C*', $bytes[0]));
+                            $this->write($entry->getOffset() + 1, pack('C*', $bytes[1]));
+                            $this->write($entry->getOffset() + 2, pack('C*', $bytes[2]));
+                        }
+                        if ($exit != null) {
+                            $bytes = $exit->translateValuesToBytes();
+                            $this->write($exit->getOffset(), pack('C*', $bytes[0]));
+                            $this->write($exit->getOffset() + 1, pack('C*', $bytes[1]));
+                            $this->write($exit->getOffset() + 2, pack('C*', $bytes[2]));
+                        }
+                    }
+                }
             }
         }
 

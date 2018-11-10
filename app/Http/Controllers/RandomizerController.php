@@ -35,6 +35,7 @@ class RandomizerController extends Controller
         $options['warpZones'] = $request->input('warpZones');
         $options['hiddenWarpDestinations'] = $request->input('hiddenWarpDestinations');
         $options['fireworks'] = $request->input('fireworks');
+        $options['shuffleUndergroundBonus'] = $request->input('shuffleUndergroundBonus');
 
         $options['mariocolors'] = $request->input('mario');
         $options['luigicolors'] = $request->input('luigi');
