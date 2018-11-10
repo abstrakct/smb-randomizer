@@ -627,7 +627,7 @@ class Randomizer
         $this->fixPipes($game);
 
         for ($page = 0; $page <= 8; $page += 2) {
-            print("page: $page\n");
+            // print("page: $page\n");
             $used_worlds = [];
             $done = false;
             $n = 0;
@@ -664,9 +664,9 @@ class Randomizer
         // Set new data
         // Problem: we are not translating correctly from newPipes to entry/exit pipes
         for ($page = 0; $page <= 8; $page += 2) {
-            print("page: $page\n");
+            // print("page: $page\n");
             for ($i = 0; $i < $pageCount[$page]; $i++) {
-                print("i: $i\n");
+                // print("i: $i\n");
                 $entry = $newPipes[$page][$i][0];
                 $entry->setPage($page);
 //                $originalExit = $vanillaExitsByPage[$page][$i];
