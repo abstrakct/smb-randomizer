@@ -55,7 +55,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.8.8";
+    const VERSION = "0.9";
 
     // Color schemes. TODO: improve
     public $colorschemes = [];
