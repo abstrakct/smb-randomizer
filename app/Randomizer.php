@@ -574,6 +574,8 @@ class Randomizer
      * this algorithm now works, in that it selects some usable pipes for each page
      * and there are no collisions
      * So now all we need to do is set/write the correct new data
+     *
+     *  OK IT WORKS NOW :D
      */
     public function shuffleUndergroundBonusAreaDestinations(&$game)
     {
@@ -586,13 +588,6 @@ class Randomizer
             6 => [Pipe::get('4-1 Exit 1'), Pipe::get('6-2 Exit 2')],
             8 => [Pipe::get('4-2 Exit 1'), Pipe::get('5-1 Exit 1'), Pipe::get('6-2 Exit 1'), Pipe::get('8-2 Exit 1')],
         ];
-        $vanillaExitsByPage = [
-            0 => [VanillaPipe::get('1-1 Exit 1'), VanillaPipe::get('2-1 Exit 1'), VanillaPipe::get('7-1 Exit 1')],
-            2 => [VanillaPipe::get('1-2 Exit 1'), VanillaPipe::get('8-1 Exit 1')],
-            4 => [VanillaPipe::get('3-1 Exit 1')],
-            6 => [VanillaPipe::get('4-1 Exit 1'), VanillaPipe::get('6-2 Exit 2')],
-            8 => [VanillaPipe::get('4-2 Exit 1'), VanillaPipe::get('5-1 Exit 1'), VanillaPipe::get('6-2 Exit 1'), VanillaPipe::get('8-2 Exit 1')],
-        ];
         $pipeList = [];
         $pageCount = [
             0 => 3,
@@ -602,9 +597,6 @@ class Randomizer
             8 => 4,
         ];
         $newPipes = [];
-
-        // print("exitsByPage:\n");
-        // print_r($exitsByPage);
 
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
@@ -620,14 +612,10 @@ class Randomizer
             }
         }
 
-        // print("pipeList:\n");
-        // print_r($pipeList);
-        // print("\n");
-
+        // TODO: I'm pretty sure we need this, but should check that to be absolutely sure
         $this->fixPipes($game);
 
         for ($page = 0; $page <= 8; $page += 2) {
-            // print("page: $page\n");
             $used_worlds = [];
             $done = false;
             $n = 0;
@@ -658,39 +646,18 @@ class Randomizer
             }
         }
 
-        // print("newPipes:\n");
-        // print_r($newPipes);
-        // print("\n");
         // Set new data
-        // Problem: we are not translating correctly from newPipes to entry/exit pipes
         for ($page = 0; $page <= 8; $page += 2) {
-            // print("page: $page\n");
             for ($i = 0; $i < $pageCount[$page]; $i++) {
-                // print("i: $i\n");
                 $entry = $newPipes[$page][$i][0];
                 $entry->setPage($page);
-//                $originalExit = $vanillaExitsByPage[$page][$i];
                 $originalExit = VanillaPipe::get($newPipes[$page][$i][1]->name);
-
                 $newExit = $exitsByPage[$page][$i];
-
-                // print("BEFORE entry / originalExit / newExit\n");
-                // print_r($entry);
-                // print_r($originalExit);
-                // print_r($newExit);
-                // print("\n");
 
                 $newExit->setWorldActive($entry->getWorldActive());
                 $newExit->setMap($originalExit->getMap());
                 $newExit->setPage($originalExit->getPage());
                 $newExit->setNewPageFlag($originalExit->getNewPageFlag());
-                //$newExit->setOffset($originalExit->getOffset());
-
-                // print("AFTER entry / originalExit / newExit\n");
-                // print_r($entry);
-                // print_r($originalExit);
-                // print_r($newExit);
-                // print("\n");
             }
         }
 
