@@ -603,8 +603,8 @@ class Randomizer
         ];
         $newPipes = [];
 
-        print("exitsByPage:\n");
-        print_r($exitsByPage);
+        // print("exitsByPage:\n");
+        // print_r($exitsByPage);
 
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
@@ -620,9 +620,9 @@ class Randomizer
             }
         }
 
-        print("pipeList:\n");
-        print_r($pipeList);
-        print("\n");
+        // print("pipeList:\n");
+        // print_r($pipeList);
+        // print("\n");
 
         $this->fixPipes($game);
 
@@ -658,9 +658,9 @@ class Randomizer
             }
         }
 
-        print("newPipes:\n");
-        print_r($newPipes);
-        print("\n");
+        // print("newPipes:\n");
+        // print_r($newPipes);
+        // print("\n");
         // Set new data
         // Problem: we are not translating correctly from newPipes to entry/exit pipes
         for ($page = 0; $page <= 8; $page += 2) {
@@ -674,11 +674,11 @@ class Randomizer
 
                 $newExit = $exitsByPage[$page][$i];
 
-                print("BEFORE entry / originalExit / newExit\n");
-                print_r($entry);
-                print_r($originalExit);
-                print_r($newExit);
-                print("\n");
+                // print("BEFORE entry / originalExit / newExit\n");
+                // print_r($entry);
+                // print_r($originalExit);
+                // print_r($newExit);
+                // print("\n");
 
                 $newExit->setWorldActive($entry->getWorldActive());
                 $newExit->setMap($originalExit->getMap());
@@ -686,11 +686,11 @@ class Randomizer
                 $newExit->setNewPageFlag($originalExit->getNewPageFlag());
                 //$newExit->setOffset($originalExit->getOffset());
 
-                print("AFTER entry / originalExit / newExit\n");
-                print_r($entry);
-                print_r($originalExit);
-                print_r($newExit);
-                print("\n");
+                // print("AFTER entry / originalExit / newExit\n");
+                // print_r($entry);
+                // print_r($originalExit);
+                // print_r($newExit);
+                // print("\n");
             }
         }
 
