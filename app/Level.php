@@ -106,13 +106,3 @@ class Level
         return static::all();
     }
 }
-/*
- * from disassembly:
-;bonus area data offsets, included here for comparison purposes
-;underground bonus area  - c2
-;cloud area 1 (day)      - 2b
-;cloud area 2 (night)    - 34
-;water area (5-2/6-2)    - 00
-;water area (8-4)        - 02
-;warp zone area (4-2)    - 2f
- */

@@ -558,10 +558,6 @@ class Randomizer
      * We also have to change the entry pipe to match the exit pipe, obviously.
      *
      *
-     * entry: change page pointer
-     * exit:
-     *
-     *
      * algorithm:
      * for each page
      *   - select the appropriate number n of entry pipes
@@ -569,13 +565,14 @@ class Randomizer
      *   - push to array, use in_array to check
      *   - if that's not possible, re-shuffle
      *
-     *
      *   OK SO
      * this algorithm now works, in that it selects some usable pipes for each page
      * and there are no collisions
      * So now all we need to do is set/write the correct new data
      *
-     *  OK IT WORKS NOW :D
+     *   OK SO IT WORKS NOW :D
+     *
+     *   TODO: check that it works in all level shuffle modes!
      */
     public function shuffleUndergroundBonusAreaDestinations(&$game)
     {
@@ -696,17 +693,7 @@ class Randomizer
             return false;
         }
 
-        /*                         PLAN
-         * Add option for randomizing underground bonus area types
-         * If that option is false:
-         * Do sanity checks to make sure we don't have collisions in the underground bonus area pipe pointers
-         * (We can't have multiple pipes active in the same world in the same page)
-         *
-         * If that option is true:
-         * Shuffle pipe pointers in underground bonus area around so that we have no collisions.
-         *
-         */
-
+        // Check for collisions if we are not shuffling underground bonus areas
         if ($this->options["shuffleUndergroundBonus"] == "false") {
             foreach ($game->worlds as $world) {
                 if (
@@ -845,6 +832,7 @@ class Randomizer
             }
         }
 
+        // Undeground Bonus Area shuffle happens here
         if ($this->options['shuffleUndergroundBonus'] == 'true') {
             $this->fixPipes($game);
             if (!$this->shuffleUndergroundBonusAreaDestinations($game)) {
@@ -1104,33 +1092,6 @@ class Randomizer
                             if ($exit != null) {
                                 $exit->setWorldActive($world->num);
                             }
-                            //$new_world = $world->num - 1;
-                            //$entry_data = 0;
-                            //$exit_data = 0;
-                            //$new_entry_data = 0;
-                            //$new_exit_data = 0;
-
-                            //// entry
-                            //if ($entry != null) {
-                            //    $entry_data = $this->rom->read($entry);
-                            //    $new_entry_data = (($new_world << 5) | ($entry_data & 0b00011111));
-                            //    $game->addData($entry, pack('C*', $new_entry_data));
-                            //}
-                            //// exit
-                            //if ($exit != null) {
-                            //    $exit_data = $this->rom->read($exit);
-                            //    $new_exit_data = (($new_world << 5) | ($exit_data & 0b00011111));
-                            //    $game->addData($exit, pack('C*', $new_exit_data));
-                            //}
-
-                            // $map_pointer_entry = $this->rom->read($entry - 1);
-                            // $map_pointer_exit = $this->rom->read($exit - 1);
-                            // $this->log->write("Fixing pipe in " . $level->name . " - New world is " . $new_world . "\n");
-                            // $this->log->write(sprintf("Entry map pointer: %02x\n", ($map_pointer_entry & 0b01111111)));
-                            // $this->log->write(sprintf("Exit  map pointer: %02x\n", ($map_pointer_exit & 0b01111111)));
-                            // $this->log->write(sprintf("ROM entry: %04x  exit: %04x\n", $entry, $exit));
-                            // $this->log->write(sprintf("Old entry: %02x (%08b) Old exit: %02x (%08b)\n", $entry_data, $entry_data, $exit_data, $exit_data));
-                            // $this->log->write(sprintf("New entry: %02x (%08b) New exit: %02x (%08b)\n", $new_entry_data, $new_entry_data, $new_exit_data, $new_exit_data));
                         }
                     }
                 }
@@ -1332,8 +1293,10 @@ class Randomizer
         $this->printOptionsToLog();
         $this->log->write("\nStarting randomization...\n");
 
-        //  Shuffle Levels
+        // Shuffle Levels
         // This part can be optimized / written less strangely. Callback functions seems like a good idea.
+        // Note: Santity checking takes care of underground bonus area shuffling
+        // TODO: maybe structure that differently?
         if ($this->options['shuffleLevels'] == "all") {
             if ($this->options['normalWorldLength'] == "true") {
                 $this->log->write("Shuffling all levels (normal world length)...\n");
