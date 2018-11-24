@@ -37,8 +37,7 @@ BUG: FIXED? in enemies-randomize-pools Bowser can get randomized to something el
 BUG: Enemy at the end of 8-2 (on the stairs before flag) should never be a firebar
 BUG: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
 BUG: No level shuffle + remove pipe transitions doesn't work together.
-WIP - BUG: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQVE 
------- possible "fix": don't put 4-1 and 6-2 in the same world
+BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! you still win though, so.
 
       TODO
   ENEMIES 
@@ -62,19 +61,24 @@ WIP - BUG: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQV
   RARE: Sometimes enemies "hide" behind scenery?
   TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
 
+TODO: easy/hard warp zone gamble - easy = 2 good 1 bad - hard = 1 good 2 bad pipes
 TODO: Option to disable beating Bowser by removing the bridge under him? So that you must shoot Bowser with fireballs.....
------ Can lead to softlocks, will need to guarantee powerups in the castles...
-TODO: Deceptive warp pipes? Possible? Will need changing code. 
+----- Can lead to softlocks, will need to guarantee powerups in the castles.
+TODO: Better handling of seed flags
+ - we need a way to convert flag -> config options
+ - we need a way to show flags in UI, changing when user changes settings
+ - fun: enter VANILLA to get vanilla game?
+ - maybe figure out better algorithm
+ - currently, 12 letters, vanilla could be: vanillamario
+ -- and then we change those based on chosen settings?
 TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
-TODO: Technically, could we warp to a level that is NOT level 1 of a world?
-      - No, not without code changes/additions
-TODO: Option to leave 8-4 un-randomized.
+TODO: Option to leave 8-4 un-randomized (enemies, items)
 IDEA: Is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
-TODO: Randomize where pipes lead to?
+TODO: DONE FOR UNDERGROUND BONUS AREA - Randomize where pipes lead to?
       -- option to include 4-2 warp zone or not in shuffle - if possible.
+      -- also include cloud/water areas
 TODO: Shuffle which pipes can be entered?
-TODO: Shuffle scenery? nah... or?
 TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!
 TODO: Option to randomize music? (line 2790 in disasm)
       -- ROM offset 0x10f7 - 0x10fc - star power music = line 11254 in disasm
@@ -92,17 +96,40 @@ TODO: Check that all options are set to a valid value!
 TODO: Disasm line  1084: change demo action data in order to not spoil first level??  offset 0x350 in rom, length 20 bytes
 TODO: Disasm line  7338: maybe a better way to shuffle powerups? for mode that changes all powerups of one type to another.
 TODO: Disasm line  7787: respawn points - I think. look at that
-TODO: Disasm line 13475: it's possible/easy(?) to change the appearance of a powerup!!!    NOPE DOESN'T WORK (sprites get weird)
 TODO: Disasm line  8549: randomize fire Y positions?
 TODO: A way to let individual options not change other aspects of randomization?!
       So that if you e.g. generate a new rom with the same seed, but enemy randomization turned off, all other aspects should be the same as before.
       Might be done by creating individual seeds for each aspect at the start of the program.
 
+IDEA: use the SMB + Duck Hunt ROM for easy access to lots more PRG ROM!!! for custom code injection! 
+needs:
+  offset 0x6 = 21 (change mirroring, don't know why, but it works)
+  to skip smn/dh selection menu:
+    change bytes 0x11 - 0x18 to plain SMB: d8 a9 10 8d 00 20 a2 ff
+
+  alternative route with plain rom: build our own 80kb ROM with the correct bytes here and there! (e.g. the header)
+  that would leave a lot of room for activities.
+  so, minus header:
+  0x00000 - 0x07FFF = PRG ROM
+  0x08000 - 0x0FFFF = ROOM FOR ACTIVITIES - 0x8000 bytes = 32768 bytes
+  0x10000 - 0x11FFF = CHR ROM
+  0x12000 - 0x14000 = EMPTY SPACE (probably needed so emulators don't freak out?)
+
+  We could use this to write code to allow warp zones to be in any world?!
+
+*********************************************************
+DISCARDED IDEAS (AT LEAST FOR NOW)
+*********************************************************
+TODO: Deceptive warp pipes? Possible? Will need changing code. 
+TODO: Technically, could we warp to a level that is NOT level 1 of a world?
+      - No, not without code changes/additions
+TODO: Shuffle scenery? nah... or?
+TODO: Disasm line 13475: it's possible/easy(?) to change the appearance of a powerup!!!    NOPE DOESN'T WORK (sprites get weird)
+
 *********************************************************
 PROBABLY DONE
 *********************************************************
-
-PROBABLY DONE: fix warp zones! warp zone pipes have strange behavior (pipes with no number take you to world -1)
+99% SURE IS FIXED: fix warp zones! warp zone pipes have strange behavior (pipes with no number take you to world -1)
       not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
       see line 1682 in disasm
 
@@ -129,6 +156,7 @@ DONE: Spoiler free generation (don't write a log file at all, or write one and s
 
 FIXED: shuffle levels with normal world order = infinite loop now (after adding 8-4 to sanity checks)
 FIXED: 6-2 vine to cloud area goes to underwater area (at least in seed 6754485723-MNCLNESTQVEY )
+FIXED: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQVE 
 
 
 

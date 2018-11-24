@@ -23,7 +23,7 @@ return [
             'warpZones' => 'shuffle',
             'hiddenWarpDestinations' => 'false',
             'fireworks' => 'true',
-            'shuffleUndergroundBonus' => 'false',
+            'shuffleUndergroundBonus' => 'true',
         ],
 
         'options' => [

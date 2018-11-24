@@ -796,11 +796,12 @@ class Randomizer
          * requires changes/additions to the game code that I (so far)
          * haven't been able to figure out how to do
          *
-         * TODO: even if we don't randomize warp zones, we need to have 1-2 in world 1 and 4-2 in world > 1
+         * DONE: even if we don't randomize warp zones, we need to have 1-2 in world 1 and 4-2 in world > 1
          * because otherwise it can get weird.
          *
          * TODO: can the randomizer write custom code with knowledge of
-         * which world has 1-2/4-2?
+         * which world has 1-2/4-2? probably yes, but we probably don't have the space unless we figure out
+         * how to use a different mapper and get more PRGROM
          *
          * TODO: uhm, we need to do this even if we're not shuffling warp zones, don't we?
          * Or do we just leave that be?
@@ -1127,7 +1128,7 @@ class Randomizer
 
     public function setTextSeedhash(string $text, Game &$game)
     {
-        $offset = 0x9fa5;
+        $offset = 0x9fa5; // + 0x8000;   if using smb+duckhunt rom
         $this->log->write("Writing Seedhash on title screen...\n");
 
         $game->addData($offset, pack('C*', $this->trans->asciitosmb('H')));
