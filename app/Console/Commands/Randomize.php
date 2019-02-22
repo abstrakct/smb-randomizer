@@ -21,6 +21,7 @@ class Randomize extends Command
     protected $signature = 'smbr:randomize {input_file : base rom to randomize}'
         . '{output_dir : where to save the randomized rom}'
         . '{--log=normal : Log level}'
+        . '{--savelog=true : Save the log or not}'
         . '{--seed= : set seed for rng}'
         . '{--pipe-transitions=remove : keep or remove pipe transitions}'
         . '{--shuffle-levels=all : level randomization}'
@@ -83,10 +84,10 @@ class Randomize extends Command
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');
-        $this->do_the_randomizer($this->argument('input_file'), $this->argument('output_dir'), $this->option('seed'), $smbrOptions, $this->option('log'));
+        $this->do_the_randomizer($this->argument('input_file'), $this->argument('output_dir'), $this->option('seed'), $smbrOptions, $this->option('log'), $this->option('savelog'));
     }
 
-    public function do_the_randomizer($input_file, $output_dir, $seed, $options, $logLevel)
+    public function do_the_randomizer($input_file, $output_dir, $seed, $options, $logLevel, $saveLog)
     {
         $log = null;
 
@@ -112,7 +113,7 @@ class Randomize extends Command
                 //TODO: Add checks to see if ROM is usable (check data in various offsets).
             }
         } else {
-            print("\n\nSMB RANDOMIZER v" . \SMBR\Randomizer::VERSION . "\n\nROM filename: $input_file\n");
+            print("\n\nSuper Mario Bros. RANDOMIZER v" . \SMBR\Randomizer::VERSION . "\n\nROM filename: $input_file\n");
             print("MD5 checksum: $checksum");
             if ($ok) {
                 print(" [OK]\n");
@@ -128,27 +129,34 @@ class Randomize extends Command
         // if seed == null a random seed will be chosen, else it will use the user's chosen seed.
         $rando = new Randomizer($seed, $options, $rom);
 
+        // Set the seed, make flags and seedhash
         $rando->setSeed($rando->getSeed());
         $rando->makeFlags();
-        $rando->makeSeedHash();
 
-        if ($webmode) {
-            $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());
-            if (!file_exists($dir)) {
-                mkdir($dir, 0744);
-            }
-
-            $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
-            $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
-        } else {
-            $outfilename = $output_dir . "/roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
-            $logfilename = $output_dir . "/logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
-        }
+        // Set filenames
+        $outfilename = $output_dir . "/roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
+        $logfilename = $output_dir . "/logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
 
         // Start the logger
-        $log = new Logger($logfilename, true, $logLevel);
+        $log = new Logger($logfilename, $saveLog, $logLevel);
         $rom->setLogger($log);
         $rando->setLogger($log);
+
+        // Make seedhash
+        $rando->makeSeedHash();
+
+        print("\nSeedHash: $rando->seedhash\n");
+
+        // if ($webmode) {
+        //     $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());
+        //     if (!file_exists($dir)) {
+        //         mkdir($dir, 0744);
+        //     }
+
+        //     $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
+        //     $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
+        // } else {
+        // }
 
         // Print out the selected options and relevant information
         $rando->printOptions();

@@ -647,8 +647,8 @@ class Randomizer
                     array_splice($pipeList, $key, 1);
                 } else {
                     $fail++;
-                    if ($fail > 10) {
-                        $this->log->write("Failed more than 10 attempts - giving up...\n");
+                    if ($fail > 100) {
+                        $this->log->write("Failed more than 100 attempts - giving up...\n");
                         return false;
                     }
                 }
@@ -678,8 +678,6 @@ class Randomizer
 
     public function sanityCheckWorldLayout(&$game)
     {
-        // TODO: move all sanity check fail log messages to a verbose log option
-
         // Check that number of worlds == 8
         if (count($game->worlds) != 8) {
             $this->log->writeVerbose("Sanity check fail: Not 8 worlds in world layout!\n");
@@ -851,6 +849,8 @@ class Randomizer
 
         // Underground Bonus Area shuffle happens here
         // BUT WHY?
+        // Because it needs to be repeated until success.
+        // But it's kinda stupid to have it in this function, right?
         if ($this->options['shuffleUndergroundBonus'] == 'true') {
             $this->fixPipes($game);
             if (!$this->shuffleUndergroundBonusAreaDestinations($game)) {
@@ -858,6 +858,7 @@ class Randomizer
                 return false;
             }
         }
+
 
         return true;
     }
@@ -1169,21 +1170,32 @@ class Randomizer
 
     public function setTextSeedhash(string $text, Game &$game)
     {
-        $offset = 0x9fa5; // + 0x8000;   if using smb+duckhunt rom
+        $offset = 0x9fa1; // + 0x8000;   if using smb+duckhunt rom
+        $titleOffset = $offset - 5;
         $this->log->write("Writing Seedhash on title screen...\n");
 
-        $game->addData($offset, pack('C*', $this->trans->asciitosmb('H')));
-        $game->addData($offset + 1, pack('C*', $this->trans->asciitosmb('A')));
-        $game->addData($offset + 2, pack('C*', $this->trans->asciitosmb('S')));
-        $game->addData($offset + 3, pack('C*', $this->trans->asciitosmb('H')));
-        $game->addData($offset + 4, pack('C*', $this->trans->asciitosmb(' ')));
+        $game->addData($titleOffset + 0, pack('C*', $this->trans->asciitosmb('S')));
+        $game->addData($titleOffset + 1, pack('C*', $this->trans->asciitosmb('M')));
+        $game->addData($titleOffset + 2, pack('C*', $this->trans->asciitosmb('B')));
+        $game->addData($titleOffset + 3, pack('C*', $this->trans->asciitosmb('R')));
+        $game->addData($titleOffset + 4, pack('C*', $this->trans->asciitosmb(' ')));
+
+        $game->addData($offset + 0, pack('C*', $this->trans->asciitosmb('S')));
+        $game->addData($offset + 1, pack('C*', $this->trans->asciitosmb('E')));
+        $game->addData($offset + 2, pack('C*', $this->trans->asciitosmb('E')));
+        $game->addData($offset + 3, pack('C*', $this->trans->asciitosmb('D')));
+        $game->addData($offset + 4, pack('C*', $this->trans->asciitosmb('H')));
+        $game->addData($offset + 5, pack('C*', $this->trans->asciitosmb('A')));
+        $game->addData($offset + 6, pack('C*', $this->trans->asciitosmb('S')));
+        $game->addData($offset + 7, pack('C*', $this->trans->asciitosmb('H')));
+        $game->addData($offset + 8, pack('C*', $this->trans->asciitosmb(' ')));
         /*
          * Write the first 8 characters of the seedhash on title screen.
          * TODO: see if there's a way to draw some sprites instead!
          * DONE: there probably is, but no good sprites it seems. Text/numbers is better.
          */
         for ($i = 0; $i < 8; $i++) {
-            $game->addData($offset + 5 + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
+            $game->addData($offset + 9 + $i, pack('C*', $this->trans->asciitosmb($text[$i])));
         }
     }
 
@@ -1394,7 +1406,7 @@ class Randomizer
 
     public function makeSeedHash()
     {
-        $hashstring = $this->flags . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5());
+        $hashstring = $this->flags . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5()) . $this->log->getActuallySave();
         $this->seedhash = hash("crc32b", $hashstring);
     }
 

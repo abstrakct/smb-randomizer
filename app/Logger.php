@@ -7,6 +7,7 @@ class Logger
     public function __construct($filename, $actuallySave = true, $logLevel = "normal")
     {
         $this->actuallySave = $actuallySave;
+        print("actuallySave = $actuallySave\n");
         $this->logLevel = $logLevel;
         if ($actuallySave) {
             $this->logfile = $filename;
@@ -33,5 +34,10 @@ class Logger
         if ($this->actuallySave && $this->fp) {
             fclose($this->fp);
         }
+    }
+
+    public function getActuallySave()
+    {
+        return $this->actuallySave;
     }
 }
