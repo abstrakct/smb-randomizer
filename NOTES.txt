@@ -42,6 +42,7 @@ BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! y
       TODO
   ENEMIES 
   - algorithm needs big rework
+  - idea: enemy groups?
   TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
   ....... MAYBE JUST NOT RANDOMIZE PIRANHA PLANTS!?! that's probably the solution!
   TODO: Change/randomize y pos of (some) enemies? to prevent stuck enemies
@@ -60,11 +61,12 @@ BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! y
   TODO: Disasm line 11440: it's possible/easy(?) to change which enemies can be stomped and not!
   RARE: Sometimes enemies "hide" behind scenery?
   TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
+  spiny in enemy pools - if possible
 
 TODO: easy/hard warp zone gamble - easy = 2 good 1 bad - hard = 1 good 2 bad pipes
 TODO: Option to disable beating Bowser by removing the bridge under him? So that you must shoot Bowser with fireballs.....
 ----- Can lead to softlocks, will need to guarantee powerups in the castles.
-TODO: Better handling of seed flags
+STARTED TODO: Better handling of seed flags
  - we need a way to convert flag -> config options
  - we need a way to show flags in UI, changing when user changes settings
  - fun: enter VANILLA to get vanilla game?
@@ -72,6 +74,10 @@ TODO: Better handling of seed flags
  - currently, 12 letters, vanilla could be: vanillamario
  -- and then we change those based on chosen settings?
 TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
+TODO: inverted controls??
+TODO: randomized levels?? As in, not shuffled, but random! levels can appear multiple times!?
+TODO: deceptive enemies? e.g. change graphics of enemies! (13555 in disasm, starts at offset 0x674e)
+TODO: randomly add swimming to levels?? investigate how swimming levels work!
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
 TODO: Option to leave 8-4 un-randomized (enemies, items)
 IDEA: Is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
@@ -87,7 +93,6 @@ TODO: Randomize fireworks X,Y (line 8632 in disasm)
 TODO: Shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
 TODO: Disappearing trampolines
 TODO: Disappearing powerup blocks sometimes - might be related to stuff around line 5860 in disasm
-TODO: Option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
 TODO: Option to not randomize texts
 TODO: Keep randomized texts independent of game seed? or make it an option?
 TODO: Option to keep castles in vanilla order? why? just because we can?
@@ -101,6 +106,20 @@ TODO: A way to let individual options not change other aspects of randomization?
       So that if you e.g. generate a new rom with the same seed, but enemy randomization turned off, all other aspects should be the same as before.
       Might be done by creating individual seeds for each aspect at the start of the program.
 
+
+SHUFFLING ALL BONUS AREAS:
+- pipe to 4-2 warp zone works
+- vine going to underground bonus area works with:
+  - page 2, 4, 6 and 8
+- vine does NOT work with UBA page 0 (unless we figure out how to change x coord for where the vine appears)
+- under water area works with pipes
+- vine -> under water area does not work!
+- vine to other cloud areas works
+
+
+
+
+NOT HAPPENING SOON:
 IDEA: use the SMB + Duck Hunt ROM for easy access to lots more PRG ROM!!! for custom code injection! 
 needs:
   offset 0x6 = 21 (change mirroring, don't know why, but it works)
@@ -153,6 +172,7 @@ DONE: Useful warp zone shuffle option (all pipes take you to a higher world numb
 DONE: Randomize when fireworks appear? (line 10469 of disasm)
 DONE: Spoiler free generation (don't write a log file at all, or write one and set permissions to g-r group minus read ?)
       - for now we don't write a log at all.
+DONE: Option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
 
 FIXED: shuffle levels with normal world order = infinite loop now (after adding 8-4 to sanity checks)
 FIXED: 6-2 vine to cloud area goes to underwater area (at least in seed 6754485723-MNCLNESTQVEY )

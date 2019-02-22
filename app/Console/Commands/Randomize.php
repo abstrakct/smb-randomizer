@@ -20,11 +20,12 @@ class Randomize extends Command
      */
     protected $signature = 'smbr:randomize {input_file : base rom to randomize}'
         . '{output_dir : where to save the randomized rom}'
+        . '{--log=normal : Log level}'
         . '{--seed= : set seed for rng}'
         . '{--pipe-transitions=remove : keep or remove pipe transitions}'
         . '{--shuffle-levels=all : level randomization}'
         . '{--normal-world-length=false : world length options}'
-        . '{--enemies=randomizeFull : enemy randomization}'
+        . '{--enemies=randomizePools : enemy randomization}'
         . '{--blocks=randomizeAll : block randomization}'
         . '{--bowser-abilities=true : randomize Bowser abilities}'
         . '{--bowser-hitpoints=random : randomize Bowser hitpoints}'
@@ -32,7 +33,7 @@ class Randomize extends Command
         . '{--warp-zones=random : randomize warp zones}'
         . '{--hidden-warp-destinations=false : hidden warp destinations}'
         . '{--fireworks=true : randomize when fireworks appear}'
-        . '{--shuffle-underground-bonus=false : shuffle destinations of underground bonus level pipes }'
+        . '{--shuffle-underground-bonus=true : shuffle destinations of underground bonus level pipes }'
         . '{--mariocolors=random : Mario Color Scheme}'
         . '{--luigicolors=random : Luigi Color Scheme}'
         . '{--firecolors=random : Fire Color Scheme}'
@@ -82,10 +83,10 @@ class Randomize extends Command
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');
-        $this->do_the_randomizer($this->argument('input_file'), $this->argument('output_dir'), $this->option('seed'), $smbrOptions);
+        $this->do_the_randomizer($this->argument('input_file'), $this->argument('output_dir'), $this->option('seed'), $smbrOptions, $this->option('log'));
     }
 
-    public function do_the_randomizer($input_file, $output_dir, $seed, $options)
+    public function do_the_randomizer($input_file, $output_dir, $seed, $options, $logLevel)
     {
         $log = null;
 
@@ -145,7 +146,7 @@ class Randomize extends Command
         }
 
         // Start the logger
-        $log = new Logger($logfilename, true);
+        $log = new Logger($logfilename, true, $logLevel);
         $rom->setLogger($log);
         $rando->setLogger($log);
 

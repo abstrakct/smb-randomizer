@@ -55,7 +55,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.9";
+    const VERSION = "0.9.1";
 
     // Color schemes. TODO: improve
     public $colorschemes = [];
@@ -126,6 +126,11 @@ class Randomizer
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
+        } else if ($colorscheme == "clothes") {
+            $this->setSeed();
+            $outer = mt_rand(0, 255);
+            $skin = 0x27;
+            $inner = mt_rand(0, 255);
         } else {
             $outer = $this->colorschemes[$colorscheme]->outer;
             $skin = $this->colorschemes[$colorscheme]->skin;
@@ -145,6 +150,11 @@ class Randomizer
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
+        } else if ($colorscheme == "clothes") {
+            $this->setSeed();
+            $outer = mt_rand(0, 255);
+            $skin = 0x27;
+            $inner = mt_rand(0, 255);
         } else {
             $outer = $this->colorschemes[$colorscheme]->outer;
             $skin = $this->colorschemes[$colorscheme]->skin;
@@ -163,6 +173,11 @@ class Randomizer
             $this->setSeed();
             $outer = mt_rand(0, 255);
             $skin = mt_rand(0, 255);
+            $inner = mt_rand(0, 255);
+        } else if ($colorscheme == "clothes") {
+            $this->setSeed();
+            $outer = mt_rand(0, 255);
+            $skin = 0x27;
             $inner = mt_rand(0, 255);
         } else {
             $outer = $this->colorschemes[$colorscheme]->outer;
@@ -664,9 +679,10 @@ class Randomizer
     public function sanityCheckWorldLayout(&$game)
     {
         // TODO: move all sanity check fail log messages to a verbose log option
+
         // Check that number of worlds == 8
         if (count($game->worlds) != 8) {
-            $this->log->write("Sanity check fail: Not 8 worlds in world layout!\n");
+            $this->log->writeVerbose("Sanity check fail: Not 8 worlds in world layout!\n");
             return false;
         }
 
@@ -683,13 +699,13 @@ class Randomizer
             $levels += count($world->levels);
         }
         if ($levels != $num_levels) {
-            $this->log->write("Sanity check fail: Not $num_levels levels in world layout (levels = $levels)!\n");
+            $this->log->writeVerbose("Sanity check fail: Not $num_levels levels in world layout (levels = $levels)!\n");
             return false;
         }
 
         // Check that 8-4 is the last level
         if ($game->worlds[7]->levels[count($game->worlds[7]->levels) - 1] != Level::get('8-4')) {
-            $this->log->write("Sanity check fail: 8-4 is not the last level!\n");
+            $this->log->writeVerbose("Sanity check fail: 8-4 is not the last level!\n");
             return false;
         }
 
@@ -702,63 +718,63 @@ class Randomizer
                     ($world->hasLevel('2-1') && $world->hasLevel('7-1')) ||
                     ($world->hasLevel('1-1') && $world->hasLevel('2-1') && $world->hasLevel('7-1'))
                 ) {
-                    $this->log->write("Sanity check fail: 1-1 and/or 2-1 and/or 7-1 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 1-1 and/or 2-1 and/or 7-1 are in the same world!\n");
                     return false;
                 }
             }
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('1-2') && $world->hasLevel('8-1'))) {
-                    $this->log->write("Sanity check fail: 1-2 and 8-1 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 1-2 and 8-1 are in the same world!\n");
                     return false;
                 }
             }
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('4-1') && $world->hasLevel('6-2'))) {
-                    $this->log->write("Sanity check fail: 4-1 and 6-2 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 4-1 and 6-2 are in the same world!\n");
                     return false;
                 }
             }
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('4-2') && $world->hasLevel('5-1'))) {
-                    $this->log->write("Sanity check fail: 4-2 and 5-1 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 4-2 and 5-1 are in the same world!\n");
                     return false;
                 }
             }
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('6-2') && $world->hasLevel('5-1'))) {
-                    $this->log->write("Sanity check fail: 6-2 and 5-1 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 6-2 and 5-1 are in the same world!\n");
                     return false;
                 }
             }
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('8-2') && $world->hasLevel('5-1'))) {
-                    $this->log->write("Sanity check fail: 6-2 and 5-1 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 6-2 and 5-1 are in the same world!\n");
                     return false;
                 }
             }
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('6-2') && $world->hasLevel('8-2'))) {
-                    $this->log->write("Sanity check fail: 6-2 and 8-2 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 6-2 and 8-2 are in the same world!\n");
                     return false;
                 }
             }
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('4-2') && $world->hasLevel('6-2'))) {
-                    $this->log->write("Sanity check fail: 4-2 and 6-2 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 4-2 and 6-2 are in the same world!\n");
                     return false;
                 }
             }
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('4-2') && $world->hasLevel('8-2'))) {
-                    $this->log->write("Sanity check fail: 4-2 and 8-2 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 4-2 and 8-2 are in the same world!\n");
                     return false;
                 }
             }
@@ -768,7 +784,7 @@ class Randomizer
         // TODO: add option to include these areas (and water area) in shuffle
         foreach ($game->worlds as $world) {
             if (($world->hasLevel('5-2') && $world->hasLevel('2-1'))) {
-                $this->log->write("Sanity check fail: 5-2 and 2-1 are in the same world!\n");
+                $this->log->writeVerbose("Sanity check fail: 5-2 and 2-1 are in the same world!\n");
                 return false;
             }
         }
@@ -776,7 +792,7 @@ class Randomizer
         // Levels with cloud area 2 must be in different worlds
         foreach ($game->worlds as $world) {
             if (($world->hasLevel('6-2') && $world->hasLevel('3-1'))) {
-                $this->log->write("Sanity check fail: 6-2 and 3-1 are in the same world!\n");
+                $this->log->writeVerbose("Sanity check fail: 6-2 and 3-1 are in the same world!\n");
                 return false;
             }
         }
@@ -784,7 +800,7 @@ class Randomizer
         // Levels with pipe to water area must be in different worlds
         foreach ($game->worlds as $world) {
             if (($world->hasLevel('6-2') && $world->hasLevel('5-2'))) {
-                $this->log->write("Sanity check fail: 6-2 and 5-2 are in the same world!\n");
+                $this->log->writeVerbose("Sanity check fail: 6-2 and 5-2 are in the same world!\n");
                 return false;
             }
         }
@@ -811,7 +827,7 @@ class Randomizer
         if ($this->options['warpZones'] != "normal") {
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('1-2') && $world->num != 0) {
-                    $this->log->write("Sanity check fail: 1-2 is not in world 1!\n");
+                    $this->log->writeVerbose("Sanity check fail: 1-2 is not in world 1!\n");
                     return false;
                 }
             }
@@ -819,7 +835,7 @@ class Randomizer
             // If we pass the previous test, now check 4-2 - it has to not be in world 1
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('4-2') && $world->num == 0) {
-                    $this->log->write("Sanity check fail: 4-2 is in world 1!\n");
+                    $this->log->writeVerbose("Sanity check fail: 4-2 is in world 1!\n");
                     return false;
                 }
             }
@@ -827,13 +843,14 @@ class Randomizer
             // 4-2 also should not be in world 8
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('4-2') && $world->num == 7) {
-                    $this->log->write("Sanity check fail: 4-2 is in world 8!\n");
+                    $this->log->writeVerbose("Sanity check fail: 4-2 is in world 8!\n");
                     return false;
                 }
             }
         }
 
-        // Undeground Bonus Area shuffle happens here
+        // Underground Bonus Area shuffle happens here
+        // BUT WHY?
         if ($this->options['shuffleUndergroundBonus'] == 'true') {
             $this->fixPipes($game);
             if (!$this->shuffleUndergroundBonusAreaDestinations($game)) {
@@ -993,6 +1010,30 @@ class Randomizer
                         }
                         // area at end of level (only one pipe there)
                         $new_warp = mt_rand($world->num + 2, 8);
+                        $game->addData($offset + 5, pack('C*', $new_warp));
+                        $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
+                    }
+                }
+            }
+        } else if ($this->options['warpZones'] == 'allbad') {
+            foreach ($game->worlds as $world) {
+                foreach ($world->levels as $level) {
+                    if ($level->name == '1-2') {
+                        for ($i = 0; $i < 3; $i++) {
+                            $new_warp = mt_rand(1, $world->num + 1);
+                            $game->addData($offset + $i, pack('C*', $new_warp));
+                            $this->log->write("Warp pipe in 1-2 (world $world->num) randomized to $new_warp\n");
+                        }
+                    }
+                    if ($level->name == '4-2') {
+                        // area accessed by beanstalk
+                        for ($i = 8; $i < 11; $i++) {
+                            $new_warp = mt_rand(1, $world->num + 1);
+                            $game->addData($offset + $i, pack('C*', $new_warp));
+                            $this->log->write("Warp pipe in 4-2 (beanstalk area) (world $world->num) randomized to $new_warp\n");
+                        }
+                        // area at end of level (only one pipe there)
+                        $new_warp = mt_rand(1, $world->num + 1);
                         $game->addData($offset + 5, pack('C*', $new_warp));
                         $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
                     }
@@ -1200,6 +1241,107 @@ class Randomizer
         $this->log->write("Randomized win text to entry " . $variation . " (" . $win_variations[$variation][0] . ")\n");
     }
 
+    // public function basicallyHowGetOptionsFromFlagsWouldWork($flags)
+    // {
+    //     if ($flags[0] == 'M') {
+    //         $options['pipeTransitions'] = 'remove';
+    //     } else if ($flags[0] == 'E') {
+    //         $options['pipeTransitions'] = 'keep';
+    //     } else {
+    //         $options['pipeTransitions'] = 'invalid';
+    //     }
+    //     return $options;
+    // }
+
+    // New flag encoding and decoding algorithm - thanks to Fred Coughlin!
+    // I've pretty much stolen the entire algorithm from Fred.
+    // Don't know if he got it from somewhere or came up with it himself.
+    // It's pretty simple actually.
+    public function betterFlags($options = null)
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz';
+        //$alphabet = 'MpQa8WoNsBiEd3VuRfCyT2tXgJeZnU4hI7kAlSwOj6DmPxFqL5bGrKv9HzY1c0';
+        $flag_string = '';
+        $option_values = [
+            [config('smbr.randomizer.options.pipeTransitions'), $options['pipeTransitions']],
+            [config('smbr.randomizer.options.shuffleLevels'), $options['shuffleLevels']],
+            [config('smbr.randomizer.options.normalWorldLength'), $options['normalWorldLength']],
+            [config('smbr.randomizer.options.enemies'), $options['enemies']],
+            [config('smbr.randomizer.options.blocks'), $options['blocks']],
+            [config('smbr.randomizer.options.bowserAbilities'), $options['bowserAbilities']],
+            [config('smbr.randomizer.options.bowserHitpoints'), $options['bowserHitpoints']],
+            [config('smbr.randomizer.options.startingLives'), $options['startingLives']],
+            [config('smbr.randomizer.options.warpZones'), $options['warpZones']],
+            [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
+            [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
+            [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
+        ];
+        $flag = 0;
+
+        foreach ($option_values as list($o, $selected)) {
+            $selected_index = array_search($selected, array_keys($o)); // TODO: do we need + 1 here?? probably not?
+            $flag *= count($o);
+            $flag += $selected_index;
+            // print("Flag: $flag\n");
+        }
+
+        print("Flag number: " . $flag . "\n");
+
+        $i = 0;
+        $alphabet_length = strlen($alphabet);
+        do {
+            $z = $flag % $alphabet_length;
+            // print("Z: $z - flag: " . round($flag) . " - " . $alphabet[$z] . "\n");
+            $flag_string[$i] = $alphabet[$z];
+            $flag /= $alphabet_length;
+            $i++;
+        } while ($flag > 1);
+
+        print("New flag string: $flag_string \n");
+        return strrev($flag_string);
+    }
+
+    public function betterFlagsToOptions($flag_string, $options)
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz';
+        $alphabet_length = strlen($alphabet);
+        $flag_number = 0;
+        $option_values = [
+            [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
+            [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
+            [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
+            [config('smbr.randomizer.options.warpZones'), $options['warpZones']],
+            [config('smbr.randomizer.options.startingLives'), $options['startingLives']],
+            [config('smbr.randomizer.options.bowserHitpoints'), $options['bowserHitpoints']],
+            [config('smbr.randomizer.options.bowserAbilities'), $options['bowserAbilities']],
+            [config('smbr.randomizer.options.blocks'), $options['blocks']],
+            [config('smbr.randomizer.options.enemies'), $options['enemies']],
+            [config('smbr.randomizer.options.normalWorldLength'), $options['normalWorldLength']],
+            [config('smbr.randomizer.options.shuffleLevels'), $options['shuffleLevels']],
+            [config('smbr.randomizer.options.pipeTransitions'), $options['pipeTransitions']],
+        ];
+
+        for ($i = 0; $i < strlen($flag_string); $i++) {
+            $j = 0;
+            for ($j = 0; $j < $alphabet_length && $alphabet[$j] != $flag_string[$i]; $j++);
+            $flag_number *= $alphabet_length;
+            $flag_number += $j;
+        }
+
+        print("Flag string decoded back to number: $flag_number \n");
+
+        // Now, go through options and set correct choice
+        // TODO: improve variable names
+        // TODO: understand this algorithm completely!
+        foreach ($option_values as list($o, $selected)) {
+            $z = count($o);
+            $selected_option = $flag_number % $z;
+            $flag_number /= $z;
+            print("Selected option: $selected_option \n");
+            // Here we need to find out which key in array matches selected_option
+        }
+    }
+
     public function getFlags($options)
     {
         $flags[0] = $options['pipeTransitions'][2];
@@ -1246,20 +1388,14 @@ class Randomizer
     public function makeFlags()
     {
         $this->flags = $this->getFlags($this->options);
-        //print("Flags: $this->flags\n");
+        // $this->betterFlags($this->options);
+        $this->betterFlagsToOptions($this->betterFlags($this->options), $this->options);
     }
 
     public function makeSeedHash()
     {
-        // TODO - thought/idea:
-        // include the MD5 of the randomized ROM in the seedhash?
-        // - it would have to be the MD5 of the file BEFORE writing the seedhash though.
-        // - but is it necessary? probably not. it could be an extra guarantee that the
-        // files are identical, but there shouldn't be any risk of collisions, right?
         $hashstring = $this->flags . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5());
         $this->seedhash = hash("crc32b", $hashstring);
-
-        // print("SeedHash: $this->seedhash\n");
     }
 
     public function getSeedHash()
@@ -1296,10 +1432,11 @@ class Randomizer
 
         // Shuffle Levels
         // This part can be optimized / written less strangely. Callback functions seems like a good idea.
-        // Note: Santity checking takes care of underground bonus area shuffling
+        // Note: Sanity checking takes care of underground bonus area shuffling!
         // TODO: maybe structure that differently?
         if ($this->options['shuffleLevels'] == "all") {
             if ($this->options['normalWorldLength'] == "true") {
+                // normal world length
                 $this->log->write("Shuffling all levels (normal world length)...\n");
                 $this->shuffleLevelsWithNormalWorldLength($game);
                 while (!$this->sanityCheckWorldLayout($game)) {

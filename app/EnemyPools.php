@@ -132,9 +132,6 @@ class EnemyPools
 
         $this->goomba_pool = [
             Enemy::get('Goomba'),
-/*             Enemy::get('Red Flying Cheep-Cheep Generator'),
-Enemy::get('Bowser Fire Generator'),
-Enemy::get('Bullet Bill/Cheep-Cheep Generator'), */
             Enemy::get('2 Goombas V10'),
             Enemy::get('3 Goombas V10'),
             Enemy::get('2 Goombas V6'),
@@ -142,8 +139,14 @@ Enemy::get('Bullet Bill/Cheep-Cheep Generator'), */
             Enemy::get('Buzzy Beetle'),
             Enemy::get('Hammer Bro'),
             Enemy::get('Blooper'),
+            // Note: adding a Spiny to a level, without Lakitu, still makes Lakitu spawn for some reason.
+            //Enemy::get('Spiny'),
+            //Enemy::get('Red Flying Cheep-Cheep Generator'),
+            //Enemy::get('Bowser Fire Generator'),
+            //Enemy::get('Bullet Bill/Cheep-Cheep Generator'),
         ];
 
+        // TODO: maybe not change Lakitu?
         $this->lakitu_pool = [
             Enemy::get('Lakitu'),
             Enemy::get('Lakitu'),

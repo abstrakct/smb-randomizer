@@ -15,7 +15,7 @@ return [
             'normalWorldLength' => 'true',
             'pipeTransitions' => 'remove',
             'shuffleLevels' => 'all',
-            'enemies' => 'randomizeFull',
+            'enemies' => 'randomizePools',
             'blocks' => 'randomizeAll',
             'bowserHitpoints' => 'random',
             'bowserAbilities' => 'true',
@@ -30,6 +30,7 @@ return [
             'colorscheme' => [
                 'mario' => [
                     'random' => 'Totally random color scheme',
+                    'clothes' => "Randomize the color of Mario's clothes",
                     'Vanilla Mario' => 'Normal Mario color scheme',
                     'Vanilla Luigi' => 'Normal Luigi color scheme',
                     'Vanilla Fire' => 'Normal Fire Mario/Luigi color scheme',
@@ -43,6 +44,7 @@ return [
                 ],
                 'luigi' => [
                     'random' => 'Totally random color scheme',
+                    'clothes' => "Randomize the color of Luigi's clothes",
                     'Vanilla Mario' => 'Normal Mario color scheme',
                     'Vanilla Luigi' => 'Normal Luigi color scheme',
                     'Vanilla Fire' => 'Normal Fire Mario/Luigi color scheme',
@@ -56,6 +58,7 @@ return [
                 ],
                 'fire' => [
                     'random' => 'Totally random color scheme',
+                    'clothes' => 'Random color of clothes only',
                     'Vanilla Mario' => 'Normal Mario color scheme',
                     'Vanilla Luigi' => 'Normal Luigi color scheme',
                     'Vanilla Fire' => 'Normal Fire Mario/Luigi color scheme',
@@ -82,8 +85,8 @@ return [
                 'false' => 'Worlds can have varying lengths',
             ],
             'enemies' => [
-                'randomizeFull' => 'Randomize all enemies (within reason)',
-                'randomizePools' => 'Randomize enemies within smaller pools of related or similar enemies',
+                'randomizeFull' => 'Chaos: randomize all enemies (within reason)',
+                'randomizePools' => 'Controlled: randomize enemies within smaller pools of related or similar enemies',
                 'randomizeNone' => 'Do not randomize enemies',
                 //    'shufflexxxxxx' => 'NOT IMPLEMENTED: Shuffle Enemies',
             ],
@@ -117,8 +120,12 @@ return [
             'warpZones' => [
                 'normal' => 'Normal: Warp Zones stay as they are in the original game',
                 'random' => 'Random: The destination of warp zone pipes is randomized',
-                'shuffle' => 'Shuffle: There will be one warp pipe to each world, shuffled across the 3 warp zones',
+                'shuffle' => 'Shuffle: There will be one warp pipe to each world (2-8), shuffled across the 3 warp zones',
+                // TODO: rename useful to allgood
                 'useful' => 'Useful: All warp pipes will be useful (take you to a higher world number)',
+                // TODO: this is basically "forced warpless"
+                'allbad' => 'All bad: All warp pipes will be bad (they will take you to start of current world or earlier)',
+                // TODO: easy/hard gamble modes
                 'gamble' => 'Gamble: Warp destinations will be hidden, 2 pipes are good, 1 pipe is bad',
             ],
             'hiddenWarpDestinations' => [

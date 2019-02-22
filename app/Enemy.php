@@ -90,7 +90,7 @@ class Enemy
             new Enemy('Toad', 0x35),
             new Enemy('2 Goombas V10', 0x37),
             new Enemy('3 Goombas V10', 0x38),
-            new Enemy('2 Goombas V6', 0x39),
+            new Enemy('2 Goombas V6', 0x39), // V6 = higher up
             new Enemy('3 Goombas V6', 0x3A),
             new Enemy('2 Green Koopa Troopas V10', 0x3B),
             new Enemy('3 Green Koopa Troopas V10', 0x3C),
