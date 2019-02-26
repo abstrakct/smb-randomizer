@@ -97,22 +97,10 @@ class Randomize extends Command
         //print_r($vanilla);
         //print(count($vanilla->worlds[1]->levels));
 
-        $webmode = false;
         $rom = new Rom($input_file);
         $checksum = $rom->getMD5();
         $ok = $rom->checkMD5();
 
-        if ($webmode) {
-            print("<br><br>SMB RANDOMIZER " . printVersion() . "<br><br>ROM filename: $input_file<br>");
-            print("MD5 checksum: $checksum");
-            if ($ok) {
-                print(" <b>[OK]</b><br>");
-            } else {
-                print(" <b>[FAILED!]</b><br>");
-                print("Trying to use this ROM anyway, <b>not guaranteed to work,</b> results may vary...<br>");
-                //TODO: Add checks to see if ROM is usable (check data in various offsets).
-            }
-        } else {
             print("\n\nSuper Mario Bros. RANDOMIZER v" . \SMBR\Randomizer::VERSION . "\n\nROM filename: $input_file\n");
             print("MD5 checksum: $checksum");
             if ($ok) {
@@ -122,7 +110,6 @@ class Randomize extends Command
                 print("Trying to use this ROM anyway, not guaranteed to work, results may vary...\n");
                 //TODO: Add checks to see if ROM is usable (check data in various offsets).
             }
-        }
 
         print("\n");
 
@@ -145,18 +132,8 @@ class Randomize extends Command
         // Make seedhash
         $rando->makeSeedHash();
 
-        print("SeedHash: $rando->seedhash\n");
-
-        // if ($webmode) {
-        //     $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());
-        //     if (!file_exists($dir)) {
-        //         mkdir($dir, 0744);
-        //     }
-
-        //     $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
-        //     $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
-        // } else {
-        // }
+        print("Flagstring: $rando->flags\n");
+        print("Seedhash: $rando->seedhash\n");
 
         // Print out the selected options and relevant information
         $rando->printOptions();
@@ -181,12 +158,6 @@ class Randomize extends Command
 
         $log->close();
 
-        if ($webmode) {
-            print('<br><br><b>Finished!</b><br><a href="' . $outfilename . '">Click here to download randomized ROM!</a>');
-            print('<br><a href="' . $logfilename . '">Click here to view the log (contains spoilers!)</a>');
-        } else {
             print("\nFinished!\nFilename: $outfilename\n");
-        }
-
     }
 }

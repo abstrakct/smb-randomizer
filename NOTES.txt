@@ -63,9 +63,6 @@ BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! y
   TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
   spiny in enemy pools - if possible
 
-TODO: Shuffle underground bonus + keep pipe transitions crashes the randomizer! Don't know why.
------ So maybe we remove the option to keep pipe transitions? And just remove them completely.
-
 
 TODO: easy/hard warp zone gamble - easy = 2 good 1 bad - hard = 1 good 2 bad pipes
 TODO: Option to disable beating Bowser by removing the bridge under him? So that you must shoot Bowser with fireballs.....

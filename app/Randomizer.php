@@ -623,7 +623,6 @@ class Randomizer
             }
         }
 
-
         // TODO: I'm pretty sure we need this, but should check that to be absolutely sure
         $this->fixPipes($game);
 
@@ -690,12 +689,16 @@ class Randomizer
         $levels = 0;
         if ($this->options["shuffleLevels"] == "none") {
             $num_levels = 35;
+        } else if ($this->options["shuffleLevels"] == "all" && $this->options["pipeTransitions"] == "keep") {
+            $num_levels = 35;
         } else {
             $num_levels = 32;
         }
+        
         foreach ($game->worlds as $world) {
             $levels += count($world->levels);
         }
+
         if ($levels != $num_levels) {
             $this->log->writeVerbose("Sanity check fail: Not $num_levels levels in world layout (levels = $levels)!\n");
             return false;
@@ -822,7 +825,7 @@ class Randomizer
          * If we do, then warp zones can get a bit strange, but as long as that's communicated
          * to the player that might be ok?
          */
-        if ($this->options['warpZones'] != "normal") {
+        // if ($this->options['warpZones'] != "normal") {
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('1-2') && $world->num != 0) {
                     $this->log->writeVerbose("Sanity check fail: 1-2 is not in world 1!\n");
@@ -845,7 +848,7 @@ class Randomizer
                     return false;
                 }
             }
-        }
+        // }
 
         // Underground Bonus Area shuffle happens here
         // BUT WHY?
