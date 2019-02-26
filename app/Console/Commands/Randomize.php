@@ -134,8 +134,8 @@ class Randomize extends Command
         $rando->makeFlags();
 
         // Set filenames
-        $outfilename = $output_dir . "/roms/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
-        $logfilename = $output_dir . "/logs/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
+        $outfilename = $output_dir . "/roms/smb-rando-" . $rando->getSeed() . "-" . $rando->flags . ".nes";
+        $logfilename = $output_dir . "/logs/smb-rando-" . $rando->getSeed() . "-" . $rando->flags . ".log";
 
         // Start the logger
         $log = new Logger($logfilename, $saveLog, $logLevel);
@@ -145,7 +145,7 @@ class Randomize extends Command
         // Make seedhash
         $rando->makeSeedHash();
 
-        print("\nSeedHash: $rando->seedhash\n");
+        print("SeedHash: $rando->seedhash\n");
 
         // if ($webmode) {
         //     $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());

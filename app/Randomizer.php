@@ -1269,7 +1269,7 @@ class Randomizer
     // I've pretty much stolen the entire algorithm from Fred.
     // Don't know if he got it from somewhere or came up with it himself.
     // It's pretty simple actually.
-    public function betterFlags($options = null)
+    public function calculateFlagsNew($options = null)
     {
         $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz';
         //$alphabet = 'MpQa8WoNsBiEd3VuRfCyT2tXgJeZnU4hI7kAlSwOj6DmPxFqL5bGrKv9HzY1c0';
@@ -1297,7 +1297,7 @@ class Randomizer
             // print("Flag: $flag\n");
         }
 
-        print("Flag number: " . $flag . "\n");
+        // print("Flag number: " . $flag . "\n");
 
         $i = 0;
         $alphabet_length = strlen($alphabet);
@@ -1309,7 +1309,7 @@ class Randomizer
             $i++;
         } while ($flag > 1);
 
-        print("New flag string: $flag_string \n");
+        // print("New flag string: $flag_string \n");
         return strrev($flag_string);
     }
 
@@ -1354,6 +1354,7 @@ class Randomizer
         }
     }
 
+    /*
     public function getFlags($options)
     {
         $flags[0] = $options['pipeTransitions'][2];
@@ -1396,12 +1397,12 @@ class Randomizer
 
         return $f;
     }
+    */
 
     public function makeFlags()
     {
-        $this->flags = $this->getFlags($this->options);
-        // $this->betterFlags($this->options);
-        $this->betterFlagsToOptions($this->betterFlags($this->options), $this->options);
+        $this->flags = $this->calculateFlagsNew($this->options);
+        // $this->betterFlagsToOptions($this->calculateFlagsNew($this->options), $this->options);
     }
 
     public function makeSeedHash()
