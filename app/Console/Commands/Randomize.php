@@ -26,7 +26,7 @@ class Randomize extends Command
         . '{--pipe-transitions=remove : keep or remove pipe transitions}'
         . '{--shuffle-levels=all : level randomization}'
         . '{--normal-world-length=false : world length options}'
-        . '{--enemies=randomizePools : enemy randomization}'
+        . '{--enemies=randomizeFull : enemy randomization}'
         . '{--blocks=randomizeAll : block randomization}'
         . '{--bowser-abilities=true : randomize Bowser abilities}'
         . '{--bowser-hitpoints=random : randomize Bowser hitpoints}'
@@ -149,9 +149,9 @@ class Randomize extends Command
 
         // write JSON formatted data to logfile
         $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
-        $log->write("\nJSON:\n\n");
-        $log->write($game_json);
-        $log->write("\n\n");
+        $log->writeVerbose("\nJSON:\n\n");
+        $log->writeVerbose($game_json);
+        $log->writeVerbose("\n\n");
 
         // write "pretty" world layout to logfile
         //$log->write($randomized_game->prettyprint());

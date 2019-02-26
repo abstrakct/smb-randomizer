@@ -261,7 +261,7 @@ class Randomizer
 
                                 $new_data = (($p | $h) | $new_object);
                                 $game->addData($offset + $i + 1, pack('C*', $new_data));
-                                $this->log->write("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
+                                $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
                             }
                         } else {
                             $new_data = 0;
@@ -279,7 +279,7 @@ class Randomizer
 
                                 $new_data = (($p | $h) | $new_object);
                                 $game->addData($offset + $i + 1, pack('C*', $new_data));
-                                $this->log->write("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
+                                $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
                             }
                         }
                     }
@@ -639,7 +639,7 @@ class Randomizer
 
                     // print info
                     $w = $pipeList[$key][0]->getWorldActive();
-                    $this->log->write("found usable pipe for page $page in world $w\n");
+                    $this->log->writeVerbose("found usable pipe for page $page in world $w\n");
 
                     // end
                     $n++;

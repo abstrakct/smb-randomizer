@@ -138,11 +138,11 @@ class Rom
 
         $d = array_values(unpack('C*', $data));
         $m = sprintf("rom::write addr: %04x ", $offset);
-        $this->log->write($m);
+        $this->log->writeVerbose($m);
         foreach ($d as $value) {
-            $this->log->write(sprintf("%02x ", $value));
+            $this->log->writeVerbose(sprintf("%02x ", $value));
         }
-        $this->log->write("\n");
+        $this->log->writeVerbose("\n");
         return $this;
     }
 
@@ -207,6 +207,8 @@ class Rom
         foreach ($game->getDataPackets() as $packet) {
             $this->write($packet->getOffset(), $packet->getData());
         }
+
+        $this->log->write("DONE!\n");
     }
 
     public function setMarioOuterColor(int $color, Game &$game)
