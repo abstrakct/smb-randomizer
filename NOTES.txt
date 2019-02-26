@@ -63,10 +63,15 @@ BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! y
   TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
   spiny in enemy pools - if possible
 
+TODO: Shuffle underground bonus + keep pipe transitions crashes the randomizer! Don't know why.
+----- So maybe we remove the option to keep pipe transitions? And just remove them completely.
+
+
 TODO: easy/hard warp zone gamble - easy = 2 good 1 bad - hard = 1 good 2 bad pipes
 TODO: Option to disable beating Bowser by removing the bridge under him? So that you must shoot Bowser with fireballs.....
 ----- Can lead to softlocks, will need to guarantee powerups in the castles.
 STARTED TODO: Better handling of seed flags
+ - DONE: better algorithm, taken from Fred
  - we need a way to convert flag -> config options
  - we need a way to show flags in UI, changing when user changes settings
  - fun: enter VANILLA to get vanilla game?
@@ -75,7 +80,7 @@ STARTED TODO: Better handling of seed flags
  -- and then we change those based on chosen settings?
 TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
 TODO: inverted controls??
-TODO: randomized levels?? As in, not shuffled, but random! levels can appear multiple times!?
+TODO: randomized levels?? As in, not shuffled, but random! levels can appear multiple times!? nah......
 TODO: deceptive enemies? e.g. change graphics of enemies! (13555 in disasm, starts at offset 0x674e)
 TODO: randomly add swimming to levels?? investigate how swimming levels work!
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)

@@ -374,7 +374,6 @@ class Randomizer
                 $shuffleindex++;
             }
         } else if ($this->options['pipeTransitions'] == 'keep') {
-            // This part is a mess (?)
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
@@ -623,6 +622,7 @@ class Randomizer
                 }
             }
         }
+
 
         // TODO: I'm pretty sure we need this, but should check that to be absolutely sure
         $this->fixPipes($game);
