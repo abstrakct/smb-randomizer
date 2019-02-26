@@ -95,6 +95,10 @@ TODO: Randomize fireworks X,Y (line 8632 in disasm)
 TODO: Shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
 TODO: Disappearing trampolines
 TODO: Disappearing powerup blocks sometimes - might be related to stuff around line 5860 in disasm
+-----> YES! Hidden1UpCoinAmts needs to be dealt with. Easy way out: set to 0 for all worlds. That way bonus 1ups will always spawn.
+      Other option: change so it matches the amount of coins in the 3rd level of each world.
+      Problem: worlds don't always have >= 3 levels!
+      So......
 TODO: Option to not randomize texts
 TODO: Keep randomized texts independent of game seed? or make it an option?
 TODO: Option to keep castles in vanilla order? why? just because we can?

@@ -1171,6 +1171,17 @@ class Randomizer
         }
     }
 
+    /*
+     * Set coin tallies needed to activate bonus hidden 1-UP blocks to zero
+     */
+    public function zeroCoinTallies(Game &$game)
+    {
+        $offset = 0x32d2;
+        for ($i = 0; $i < 8; $i++) {
+            $game->addData($offset + $i, pack('C*', 0));
+        }
+    }
+
     public function setTextSeedhash(string $text, Game &$game)
     {
         $offset = 0x9fa1; // + 0x8000;   if using smb+duckhunt rom
@@ -1547,6 +1558,9 @@ class Randomizer
 
         // Fix Midway Points
         $this->fixMidwayPoints($game);
+
+        // Zero coin tallies
+        $this->zeroCoinTallies($game);
 
         // Set seedhash text
         $this->setTextSeedhash($this->seedhash, $game);
