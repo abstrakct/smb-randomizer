@@ -182,6 +182,7 @@ class Rom
         }
 
         // Write fixed pipes
+        // TODO: use data packets?!
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
                 if ($level->pipe_pointers) {
@@ -199,6 +200,18 @@ class Rom
                             $this->write($exit->getOffset() + 2, pack('C*', $bytes[2]));
                         }
                     }
+                }
+            }
+        }
+
+        // Write level headers
+        // TODO: use data packets?!
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                if ($level->level_data_offset != 0) {
+                    $bytes = $level->getHeaderBytes();
+                    $this->write($level->level_data_offset, pack('C*', $bytes[0]));
+                    $this->write($level->level_data_offset + 1, pack('C*', $bytes[1]));
                 }
             }
         }

@@ -24,6 +24,7 @@ return [
             'hiddenWarpDestinations' => 'false',
             'fireworks' => 'true',
             'shuffleUndergroundBonus' => 'true',
+            'randomizeBackground' => 'false',
         ],
 
         'options' => [
@@ -139,6 +140,10 @@ return [
             'shuffleUndergroundBonus' => [
                 'true' => 'Shuffle the destinations of pipes going to underground bonus levels',
                 'false' => 'Do not shuffle underground bonus levels',
+            ],
+            'randomizeBackground' => [
+                'true' => 'Randomize the background and scenery of levels',
+                'false' => 'Do not randomize the background and scenery of levels',
             ],
         ],
     ],

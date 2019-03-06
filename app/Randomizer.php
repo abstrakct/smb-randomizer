@@ -55,7 +55,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.9.2";
+    const VERSION = "0.9.3";
 
     // Color schemes. TODO: improve
     public $colorschemes = [];
@@ -1121,7 +1121,33 @@ class Randomizer
         $this->log->write("Fireworks will appear when last digit of timer is " . $random_digits[1] . ", " . $random_digits[3] . " or " . $random_digits[6] . "\n");
     }
 
-    // TODO: rewrite!
+    public function randomizeBackground(&$game)
+    {
+        $this->log->write("Randomizing background and scenery...\n");
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                if ($level->level_data_offset != 0) {
+                    $this->log->write("$level->name\n");
+                    $headerByte1 = $this->rom->read($level->level_data_offset);
+                    $headerByte2 = $this->rom->read($level->level_data_offset + 1);
+                    $level->setHeaderBytes($headerByte1, $headerByte2);
+                    $this->log->writeVerbose(sprintf("Read header bytes: %02x %02x\n", $headerByte1, $headerByte2));
+
+                    $newScenery = mt_rand(0, 3);
+                    $newCompliment = mt_rand(0, 3);
+                    $newBackground = mt_rand(0, 7);
+                    $level->setScenery($newScenery);
+                    $level->setCompliment($newCompliment);
+                    $level->setBackground($newBackground);
+                    
+                    $newBytes = $level->getHeaderBytes();
+                    $this->log->writeVerbose(sprintf("New header bytes: %02x %02x\n", $newBytes[0], $newBytes[1]));
+                }
+            }
+        }
+    }
+
+    // TODO: rewrite! (???)
     public function fixPipes(Game &$game)
     {
         $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
@@ -1301,6 +1327,7 @@ class Randomizer
             [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
             [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
             [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
+            [config('smbr.randomizer.options.randomizeBackground'), $options['randomizeBackground']],
         ];
         $flag = 0;
 
@@ -1333,6 +1360,7 @@ class Randomizer
         $alphabet_length = strlen($alphabet);
         $flag_number = 0;
         $option_values = [
+            [config('smbr.randomizer.options.randomizeBackground'), $options['randomizeBackground']],
             [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
             [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
             [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
@@ -1552,8 +1580,14 @@ class Randomizer
             $this->removeWarpZoneLabels($game);
         }
 
+        // Randomize fireworks
         if ($this->options['fireworks'] == "true") {
             $this->randomizeFireworks($game);
+        }
+
+        // Randomize background/scenery
+        if ($this->options['randomizeBackground'] == "true") {
+            $this->randomizeBackground($game);
         }
 
         // Fix Midway Points

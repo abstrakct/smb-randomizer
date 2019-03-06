@@ -35,6 +35,7 @@ class Randomize extends Command
         . '{--hidden-warp-destinations=false : hidden warp destinations}'
         . '{--fireworks=true : randomize when fireworks appear}'
         . '{--shuffle-underground-bonus=true : shuffle destinations of underground bonus level pipes }'
+        . '{--randomize-background=false : randomize the background and scenery of levels }'
         . '{--mariocolors=random : Mario Color Scheme}'
         . '{--luigicolors=random : Luigi Color Scheme}'
         . '{--firecolors=random : Fire Color Scheme}'
@@ -81,6 +82,7 @@ class Randomize extends Command
         $smbrOptions['hiddenWarpDestinations'] = $this->option('hidden-warp-destinations');
         $smbrOptions['fireworks'] = $this->option('fireworks');
         $smbrOptions['shuffleUndergroundBonus'] = $this->option('shuffle-underground-bonus');
+        $smbrOptions['randomizeBackground'] = $this->option('randomize-background');
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');

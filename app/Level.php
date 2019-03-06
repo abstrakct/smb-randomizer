@@ -1,5 +1,9 @@
 <?php namespace SMBR;
 
+
+// TODO: add an array of valid values for level* with name/description,
+// for prettier logging
+
 class Level
 {
     public $name = 'Unknown';
@@ -10,6 +14,10 @@ class Level
     public $midway_point;
     public $has_enemies = true;
     public $world_num = 0;
+
+    protected $headerByte1 = 0;
+    protected $headerByte2 = 0;
+    protected $levelTime, $levelAutoWalk, $levelMarioY, $levelBackground, $levelCompliment, $levelScenery, $levelGround;
 
     protected static $levels;
 
@@ -26,6 +34,64 @@ class Level
             $this->world_num = intval($name[0]) - 1;
         }
     }
+
+    public function setHeaderBytes($byte1, $byte2)
+    {
+        $this->headerByte1 = $byte1;
+        $this->headerByte2 = $byte2;
+        $this->levelTime = ($byte1 & 0b11000000) >> 6;
+        $this->levelAutoWalk = ($byte1 & 0b00100000) >> 5;
+        $this->levelMarioY = ($byte1 & 0b00011000) >> 3;
+        $this->levelBackground = ($byte1 & 0b00000111);
+        $this->levelCompliment = ($byte2 & 0b11000000) >> 6;
+        $this->levelScenery = ($byte2 & 0b00110000) >> 4;
+        $this->levelGround = ($byte2 & 0b00001111);
+    }
+
+    public function getHeaderBytes()
+    {
+        $byte1 = ($this->levelTime << 6) | ($this->levelAutoWalk << 5) | ($this->levelMarioY << 3) | ($this->levelBackground);
+        $byte2 = ($this->levelCompliment << 6) | ($this->levelScenery << 4) | ($this->levelGround);
+
+        return [ $byte1, $byte2 ];
+    }
+
+    public function setTime($t)
+    {
+        if ($t > 3 || $t < 0) {
+            print("Wrong value for levelTime\n");
+            exit(1);
+        }
+        $this->levelTime = $t;
+    }
+
+    public function setScenery($s)
+    {
+        if ($s > 3 || $s < 0) {
+            print("Wrong value for levelScenery\n");
+            exit(1);
+        }
+        $this->levelScenery = $s;
+    }
+
+    public function setBackground($b)
+    {
+        if ($b > 7 || $b < 0) {
+            print("Wrong value for levelBackground\n");
+            exit(1);
+        }
+        $this->levelBackground = $b;
+    }
+
+    public function setCompliment($c)
+    {
+        if ($c > 3 || $c < 0) {
+            print("Wrong value for levelCompliment\n");
+            exit(1);
+        }
+        $this->levelCompliment = $c;
+    }
+
 
     public static function get(string $name)
     {
