@@ -86,6 +86,7 @@ return [
                 'false' => 'Worlds can have varying lengths',
             ],
             'enemies' => [
+                'randomizeNew' => 'New: new algorithm',
                 'randomizeFull' => 'Chaos: randomize all enemies (within reason)',
                 'randomizePools' => 'Controlled: randomize enemies within smaller pools of related or similar enemies',
                 'randomizeNone' => 'Do not randomize enemies',

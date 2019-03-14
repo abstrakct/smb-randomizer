@@ -200,6 +200,74 @@ class Randomizer
         }
     }
 
+    public function newRandomizeEnemies(&$game)
+    {
+        $this->log->write("NEW Randomizing enemies!\n");
+        $vanilla = Level::all();
+        foreach ($vanilla as $level) {
+            if ($level->has_enemies) {
+                $this->log->write("Randomizing enemies on level " . $level->name . "\n");
+                $this->newRandomizeEnemiesOnLevel($level->enemy_data_offset, $game);
+            }
+        }
+    }
+
+    public function newRandomizeEnemiesOnLevel($offset, &$game)
+    {
+        $data = $this->rom->read($offset, 100);
+        $end = 0;
+        foreach ($data as $byte) {
+            $end++;
+            if ($byte == 0xFF) {
+                break;
+            }
+        }
+
+        for ($i = 0; $i < $end; $i += 2) {
+            $x = $data[$i] & 0xF0;
+            $y = $data[$i] & 0x0F;
+            $do_randomize = true;
+            if ($y == 0xE) {
+                $i++;
+            } else if ($y > 0xE) {
+                continue;
+            } else {
+                // Let's randomize!
+                $p = $data[$i + 1] & 0b10000000;
+                $h = $data[$i + 1] & 0b01000000;
+                $o = $data[$i + 1] & 0b00111111;  // this is the enemy object
+
+                /* Some enemies can't be randomized, so let's check for those */
+                foreach ($this->enemy_pools->dont_randomize as $nope) {
+                    if ($o == $nope) {
+                        $do_randomize = false;
+                    }
+                }
+
+                if ($do_randomize) {
+                    $new_candidates = $this->enemy_pools->new_pools[$o];
+                    if (count($new_candidates) == 0) {
+                        break;
+                    }
+                    $new_enemy = $new_candidates[mt_rand(0, count($new_candidates) - 1)];
+
+
+                    $new_data = (($p | $h) | $new_enemy);
+                    $game->addData($offset + $i + 1, pack('C*', $new_data));
+                    $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_enemy) . "\n");
+
+                    // TODO: fix Y position of certain enemies, lakitu etc
+                    if ($new_enemy == Enemy::get('Green Cheep-Cheep (slow)') || $new_enemy == Enemy::get('Red Cheep-Cheep (fast)')) {
+                        $yyy = mt_rand(0, 0xD);
+                        $pos = ($x << 4) | $yyy;
+                        $game->addData($offset + $i, pack('C*', $pos));
+                        $this->log->writeVerbose("Changed Y position to: $yyy\n");
+                    }
+                }
+            }
+        }
+    }
+
     public function randomizeEnemiesOnLevel($offset, &$game, $in_pools = false)
     {
         $end = 0;
@@ -1465,8 +1533,8 @@ class Randomizer
 
     public function setSeed(int $rng_seed = null)
     {
-        $rng_seed = $rng_seed ?: random_int(1, 9999999999); // cryptographic pRNG for seeding
-        $this->rng_seed = $rng_seed % 10000000000;
+        $rng_seed = $rng_seed ?: random_int(1, 9999999999999); // cryptographic pRNG for seeding
+        $this->rng_seed = $rng_seed % 10000000000000;
         mt_srand($this->rng_seed);
     }
 
@@ -1536,11 +1604,13 @@ class Randomizer
             $this->fixPipes($game);
         }
 
-        //  Shuffle Enemies
+        // Randomize Enemies
         if ($this->options['enemies'] == "randomizeFull") {
             $this->randomizeEnemies($game, false);
         } else if ($this->options['enemies'] == "randomizePools") {
             $this->randomizeEnemies($game, true);
+        } else if ($this->options['enemies'] == "randomizeNew") {
+            $this->newRandomizeEnemies($game);
         } else if ($this->options['enemies'] == "randomizeNone") {
             $this->log->write("No randomization of enemies!\n");
         }
