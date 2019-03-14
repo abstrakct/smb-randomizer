@@ -206,12 +206,14 @@ class Rom
 
         // Write level headers
         // TODO: use data packets?!
-        foreach ($game->worlds as $world) {
-            foreach ($world->levels as $level) {
-                if ($level->level_data_offset != 0) {
-                    $bytes = $level->getHeaderBytes();
-                    $this->write($level->level_data_offset, pack('C*', $bytes[0]));
-                    $this->write($level->level_data_offset + 1, pack('C*', $bytes[1]));
+        if ($game->options['randomizeBackground'] == "true") {
+            foreach ($game->worlds as $world) {
+                foreach ($world->levels as $level) {
+                    if ($level->level_data_offset != 0) {
+                        $bytes = $level->getHeaderBytes();
+                        $this->write($level->level_data_offset, pack('C*', $bytes[0]));
+                        $this->write($level->level_data_offset + 1, pack('C*', $bytes[1]));
+                    }
                 }
             }
         }

@@ -21,6 +21,11 @@ class Level
 
     protected static $levels;
 
+    private $describeBackground = [ "Day time (normal palette)", "Underwater background", "Castle wall background", "Over water background",
+                                    "Night time", "Day time / snow", "Night time / snow", "Black and white (castle)" ];
+    private $describeScenery = [ "None", "Clouds", "Mountains / hills", "Fence / trees" ];
+    private $describeCompliment = [ "Trees", "Mushrooms", "Bullet Bill turrets", "Clouds (bricks are clouds)" ];
+
     public function __construct($name, $map, $enemy_data_offset, $level_data_offset, $pipe_pointers, $midway_point, $enemies = true)
     {
         $this->name = $name;
@@ -90,6 +95,21 @@ class Level
             exit(1);
         }
         $this->levelCompliment = $c;
+    }
+
+    public function getBackgroundDescription()
+    {
+        return $this->describeBackground[$this->levelBackground];
+    }
+
+    public function getSceneryDescription()
+    {
+        return $this->describeScenery[$this->levelScenery];
+    }
+
+    public function getComplimentDescription()
+    {
+        return $this->describeCompliment[$this->levelCompliment];
     }
 
 

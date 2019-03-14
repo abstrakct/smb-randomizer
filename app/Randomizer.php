@@ -50,7 +50,6 @@ class Randomizer
     protected $seed;
     protected $options;
     protected $rom;
-    private $level = [];
     private $trans;
     private $log;
     // TODO: move all enemy data to Enemy class
@@ -61,7 +60,7 @@ class Randomizer
     public $colorschemes = [];
 
     /**
-     * Create a new randomzer.
+     * Create a new randomizer.
      *
      * TODO: error checking etc.
      *
@@ -1132,9 +1131,12 @@ class Randomizer
                     $headerByte2 = $this->rom->read($level->level_data_offset + 1);
                     $level->setHeaderBytes($headerByte1, $headerByte2);
                     $this->log->writeVerbose(sprintf("Read header bytes: %02x %02x\n", $headerByte1, $headerByte2));
+                    $this->log->writeVerbose("Old background: " . $level->getBackgroundDescription() . "\n");
+                    $this->log->writeVerbose("Old scenery:    " . $level->getSceneryDescription() . "\n");
+                    $this->log->writeVerbose("Old compliment: " . $level->getComplimentDescription() . "\n");
 
                     $newScenery = mt_rand(0, 3);
-                    $newCompliment = mt_rand(0, 3);
+                    $newCompliment = mt_rand(0, 2);
                     $newBackground = mt_rand(0, 7);
                     $level->setScenery($newScenery);
                     $level->setCompliment($newCompliment);
@@ -1142,6 +1144,9 @@ class Randomizer
                     
                     $newBytes = $level->getHeaderBytes();
                     $this->log->writeVerbose(sprintf("New header bytes: %02x %02x\n", $newBytes[0], $newBytes[1]));
+                    $this->log->writeVerbose("New background: " . $level->getBackgroundDescription() . "\n");
+                    $this->log->writeVerbose("New scenery:    " . $level->getSceneryDescription() . "\n");
+                    $this->log->writeVerbose("New compliment: " . $level->getComplimentDescription() . "\n");
                 }
             }
         }
