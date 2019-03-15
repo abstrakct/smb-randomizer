@@ -37,6 +37,7 @@ BUG: FIXED? in enemies-randomize-pools Bowser can get randomized to something el
 BUG: Enemy at the end of 8-2 (on the stairs before flag) should never be a firebar
 BUG: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
 BUG: No level shuffle + remove pipe transitions doesn't work together.
+BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
 BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! you still win though, so.
 
       TODO

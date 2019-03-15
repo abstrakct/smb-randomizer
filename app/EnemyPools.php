@@ -86,7 +86,7 @@ class EnemyPools
             Enemy::get('3 Green Koopa Troopas V6'),
         ];
 
-//  TODO: rework pools! add to- and from-pools!
+//  TODO: rework pools! add to- and from-pools! (basically DONE)
 
         $this->new_pools = [
             Enemy::get('Green Koopa Troopa') => [
@@ -194,8 +194,25 @@ class EnemyPools
                 Enemy::get('Red Cheep-Cheep (fast)'),
                 Enemy::get('Hammer Bro'),
             ],
-            Enemy::get('Bullet Bill') => [],
-            Enemy::get('Yellow Koopa Paratroopa (does not move)') => [],
+            Enemy::get('Bullet Bill') => [
+                Enemy::get('Bullet Bill'),
+            ],
+            Enemy::get('Yellow Koopa Paratroopa (does not move)') => [
+                Enemy::get('Green Koopa Troopa'),
+                Enemy::get('Red Koopa Troopa (walks off floors)'),
+                Enemy::get('Buzzy Beetle'),
+                Enemy::get('Red Koopa Troopa (stays on floors)'),
+                Enemy::get('Green Koopa Troopa (does not move)'),
+                Enemy::get('Hammer Bro'),
+                Enemy::get('Goomba'),
+                Enemy::get('Blooper'),
+                Enemy::get('Yellow Koopa Paratroopa (does not move)'),
+                Enemy::get('Green Koopa Paratroopa (leaping)'),
+                Enemy::get('Red Koopa Troopa (down then up)'),
+                Enemy::get('Green Koopa Troopa (left then right)'),
+                Enemy::get('Green Cheep-Cheep (slow)'),
+                Enemy::get('Red Cheep-Cheep (fast)'),
+            ],
             Enemy::get('Green Cheep-Cheep (slow)') => [
                 Enemy::get('Blooper'),
                 Enemy::get('Green Cheep-Cheep (slow)'),
@@ -208,21 +225,87 @@ class EnemyPools
                 Enemy::get('Red Cheep-Cheep (fast)'),
                 Enemy::get('Hammer Bro'),
             ],
-            Enemy::get('Podoboo') => [],
-            Enemy::get('Pirhana Plant') => [],
-            Enemy::get('Green Koopa Paratroopa (leaping)') => [],
-            Enemy::get('Red Koopa Troopa (down then up)') => [],
-            Enemy::get('Green Koopa Troopa (left then right)') => [],
-            Enemy::get('Lakitu') => [],
-            Enemy::get('Red Flying Cheep-Cheep Generator') => [],
-            Enemy::get('Bowser Fire Generator') => [],
-            Enemy::get('Bullet Bill/Cheep-Cheep Generator') => [],
-            Enemy::get('Fire Bar (Clockwise)') => [],
-            Enemy::get('Fast Fire Bar (Clockwise)') => [],
-            Enemy::get('Fire Bar (Counter-Clockwise)') => [],
-            Enemy::get('Fast Fire Bar (Counter-Clockwise)') => [],
-            Enemy::get('Long Fire Bar (Clockwise)') => [],
-            Enemy::get('Bowser') => [],
+            Enemy::get('Podoboo') => [
+                Enemy::get('Podoboo'),
+            ],
+            Enemy::get('Pirhana Plant') => [
+                Enemy::get('Pirhana Plant'),
+            ],
+            Enemy::get('Green Koopa Paratroopa (leaping)') => [
+                Enemy::get('Green Koopa Troopa'),
+                Enemy::get('Red Koopa Troopa (walks off floors)'),
+                Enemy::get('Buzzy Beetle'),
+                Enemy::get('Red Koopa Troopa (stays on floors)'),
+                Enemy::get('Green Koopa Troopa (does not move)'),
+                Enemy::get('Hammer Bro'),
+                Enemy::get('Goomba'),
+                Enemy::get('Blooper'),
+                Enemy::get('Yellow Koopa Paratroopa (does not move)'),
+                Enemy::get('Green Koopa Paratroopa (leaping)'),
+                Enemy::get('Red Koopa Troopa (down then up)'),
+                Enemy::get('Green Koopa Troopa (left then right)'),
+                Enemy::get('Green Cheep-Cheep (slow)'),
+                Enemy::get('Red Cheep-Cheep (fast)'),
+            ],
+            Enemy::get('Red Koopa Troopa (down then up)') => [
+                Enemy::get('Green Koopa Troopa'),
+                Enemy::get('Red Koopa Troopa (walks off floors)'),
+                Enemy::get('Buzzy Beetle'),
+                Enemy::get('Red Koopa Troopa (stays on floors)'),
+                Enemy::get('Green Koopa Troopa (does not move)'),
+                Enemy::get('Hammer Bro'),
+                Enemy::get('Goomba'),
+                Enemy::get('Blooper'),
+                Enemy::get('Yellow Koopa Paratroopa (does not move)'),
+                Enemy::get('Green Koopa Paratroopa (leaping)'),
+                Enemy::get('Red Koopa Troopa (down then up)'),
+                Enemy::get('Green Koopa Troopa (left then right)'),
+                Enemy::get('Green Cheep-Cheep (slow)'),
+                Enemy::get('Red Cheep-Cheep (fast)'),
+            ],
+            Enemy::get('Green Koopa Troopa (left then right)') => [
+                Enemy::get('Green Koopa Troopa'),
+                Enemy::get('Red Koopa Troopa (walks off floors)'),
+                Enemy::get('Buzzy Beetle'),
+                Enemy::get('Red Koopa Troopa (stays on floors)'),
+                Enemy::get('Green Koopa Troopa (does not move)'),
+                Enemy::get('Hammer Bro'),
+                Enemy::get('Goomba'),
+                Enemy::get('Blooper'),
+                Enemy::get('Yellow Koopa Paratroopa (does not move)'),
+                Enemy::get('Green Koopa Paratroopa (leaping)'),
+                Enemy::get('Red Koopa Troopa (down then up)'),
+                Enemy::get('Green Koopa Troopa (left then right)'),
+                Enemy::get('Green Cheep-Cheep (slow)'),
+                Enemy::get('Red Cheep-Cheep (fast)'),
+            ],
+            Enemy::get('Lakitu') => [
+                Enemy::get('Lakitu'),
+            ],
+            Enemy::get('Red Flying Cheep-Cheep Generator') => [
+                Enemy::get('Red Flying Cheep-Cheep Generator'),
+            ],
+            Enemy::get('Bowser Fire Generator') => [
+                Enemy::get('Bowser Fire Generator')
+            ],
+            Enemy::get('Bullet Bill/Cheep-Cheep Generator') => [
+                Enemy::get('Bullet Bill/Cheep-Cheep Generator'),
+            ],
+            Enemy::get('Fire Bar (Clockwise)') => [
+                Enemy::get('Fire Bar (Clockwise)'),
+            ],
+            Enemy::get('Fast Fire Bar (Clockwise)') => [
+                Enemy::get('Fast Fire Bar (Clockwise)'),
+            ],
+            Enemy::get('Fire Bar (Counter-Clockwise)') => [
+                Enemy::get('Fire Bar (Counter-Clockwise)'),
+            ],
+            Enemy::get('Fast Fire Bar (Counter-Clockwise)') => [
+                Enemy::get('Fast Fire Bar (Counter-Clockwise)'),
+            ],
+            Enemy::get('Long Fire Bar (Clockwise)') => [
+                Enemy::get('Long Fire Bar (Clockwise)'),
+            ],
             Enemy::get('2 Goombas V10') => [
                 Enemy::get('2 Goombas V10'),
                 Enemy::get('3 Goombas V10'),
@@ -271,6 +354,12 @@ class EnemyPools
                 Enemy::get('2 Green Koopa Troopas V6'),
                 Enemy::get('3 Green Koopa Troopas V6'),
             ],
+            Enemy::get('Toad') => [
+                Enemy::get('Toad'),
+                Enemy::get('Lakitu'),
+                Enemy::get('Podoboo'),
+                Enemy::get('Hammer Bro'),
+            ]
         ];
 
         $this->toad_pool = [
