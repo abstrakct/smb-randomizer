@@ -25,7 +25,9 @@
               <b-card title="Options" style="max-width: 150rem;">
                 <b-row>
                   <b-col>
+                    <p><strong>Current flags: {{ currentFlags }}</strong></p>
                     <smbr-input id="seed" label="Seed number" v-model="selectedOptions.seed" type="number" placeholder="Input seed number here, or leave blank for random"></smbr-input>
+                    <smbr-input id="flags" label="Flags" @input="updateInputted" placeholder="Input flagstring here to set all options from a flag string"></smbr-input>
                     <smbr-select id="olw" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
@@ -42,8 +44,10 @@
                     <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
                     <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="oub" label="Shuffle destinations of pipes going to underground bonus areas" @input="updateInputted" storage-key="smbr.opt.shuffleundegroundbonus" v-model="selectedOptions.shuffleUndergroundBonus" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="orb" label="Randomize background and scenery (EXPERIMENTAL)" @input="updateInputted" storage-key="smbr.opt.randomizebackground" v-model="selectedOptions.randomizeBackground" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ofw" label="Randomize fireworks" @input="updateInputted" storage-key="smbr.opt.fireworks" v-model="selectedOptions.fireworks" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ovl" label="Generate verbose debug log" @input="updateInputted" storage-key="smbr.opt.verboselog" v-model="selectedOptions.verboseLog" checked-value="true" unchecked-value="false"></smbr-checkbox>
 
                     <p> </p>
 
@@ -94,7 +98,7 @@
 export default {
   props: ["version"],
 
-  // TODO: Store selected options in localNorage
+  // TODO: Store selected options in localForage
   // TODO: Disable certain options when certain options are selected!
   data() {
     return {
@@ -124,6 +128,7 @@ export default {
       defaultOptions: null,
       randomizerOptions: null,
       generateLog: true,
+      currentFlags: "mario",
 
       selectedOptions: {
         seed: null,
@@ -143,7 +148,9 @@ export default {
         warpZones: "",
         hiddenWarpDestinations: "",
         fireworks: "",
-        shuffleUndergroundBonus: ""
+        shuffleUndergroundBonus: "",
+        randomizeBackground: "",
+        verboseLog: ""
       }
     };
   },
@@ -195,6 +202,9 @@ export default {
 
     this.loadLocalOptions();
 
+    // Set flags input box
+    this.getFlags();
+
     // Look for stored ROM in localforage, and load it if found.
     localforage.getItem("smbr.rom.base.data").then(function(blob) {
       if (blob == null) {
@@ -242,7 +252,9 @@ export default {
           warpZones: this.selectedOptions.warpZones,
           hiddenWarpDestinations: this.selectedOptions.hiddenWarpDestinations,
           fireworks: this.selectedOptions.fireworks,
-          shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus
+          shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
+          randomizeBackground: this.selectedOptions.randomizeBackground,
+          verboseLog: this.selectedOptions.verboseLog
         })
         .then(response => {
           this.rando.fullpath = response.data.fullpath;
@@ -350,6 +362,7 @@ export default {
     updateInputted() {
       this.updateInfoMessage();
       this.checkSelectedOptions();
+      this.getFlags();
     },
 
     updateInfoMessage() {
@@ -453,6 +466,14 @@ export default {
         {
           key: "smbr.opt.shuffleundergroundbonus",
           val: this.defaultOptions.shuffleUndergroundBonus
+        },
+        {
+          key: "smbr.opt.randomizebackground",
+          val: this.defaultOptions.randomizeBackground
+        },
+        {
+          key: "smbr.opt.verboselog",
+          val: this.defaultOptions.verboseLog
         }
       ];
 
@@ -476,6 +497,31 @@ export default {
     onError(error) {
       this.error = true;
       this.errorMessage = error;
+    },
+
+    getFlags() {
+      // this.error = false;
+      axios
+        .post("/randomizer/flags/get", {
+          headers: { "content-type": "multipart/form-data" },
+          shuffleLevels: this.selectedOptions.shuffleLevels,
+          normalWorldLength: this.selectedOptions.normalWorldLength,
+          pipeTransitions: this.selectedOptions.pipeTransitions,
+          enemies: this.selectedOptions.enemies,
+          blocks: this.selectedOptions.blocks,
+          bowserAbilities: this.selectedOptions.bowserAbilities,
+          bowserHitpoints: this.selectedOptions.bowserHitpoints,
+          startingLives: this.selectedOptions.startingLives,
+          warpZones: this.selectedOptions.warpZones,
+          hiddenWarpDestinations: this.selectedOptions.hiddenWarpDestinations,
+          fireworks: this.selectedOptions.fireworks,
+          shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
+          randomizeBackground: this.selectedOptions.randomizeBackground,
+        })
+        .then(response => {
+          console.log(response);
+          this.currentFlags = response.data;
+        })
     }
   }
 };

@@ -562,7 +562,6 @@ class Randomizer
         $shuffledcastles = mt_shuffle($castles);
 
         if ($this->options['pipeTransitions'] == 'remove') {
-            $this->log->write("Removing pipe transitions\n");
             $levelindex = 0;
             $castleindex = 0;
             for ($w = 0; $w < 8; $w++) {
@@ -1393,7 +1392,7 @@ class Randomizer
     // I've pretty much stolen the entire algorithm from Fred.
     // Don't know if he got it from somewhere or came up with it himself.
     // It's pretty simple actually.
-    public function calculateFlagsNew($options = null)
+    public function calculateFlags($options = null)
     {
         $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         //$alphabet = 'MpQa8WoNsBiEd3VuRfCyT2tXgJeZnU4hI7kAlSwOj6DmPxFqL5bGrKv9HzY1c0';
@@ -1527,7 +1526,7 @@ class Randomizer
 
     public function makeFlags()
     {
-        $this->flags = $this->calculateFlagsNew($this->options);
+        $this->flags = $this->calculateFlags($this->options);
         // $this->betterFlagsToOptions($this->calculateFlagsNew($this->options), $this->options);
     }
 
