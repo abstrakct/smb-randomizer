@@ -1,6 +1,6 @@
 v0.9.3
-- Actually use the new flagstring algorithm
 - New and improved enemy randomization algorithm!
+- Actually use the new flagstring algorithm
 - Fixed some sanity checks which in turn fixed some bugs
 - Cleaned up the log file, moved many messages to the verbose log option
 - Zero out coin tallies for bonus 1ups - not sure if this is actually working
@@ -9,7 +9,7 @@ v0.9.3
 - EXPERIMENTAL: Added randomization of background and scenery
 
 v0.9.2
-- Started working on new and better flagstring generation algorithm stolen from Fred Coughlin - thanks!
+- Implemented new and better flagstring generation algorithm stolen from Fred Coughlin - thanks!
 - Added command line option to select normal or verbose log level
 - Seedhash will now be different if the log file was saved or not (useful for racing/tournament purposes)
 - Improved titlescreen a little bit
@@ -49,8 +49,8 @@ v0.8.4
 v0.8.3
 - Migrated to Laravel and Vue!
     - SMBR now has a frontend and a backend
-- Added "very hard" for player's starting lives option
-- Added warp pipe randomization
+- Added "very hard" for player's starting lives option (start with 1 life)
+- Added warp pipe destination randomization
 - Added warp pipe destination shuffle
 - Less code duplication
 - Various bug fixes
@@ -62,7 +62,7 @@ v0.8.2
 - Started the process of migrating to Laravel and Vue.js frameworks
 - Added randomization of player's starting lives
 - Improved Level class, level data and related things
-- Changed Toad x coordinate so randomized Toad doesn't kill or power down the player
+- Changed Toad x-coordinate so randomized Toad doesn't kill or power down the player
 - Big improvement to enemy data structures
 - Fixed enemy randomization weirdness
 - Changed location of seedhash on title screen
@@ -81,7 +81,7 @@ v0.7.8
 - Fixed typos
 
 v0.7.7
-- Added some jokes as the "win text"
+- Added some jokes as possible "win texts"
 
 v0.7.6
 - Some minor internal changes
@@ -119,4 +119,4 @@ v0.5
 - Fixed midway points
 
 v0.1
-Initial somewhat usable version
+Initial somewhat usable version with many bugs.
