@@ -65,23 +65,24 @@ BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! y
   spiny in enemy pools - if possible
 
 
+TODO: Investigate super speed koopa!
+TODO: Generators sometimes get weird, especially bowser fire. Could be because of more than one generator on screen at the same time. Investigate and fix!
+TODO: Randomize blocks in underground bonus areas.
 TODO: easy/hard warp zone gamble - easy = 2 good 1 bad - hard = 1 good 2 bad pipes
 TODO: Option to disable beating Bowser by removing the bridge under him? So that you must shoot Bowser with fireballs.....
 ----- Can lead to softlocks, will need to guarantee powerups in the castles.
 STARTED TODO: Better handling of seed flags
  - DONE: better algorithm, taken from Fred
  - we need a way to convert flag -> config options
- - we need a way to show flags in UI, changing when user changes settings
+ - DONE we need a way to show flags in UI, changing when user changes settings
  - fun: enter VANILLA to get vanilla game?
- - maybe figure out better algorithm
- - currently, 12 letters, vanilla could be: vanillamario
- -- and then we change those based on chosen settings?
+ - DONE maybe figure out better algorithm
+ NAH - currently, 12 letters, vanilla could be: vanillamario
+ NAH -- and then we change those based on chosen settings?
 TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
-TODO: randomize palette/background  ??
 TODO: inverted controls??
 TODO: randomized levels?? As in, not shuffled, but random! levels can appear multiple times!? nah......
 TODO: deceptive enemies? e.g. change graphics of enemies! (13555 in disasm, starts at offset 0x674e)
-TODO: randomly add swimming to levels?? investigate how swimming levels work!
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
 TODO: Option to leave 8-4 un-randomized (enemies, items)
 IDEA: Is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
@@ -150,21 +151,17 @@ DISCARDED IDEAS (AT LEAST FOR NOW)
 TODO: Deceptive warp pipes? Possible? Will need changing code. 
 TODO: Technically, could we warp to a level that is NOT level 1 of a world?
       - No, not without code changes/additions
-TODO: Shuffle scenery? nah... or?
 TODO: Disasm line 13475: it's possible/easy(?) to change the appearance of a powerup!!!    NOPE DOESN'T WORK (sprites get weird)
-
-*********************************************************
-PROBABLY DONE
-*********************************************************
-99% SURE IS FIXED: fix warp zones! warp zone pipes have strange behavior (pipes with no number take you to world -1)
-      not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
-      see line 1682 in disasm
+TODO: randomly add swimming to levels?? investigate how swimming levels work!
+      - Can't be done, afaik.
 
 *********************************************************
 DONE
 *********************************************************
 DONE - only power ups are random (flower, star, 1 up)
 DONE - add coins to that pool
+DONE-ish: Shuffle scenery? nah... or?
+DONE-ish: randomize palette/background  ??
 DONE: Randomize Bowser's abilities? like hammers etc.?
       - we could change the code which selects bowser's abilities based on which world you're in
 DONE: Randomize Bowser's hitpoints? For when you kill him with fire.
@@ -185,6 +182,10 @@ DONE: Option to only randomize clothes for mario/luigi, for more reasonable colo
 FIXED: shuffle levels with normal world order = infinite loop now (after adding 8-4 to sanity checks)
 FIXED: 6-2 vine to cloud area goes to underwater area (at least in seed 6754485723-MNCLNESTQVEY )
 FIXED: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQVE 
+FIXED: fix warp zones! warp zone pipes have strange behavior (pipes with no number take you to world -1)
+      not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
+      see line 1682 in disasm
+
 
 
 

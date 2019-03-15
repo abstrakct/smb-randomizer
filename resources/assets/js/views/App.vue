@@ -5,7 +5,7 @@
         <b-col></b-col>
         <b-col cols="8">
           <b-card :title="'Super Mario Bros. Randomizer v' + this.version" style="max-width: 150rem;">
-            <b-alert :show="true" variant="info">NOTE: this software is still under development, and currently in a beta/testing stage (at best)! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
+            <b-alert dismissible :show="true" variant="info">NOTE: this software is still under development, and currently in a beta/testing stage (at best)! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
             <b-alert dismissible fade :show="error" variant="danger">
               Error: {{ this.errorMessage }}
             </b-alert>
@@ -27,7 +27,7 @@
                   <b-col>
                     <p><strong>Current flags: {{ currentFlags }}</strong></p>
                     <smbr-input id="seed" label="Seed number" v-model="selectedOptions.seed" type="number" placeholder="Input seed number here, or leave blank for random"></smbr-input>
-                    <smbr-input id="flags" label="Flags" @input="updateInputted" placeholder="Input flagstring here to set all options from a flag string"></smbr-input>
+                    <smbr-input id="flags" label="Flags" @input="updateInputted" placeholder="(NOT IMPLEMENTED) Input flagstring here to set all options from a flag string"></smbr-input>
                     <smbr-select id="olw" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
@@ -414,6 +414,11 @@ export default {
         this.error = true;
         this.errorMessage +=
           "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'";
+      }
+
+      if (this.selectedOptions.randomizeBackground == "true") {
+        this.info = true;
+          this.infoMessage += "<p><b>Randomize background and scenery</b> is an UNFINISHED, EXPERIMENTAL FEATURE and NOT guaranteed to give good results! Use at your own risk!</p>"
       }
     },
 

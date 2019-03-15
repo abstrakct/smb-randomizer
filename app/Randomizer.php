@@ -262,16 +262,16 @@ class Randomizer
                         $this->log->writeVerbose("\t\tChanged enemy to " . Enemy::getName($new_enemy) . "\n");
 
                         if ($new_enemy == Enemy::get('Green Cheep-Cheep (slow)') || $new_enemy == Enemy::get('Red Cheep-Cheep (fast)')) {
-                            $yyy = mt_rand(0, 0xD);
+                            $yyy = mt_rand(0, 0xB);
                             $pos = ($x << 4) | $yyy;
                             $game->addData($offset + $i, pack('C*', $pos));
-                            $this->log->writeVerbose("\t\t\tChanged Y position to: $yyy\n");
+                            $this->log->writeVerbose("\t\t\tChanged Y position to $yyy\n");
                         }
 
                         if ($o == Enemy::get('Toad') && $new_enemy != Enemy::get('Toad')) {
-                            $new_coord = 0xc8;
+                            $new_coord = $this->enemy_pools->toad_new_coords[$new_enemy];
                             $game->addData($offset + $i, pack('C*', $new_coord));
-                            $this->log->writeVerbose("\t\t\tChanged position to 0xc8\n");
+                            $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
                         }
                     }
                 }
@@ -1615,11 +1615,11 @@ class Randomizer
         }
 
         // Randomize Enemies
-        if ($this->options['enemies'] == "randomizeFull") {
+        if ($this->options['enemies'] == "randomizeChaos") {
             $this->randomizeEnemies($game, false);
-        } else if ($this->options['enemies'] == "randomizePools") {
+        } else if ($this->options['enemies'] == "randomizeOld") {
             $this->randomizeEnemies($game, true);
-        } else if ($this->options['enemies'] == "randomizeNew") {
+        } else if ($this->options['enemies'] == "randomizeControlled") {
             $this->newRandomizeEnemies($game);
         } else if ($this->options['enemies'] == "randomizeNone") {
             $this->log->write("No randomization of enemies!\n");

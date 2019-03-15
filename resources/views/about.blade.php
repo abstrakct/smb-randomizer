@@ -31,6 +31,8 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <b>Seed</b> is the seed for the RNG. Leave empty to get a random seed, or input a number you want
                         to use as the seed.
                         <p></p>
+                        <b>Flags</b> - here you can input a flag string to get all options set based on that flag string.
+                        <p></p>
                         <b>Shuffle Levels:</b><br>
                         <b>Shuffle All Levels</b> shuffles, as you might have guessed, all levels. 8-4 will always be the
                         last level.<br>
@@ -74,8 +76,9 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         pipes lead to a valid world (no -1 world shenanigans).<br>
                         <p></p>
                         <b>Enemy Randomization:</b><br>
-                        <b>Full</b> randomizes all enemies, within reasonable limits.<br>
-                        <b>Pools</b> randomizes enemies within smaller pools of similar/related enemies.
+                        <b>Controlled</b> randomizes all enemies, in a fashion where each enemy can only become a subset of enemies, thus making the randomization be within somewhat controlled limits.<br>
+                        <b>Chaos</b> randomizes all enemies, within reasonable limits. But still: almost anything goes here, and things can get very difficult/weird/fun!<br>
+                        <b>Old</b> randomizes enemies within smaller pools of similar/related enemies. Old algorithm.
                         <br>
                         <b>No enemy randomization</b> means enemies are NOT randomized in any way.
                         <br>
@@ -113,18 +116,18 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <b>Starting lives</b> randomizes how many lives the player starts with:<br>
                         <b>Normal</b> leaves lives unchanged at 3.<br>
                         <b>Easy</b> randomizes starting lives between 6-10.<br>
-                        <b>Medium</b> randomizes starting lives between 3-6.
-                        <br>
-                        <b>Hard</b> rndomizes starting lives between 1-3.
-                        <br>
+                        <b>Medium</b> randomizes starting lives between 3-6. <br>
+                        <b>Hard</b> rndomizes starting lives between 1-3. <br>
                         <b>Random</b> randomizes starting lives between 1 and 19.
                         <p></p>
                         <b>Fireworks</b> randomizes when fireworks appear after beating a level, and how many. The randomizer
                         will select 3 different digits, and if the last digit of your timer is one of those digits when you
                         jump on the flagpole, you will get that many fireworks! Are you ready to win or lose because you
                         or your opponent had to sit through 9 fireworks explosions?<br>
-                        <br>
                         <p></p>
+                        <b>Underground Bonus Areas</b> - you can shuffle the pipes that take you to an underground bonus area! That means: which underground area you end up in is shuffled around. The pipes that take you there will still be in their normal position.<br>
+                        <p></p>
+                        <b>EXPERIMENTAL FEATURE: Randomize background and scenery</b> - this will change the background and scenery of each level. Results can get VERY strange, and there is very little sanity checking for this feature as of now, so there are no guarantees if you select this one. For now it's NOT recommended for races etc.
 
 
                         <p></p>
@@ -135,29 +138,29 @@ although I haven't personally come across an impossible/unwinable seed at this p
                             changes of in-game texts.</li>
                         <li>On the title screen, a "seedhash" is shown above the text "(C) 1985 Nintendo" is normally shown.
                             In a race setting, if all players have the same seedhash it guarantees that the ROMs were generated
-                            with the same seed, same settings, same vanilla ROM and same version of the randomizer.</li>
+                            with the same seed, same settings/flags, same vanilla ROM and same version of the randomizer. The seedhash will also reflect whether or not a spoiler log was generated.</li>
                         <li>Random Colors for Mario/Luigi is totally random, results can be anything from super cool to very
                             weird.
                         </li>
                         <li>Mosts texts are now randomized. Like color schemes they are randomized independently of anything
                             related to gameplay. An option to don't do this will be added.</li>
-                        <li>Underground bonus areas (when you go down a pipe) are not shuffled, but could be.</li>
+                        <del><li>Underground bonus areas (when you go down a pipe) are not shuffled, but could be.</li></del>
                         <p></p>
                         <h2>Bugs / Known Limitations</h2>
                         <li>The title screen will show whatever is set as the first level, and thus it technically spoils what
                             the first level is. There's probably no easy fix for this, but it's possible to change it so
                             that Mario doesn't start autowalking, so that will be added in a future version.</li>
-                        <li>Warp Pipes (if left unchanged) can be wonky, depending on which world they show up in. The ones that
+                        <del><li>Warp Pipes (if left unchanged) can be wonky, depending on which world they show up in. The ones that
                             have a number above them work correctly. A pipe in a Warp Zone without a number above it will
-                            (probably) take you to world -1 and you'll be stuck there. A fix is coming for this.</li>
-                        <li>Randomized enemies sometimes get stuck inside blocks/walls/pipes. This will be fixed.</li>
-                        <li>The enemy randomization algorithm is not very good at this point, and will be improved!</li>
-                        <li>Sometimes (very rarely) you can get invisible enemies - they are probably hiding behing scenery.
-                            This should be fixed, if it still happens.</li>
+                            (probably) take you to world -1 and you'll be stuck there. A fix is coming for this.</li></del>
+                        <li>Randomized enemies sometimes (not often) get stuck inside blocks/walls/pipes. This will be fixed.</li>
+                        <del><li>The enemy randomization algorithm is not very good at this point, and will be improved!</li></del>
+                        <del><li>Sometimes (very rarely) you can get invisible enemies - they are probably hiding behing scenery.
+                            This should be fixed, if it still happens.</li></del>
                         <li>When "Block Shuffle" is set to <i>All</i> a small number of blocks seem to disappear completely.
                             I looking into why.</li>
                         <li>Trampolines sometimes disappear. If you see that happen, DO NOT jump onto where the trampoline was
-                            - you will get stuck if yo do! Instead, look for an alternate way to progress.</li>
+                            - you will get stuck if yo do! Instead, look for an alternate way to progress. UPDATE: It's been a long time since I've seen this happen, it might be fixed now as it probably was a side-effect of something else.</li>
                         <li>Shuffle Levels + Normal World Length + Keep Pipe Transitions = does not work! Can probably be fixed,
                             if there is a high demand for this particular combination...
                         </li>
@@ -165,7 +168,7 @@ although I haven't personally come across an impossible/unwinable seed at this p
                             No matter where you die on a level, you will respawn at the beginning of the level! This is due
                             to limitations in the original game code, and a fix would require some serious romhacking.</li>
                         <li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too
-                            many other enemies on screen. This must be fixed.</li>
+                            many other enemies on screen. This must be fixed. UPDATE: I haven't seen this happen in a long time, it might be fixed.</li>
                         <p></p>
                         <h2>TODO / Upcoming Features / Ideas</h2>
                         <del><li>Require user to upload a ROM instead of providing one</li></del>
@@ -175,7 +178,7 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <del><li>Add option to not generate spoiler/log.</li></del>
                         <li>Exclude certain blocks from randomization.</li>
                         <li>Improve block randomization algorithm.</li>
-                        <li>Improve enemy randomization algorithm.</li>
+                        <li>MOSTLY DONE: Improve enemy randomization algorithm.</li>
                         <li>Be more careful about enemy randomization, to avoid despawning a.o. platforms because of too many
                             sprites onscreen. That will probably solve the problem of disappearing trampolines too.
                         </li>
@@ -191,8 +194,7 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <li>Add option to randomize what area a pipe takes you to</li>
                         <li>More error checking</li>
                         <li>[quite done] Improve backend</li>
-                        <li>Add option to only randomize clothes for mario/luigi, for more reasonable random colors (hopefully).</li>
-                        <li>Fix color schemes</li>
+                        <del><li>Add option to only randomize clothes for mario/luigi, for more reasonable random colors (hopefully).</li></del>
                         <li>Custom color schemes!</li>
                         <li>More color schemes!</li>
                         <li>Add option to include continous Cheep-Cheeps/Bullet Bills in randomization pools.</li>

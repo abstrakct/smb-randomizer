@@ -26,7 +26,7 @@ class Randomize extends Command
         . '{--pipe-transitions=remove : keep or remove pipe transitions}'
         . '{--shuffle-levels=all : level randomization}'
         . '{--normal-world-length=false : world length options}'
-        . '{--enemies=randomizeFull : enemy randomization}'
+        . '{--enemies=randomizeControlled : enemy randomization}'
         . '{--blocks=randomizeAll : block randomization}'
         . '{--bowser-abilities=true : randomize Bowser abilities}'
         . '{--bowser-hitpoints=random : randomize Bowser hitpoints}'

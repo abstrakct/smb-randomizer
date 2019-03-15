@@ -7,7 +7,7 @@ class EnemyPools
     public $full_enemy_pool;
     public $reasonable_enemy_pool;
     public $toad_pool, $generator_pool, $firebar_pool, $koopa_pool, $goomba_pool, $lakitu_pool, $dont_use;
-    public $new_pools;
+    public $new_pools, $toad_new_coords;
     public $dont_randomize;
 
     public function __construct()
@@ -193,6 +193,7 @@ class EnemyPools
                 Enemy::get('Green Cheep-Cheep (slow)'),
                 Enemy::get('Red Cheep-Cheep (fast)'),
                 Enemy::get('Hammer Bro'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('Bullet Bill') => [
                 Enemy::get('Bullet Bill'),
@@ -218,15 +219,22 @@ class EnemyPools
                 Enemy::get('Green Cheep-Cheep (slow)'),
                 Enemy::get('Red Cheep-Cheep (fast)'),
                 Enemy::get('Hammer Bro'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('Red Cheep-Cheep (fast)') => [
                 Enemy::get('Blooper'),
                 Enemy::get('Green Cheep-Cheep (slow)'),
                 Enemy::get('Red Cheep-Cheep (fast)'),
                 Enemy::get('Hammer Bro'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('Podoboo') => [
                 Enemy::get('Podoboo'),
+                Enemy::get('Fire Bar (Clockwise)'),
+                Enemy::get('Fast Fire Bar (Clockwise)'),
+                Enemy::get('Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Fast Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Long Fire Bar (Clockwise)'),
             ],
             Enemy::get('Pirhana Plant') => [
                 Enemy::get('Pirhana Plant'),
@@ -281,30 +289,64 @@ class EnemyPools
             ],
             Enemy::get('Lakitu') => [
                 Enemy::get('Lakitu'),
+                Enemy::get('Red Flying Cheep-Cheep Generator'),
+                Enemy::get('Bowser Fire Generator'),
+                Enemy::get('Bullet Bill/Cheep-Cheep Generator'),
             ],
             Enemy::get('Red Flying Cheep-Cheep Generator') => [
                 Enemy::get('Red Flying Cheep-Cheep Generator'),
+                Enemy::get('Bullet Bill/Cheep-Cheep Generator'),
+                Enemy::get('Bowser Fire Generator'),
             ],
             Enemy::get('Bowser Fire Generator') => [
-                Enemy::get('Bowser Fire Generator')
+                Enemy::get('Bowser Fire Generator'),
+                Enemy::get('Red Flying Cheep-Cheep Generator'),
+                Enemy::get('Bullet Bill/Cheep-Cheep Generator'),
             ],
             Enemy::get('Bullet Bill/Cheep-Cheep Generator') => [
                 Enemy::get('Bullet Bill/Cheep-Cheep Generator'),
+                Enemy::get('Red Flying Cheep-Cheep Generator'),
+                Enemy::get('Bowser Fire Generator'),
             ],
             Enemy::get('Fire Bar (Clockwise)') => [
                 Enemy::get('Fire Bar (Clockwise)'),
+                Enemy::get('Fast Fire Bar (Clockwise)'),
+                Enemy::get('Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Fast Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Long Fire Bar (Clockwise)'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('Fast Fire Bar (Clockwise)') => [
+                Enemy::get('Fire Bar (Clockwise)'),
                 Enemy::get('Fast Fire Bar (Clockwise)'),
+                Enemy::get('Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Fast Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Long Fire Bar (Clockwise)'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('Fire Bar (Counter-Clockwise)') => [
+                Enemy::get('Fire Bar (Clockwise)'),
+                Enemy::get('Fast Fire Bar (Clockwise)'),
                 Enemy::get('Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Fast Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Long Fire Bar (Clockwise)'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('Fast Fire Bar (Counter-Clockwise)') => [
+                Enemy::get('Fire Bar (Clockwise)'),
+                Enemy::get('Fast Fire Bar (Clockwise)'),
+                Enemy::get('Fire Bar (Counter-Clockwise)'),
                 Enemy::get('Fast Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Long Fire Bar (Clockwise)'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('Long Fire Bar (Clockwise)') => [
+                Enemy::get('Fire Bar (Clockwise)'),
+                Enemy::get('Fast Fire Bar (Clockwise)'),
+                Enemy::get('Fire Bar (Counter-Clockwise)'),
+                Enemy::get('Fast Fire Bar (Counter-Clockwise)'),
                 Enemy::get('Long Fire Bar (Clockwise)'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('2 Goombas V10') => [
                 Enemy::get('2 Goombas V10'),
@@ -315,8 +357,8 @@ class EnemyPools
             Enemy::get('3 Goombas V10') => [
                 Enemy::get('2 Goombas V10'),
                 Enemy::get('3 Goombas V10'),
-                Enemy::get('3 Green Koopa Troopas V10'),
                 Enemy::get('2 Green Koopa Troopas V10'),
+                Enemy::get('3 Green Koopa Troopas V10'),
             ],
             Enemy::get('2 Goombas V6') => [
                 Enemy::get('2 Goombas V6'),
@@ -333,14 +375,14 @@ class EnemyPools
             Enemy::get('2 Green Koopa Troopas V10') => [
                 Enemy::get('2 Goombas V10'),
                 Enemy::get('3 Goombas V10'),
-                Enemy::get('3 Green Koopa Troopas V10'),
                 Enemy::get('2 Green Koopa Troopas V10'),
+                Enemy::get('3 Green Koopa Troopas V10'),
             ],
             Enemy::get('3 Green Koopa Troopas V10') => [
                 Enemy::get('2 Goombas V10'),
                 Enemy::get('3 Goombas V10'),
-                Enemy::get('3 Green Koopa Troopas V10'),
                 Enemy::get('2 Green Koopa Troopas V10'),
+                Enemy::get('3 Green Koopa Troopas V10'),
             ],
             Enemy::get('2 Green Koopa Troopas V6') => [
                 Enemy::get('2 Goombas V6'),
@@ -354,12 +396,28 @@ class EnemyPools
                 Enemy::get('2 Green Koopa Troopas V6'),
                 Enemy::get('3 Green Koopa Troopas V6'),
             ],
+            // TODO: add more flying koopas with correct coordinates
+            // TODO: see if Bowser works as Toad LOL
             Enemy::get('Toad') => [
                 Enemy::get('Toad'),
                 Enemy::get('Lakitu'),
                 Enemy::get('Podoboo'),
                 Enemy::get('Hammer Bro'),
+                Enemy::get('Pirhana Plant'),
+                Enemy::get('Green Cheep-Cheep (slow)'),
+                Enemy::get('Red Cheep-Cheep (fast)'),
+                Enemy::get('Yellow Koopa Paratroopa (does not move)'),
             ]
+        ];
+
+        $this->toad_new_coords = [
+            Enemy::get('Lakitu') => 0xC8,
+            Enemy::get('Podoboo') => 0xC8,
+            Enemy::get('Hammer Bro') => 0xC8,
+            Enemy::get('Pirhana Plant') => 0x9B,
+            Enemy::get('Green Cheep-Cheep (slow)') => 0x98,
+            Enemy::get('Red Cheep-Cheep (fast)') => 0x98,
+            Enemy::get('Yellow Koopa Paratroopa (does not move)') => 0x88,
         ];
 
         $this->toad_pool = [
