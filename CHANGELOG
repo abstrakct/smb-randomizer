@@ -47,7 +47,7 @@ v0.8.4
 - Added colorschemes for Mario/Luigi
 
 v0.8.3
-- Migrated to Laravel
+- Migrated to Laravel and Vue!
     - SMBR now has a frontend and a backend
 - Added "very hard" for player's starting lives option
 - Added warp pipe randomization
@@ -59,13 +59,64 @@ v0.8.3
 - Updated flagstring
 
 v0.8.2
+- Started the process of migrating to Laravel and Vue.js frameworks
 - Added randomization of player's starting lives
 - Improved Level class, level data and related things
 - Changed Toad x coordinate so randomized Toad doesn't kill or power down the player
 - Big improvement to enemy data structures
 - Fixed enemy randomization weirdness
 - Changed location of seedhash on title screen
+- Fixed bug related to midway points
 - Other minor changes
 
 v0.8
+- New option: shuffle world order
+- Changed RANDO to HASH on title screen
+- Web interface updates
+
+v0.7.8
+- Updated web interface
+- Added a "pretty print" for world layout in logfile
+- The user must now provide their own vanilla ROM file
+- Fixed typos
+
+v0.7.7
+- Added some jokes as the "win text"
+
+v0.7.6
+- Some minor internal changes
+- Web interface improvements
+- Added randomization of more texts
+
+v0.7.5 (why the big jump in version number? I don't know...)
+- Added randomization of Bowser's hitpoints and abilities
+
+v0.6.6
+- Added some simple text randomizations
+
+v0.6.5
+- Better data structures behind the scenes
+- Added dumping game data as JSON in the log
+
+v0.6.1
+- Better internal World/Level data structures 
+- Web interface improvements
+
+v0.6
+- Added a very simple web interface
+- Fixes of various kinds
+- Added randomizing enemies in pools
+
+v0.5
+- Added level shuffling, with or without keeping pipe transitions intact
+- Added basic enemy randomization
+- Added colorschemes
+- Added flagstring
+- Added seedhash, and it gets shown on titlescreen
+- Added several modes for randomizing blocks / powerups
+- Added option to input seed number
+- Fixed pipes
+- Fixed midway points
+
+v0.1
 Initial somewhat usable version
