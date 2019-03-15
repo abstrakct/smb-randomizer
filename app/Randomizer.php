@@ -240,7 +240,6 @@ class Randomizer
 
                     $this->log->writeVerbose("\tFound enemy: " . Enemy::getName($o) . "\n");
 
-
                     /* Some enemies can't be randomized, so let's check for those */
                     foreach ($this->enemy_pools->dont_randomize as $nope) {
                         if ($o == $nope) {
@@ -252,7 +251,7 @@ class Randomizer
                         $new_candidates = $this->enemy_pools->new_pools[$o];
 
                         if (count($new_candidates) == 0) {
-                            $this->log->write("Error: list of new candidates for enemy is empty!\n");
+                            $this->log->write("ERROR: list of new candidates for enemy is empty!\n");
                             break;
                         }
 
@@ -262,12 +261,17 @@ class Randomizer
                         $game->addData($offset + $i + 1, pack('C*', $new_data));
                         $this->log->writeVerbose("\t\tChanged enemy to " . Enemy::getName($new_enemy) . "\n");
 
-                        // TODO: fix Y position of certain enemies, lakitu etc
                         if ($new_enemy == Enemy::get('Green Cheep-Cheep (slow)') || $new_enemy == Enemy::get('Red Cheep-Cheep (fast)')) {
                             $yyy = mt_rand(0, 0xD);
                             $pos = ($x << 4) | $yyy;
                             $game->addData($offset + $i, pack('C*', $pos));
                             $this->log->writeVerbose("\t\t\tChanged Y position to: $yyy\n");
+                        }
+
+                        if ($o == Enemy::get('Toad') && $new_enemy != Enemy::get('Toad')) {
+                            $new_coord = 0xc8;
+                            $game->addData($offset + $i, pack('C*', $new_coord));
+                            $this->log->writeVerbose("\t\t\tChanged position to 0xc8\n");
                         }
                     }
                 }
@@ -1391,7 +1395,7 @@ class Randomizer
     // It's pretty simple actually.
     public function calculateFlagsNew($options = null)
     {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz';
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         //$alphabet = 'MpQa8WoNsBiEd3VuRfCyT2tXgJeZnU4hI7kAlSwOj6DmPxFqL5bGrKv9HzY1c0';
         $flag_string = '';
         $option_values = [
@@ -1436,7 +1440,7 @@ class Randomizer
 
     public function betterFlagsToOptions($flag_string, $options)
     {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz';
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         $alphabet_length = strlen($alphabet);
         $flag_number = 0;
         $option_values = [
