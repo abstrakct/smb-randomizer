@@ -1038,20 +1038,7 @@ class Randomizer
 
     /*
      * Disable warp pipes! Makes the pipes not-enterable, players should use at own risk.
-     * 
-     * offset / new value
-     * 1-2
-     * 2cdc   / 72
-     * 2cde   / 72
-     * 2ce0   / 72
-     * 4-2
-     * 2d81   / 72
-     * 
-     * 2a03   / 72
-     * 2a05
-     * 2a07
      */
-
     public function disableWarpPipes(&$game)
     {
         $game->addData(0x2cdc, pack('C*', 0x72));

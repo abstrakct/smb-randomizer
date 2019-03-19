@@ -1,5 +1,8 @@
+v0.9.4
+
 v0.9.3
 - New and improved enemy randomization algorithm!
+- Added option to disable warp pipes! Use at own risk!
 - Actually use the new flagstring algorithm
 - Fixed some sanity checks which in turn fixed some bugs
 - Cleaned up the log file, moved many messages to the verbose log option
