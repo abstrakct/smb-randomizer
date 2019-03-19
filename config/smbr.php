@@ -129,6 +129,7 @@ return [
                 'allbad' => 'All bad: All warp pipes will be bad (they will take you to start of current world or earlier)',
                 // TODO: easy/hard gamble modes
                 'gamble' => 'Gamble: Warp destinations will be hidden, 2 pipes are good, 1 pipe is bad',
+                'disable' => 'Disable: Warp pipes will not work at all!',
             ],
             'hiddenWarpDestinations' => [
                 'true' => 'Warp Zone destination worlds will not be written above the warp pipes',

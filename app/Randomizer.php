@@ -1036,6 +1036,57 @@ class Randomizer
         $game->addData(StartingLivesOffset, pack('C*', $new_lives - 1));
     }
 
+    /*
+     * Disable warp pipes! Makes the pipes not-enterable, players should use at own risk.
+     * 
+     * offset / new value
+     * 1-2
+     * 2cdc   / 72
+     * 2cde   / 72
+     * 2ce0   / 72
+     * 4-2
+     * 2d81   / 72
+     * 
+     * 2a03   / 72
+     * 2a05
+     * 2a07
+     */
+
+    public function disableWarpPipes(&$game)
+    {
+        $game->addData(0x2cdc, pack('C*', 0x72));
+        $game->addData(0x2cde, pack('C*', 0x72));
+        $game->addData(0x2ce0, pack('C*', 0x72));
+        $game->addData(0x2d81, pack('C*', 0x72));
+        $game->addData(0x2a03, pack('C*', 0x72));
+        $game->addData(0x2a05, pack('C*', 0x72));
+        $game->addData(0x2a07, pack('C*', 0x72));
+        $this->removeWarpZoneLabels($game);
+
+        $warp_text_variations = [
+            "WELCOME TO NOPE ZONE!",
+            "   WELCOME TO HELL   ",
+            "WELCOME TO SOFT LOCK!",
+            " WELCOME TO TIMEOUT! ",
+            "OOOOOOOOOOOOOOOOOOPS!",
+            "    OH        NO     ",
+            "       SORRY!        ",
+            "NO WARP SOUP FOR YOU!",
+            "NO WARP ZONE FOR YOU!",
+            "   NO WARP FOR YOU!  ",
+            "     YOU DINGUS!     ",
+            "     BREAK ROOM!     ",
+            "TAKE A DEEP BREATH...",
+            "    OUT OF ORDER     ",
+            " UNDER CONSTRUCTION  ",
+            "   PLUMBER NEEDED    ",
+            "ERROR- WARP NOT FOUND",
+        ];
+        $text = $warp_text_variations[mt_rand(0, count($warp_text_variations) - 1)];
+        // $text = $warp_text_variations[16];
+        $this->setText($game, "Warp", $text);
+    }
+
     public function randomizeWarpZones(&$game)
     {
         $offset = WarpZonesOffset;
@@ -1369,6 +1420,7 @@ class Randomizer
             "NewQuest" => [0xdcf, 0xded], // WE PRESENT YOU A NEW QUEST.
             "WorldSelect" => [0xdee, 0xdfe], // PUSH BUTTON B
             "WorldSelect2" => [0xdff, 0xe13], // TO SELECT A WORLD
+            "Warp" => [0x7d0, 0x7e7], // WELCOME TO WARP ZONE!
         ];
 
         $offset = $messages[$text][0] + 3;
@@ -1699,7 +1751,11 @@ class Randomizer
 
         // Randomize warp zones
         if ($this->options['warpZones'] != "normal") {
-            $this->randomizeWarpZones($game);
+            if ($this->options['warpZones'] == "disable") {
+                $this->disableWarpPipes($game);
+            } else {
+                $this->randomizeWarpZones($game);
+            }
         }
 
         // Remove warp zone destination text if selected
