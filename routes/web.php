@@ -21,3 +21,4 @@ Route::get('randomizer/options/default', 'RandomizerController@defaultoptions');
 
 Route::post('randomizer/generate', 'RandomizerController@generate');
 Route::post('randomizer/flags/get', 'RandomizerController@getflags');
+Route::post('randomizer/flags/set', 'RandomizerController@setOptionsFromFlagstring');

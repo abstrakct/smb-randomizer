@@ -33,6 +33,7 @@ export default {
         }.bind(this)
       );
     }
+    // EventBus.$on("update-value", this.doUpdate);
   },
 
   methods: {
@@ -43,7 +44,20 @@ export default {
       this.$emit("input", this.value);
     },
 
-    changeSelected(value) {}
+    changeSelected(value) {},
+
+    // doUpdate() {
+    //   if (this.storageKey != null) {
+    //     // If we have a storage key, look for option stored in localforage
+    //     localforage.getItem(this.storageKey).then(
+    //       function(localvalue) {
+    //         if (localvalue != null) {
+    //           this.value = localvalue;
+    //         }
+    //       }.bind(this)
+    //     );
+    //   }
+    // }
   }
 };
 </script>

@@ -27,7 +27,8 @@
                   <b-col>
                     <p><strong>Current flags: {{ currentFlags }}</strong></p>
                     <smbr-input id="seed" label="Seed number" v-model="selectedOptions.seed" type="number" placeholder="Input seed number here, or leave blank for random"></smbr-input>
-                    <smbr-input id="flags" label="Flags" @input="updateInputted" placeholder="(NOT IMPLEMENTED) Input flagstring here to set all options from a flag string"></smbr-input>
+                    <smbr-input id="flags" label="Flags" v-model="inputFlags" type="string" @input="updateInputted" placeholder="(NOT IMPLEMENTED) Input flagstring here to set all options from a flag string"></smbr-input>
+                    <b-button @click="applyFlagstring">Apply flagstring</b-button>
                     <smbr-select id="olw" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
@@ -83,6 +84,7 @@
           </b-alert>
           <b-card title="Information">
             <b-button variant="info" href="/about">About/Help</b-button>
+            <!-- <b-button @click="loadDefaultsButton">Load default options</b-button> -->
             <p></p>
             <b-alert dismissible :show="info" variant="info" v-html="infoMessage">
               {{ infoMessage }}
@@ -124,11 +126,12 @@ export default {
       infoMessage: "",
       // options
       optionsLoaded: false,
-      defaultLoaded: false,
+      defaultLoaded: false,  // apparently not used?
       defaultOptions: null,
       randomizerOptions: null,
       generateLog: true,
-      currentFlags: "mario",
+      currentFlags: "",
+      inputFlags: "",
 
       selectedOptions: {
         seed: null,
@@ -497,6 +500,24 @@ export default {
       this.selectedOptions = Object.assign({}, this.defaultOptions);
     },
 
+    applyFlagstring() {
+      axios
+        .post("/randomizer/flags/set", { flagstring: this.inputFlags })
+        .then(response => {
+          console.log(response);
+          this.selectedOptions.randomizeBackground = true;
+        });
+    },
+
+/* 
+ * this isn't working....
+    loadDefaultsButton() {
+      this.storeDefaultsLocally();
+      EventBus.$emit('update-value');
+      this.updateInputted();
+    },
+    */
+
     loadLocalOptions() {},
 
     onError(error) {
@@ -526,7 +547,7 @@ export default {
         .then(response => {
           console.log(response);
           this.currentFlags = response.data;
-        })
+        });
     }
   }
 };

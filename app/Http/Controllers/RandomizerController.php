@@ -124,4 +124,11 @@ class RandomizerController extends Controller
         $rando = new Randomizer(0, $options, null);
         return $rando->calculateFlags($options);
     }
+
+    public function setOptionsFromFlagstring(Request $request)
+    {
+        $rando = new Randomizer(0);
+        $rando->setOptionsFromFlagstring($request->input('flagstring'));
+        return $rando->getOptions();
+    }
 }

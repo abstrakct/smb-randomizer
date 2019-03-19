@@ -27,7 +27,7 @@ class Randomize extends Command
         . '{--shuffle-levels=all : level randomization}'
         . '{--normal-world-length=false : world length options}'
         . '{--enemies=randomizeControlled : enemy randomization}'
-        . '{--blocks=randomizeAll : block randomization}'
+        . '{--blocks=randomizeGrouped : block randomization}'
         . '{--bowser-abilities=true : randomize Bowser abilities}'
         . '{--bowser-hitpoints=random : randomize Bowser hitpoints}'
         . '{--starting-lives=random : randomize player starting lives}'

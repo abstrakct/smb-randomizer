@@ -117,6 +117,21 @@ class Randomizer
         return $this->rng_seed;
     }
 
+    public function setOptions($opt)
+    {
+        $this->options = $opt;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function setOptionsFromFlagstring($flag_string)
+    {
+        $this->flagstringToOptions($flag_string, $this->options);
+    }
+
     public function setMarioColorScheme(string $colorscheme, Game &$game)
     {
         $this->log->write("Mario Color Scheme: " . $colorscheme . "\n");
@@ -212,10 +227,16 @@ class Randomizer
         }
     }
 
+    /*
+     * NOTES:
+     * Experiment has shown that cheep cheep generator and bowser fire generator shouldn't coexist in the same level.
+     */
     public function newRandomizeEnemiesOnLevel($offset, &$game)
     {
         $data = $this->rom->read($offset, 100);
         $end = 0;
+        $level_has_cheepcheepgenerator = false;
+
         foreach ($data as $byte) {
             $end++;
             if ($byte == 0xFF) {
@@ -255,12 +276,27 @@ class Randomizer
                             break;
                         }
 
-                        $new_enemy = $new_candidates[mt_rand(0, count($new_candidates) - 1)];
+                        $acceptable = false;
+
+                        while (!$acceptable) {
+                            $acceptable = true;
+                            $new_enemy = $new_candidates[mt_rand(0, count($new_candidates) - 1)];
+
+                            if ($new_enemy == Enemy::get('Red Flying Cheep-Cheep Generator')) {
+                                $level_has_cheepcheepgenerator = true;
+                            }
+
+                            if ($level_has_cheepcheepgenerator && $new_enemy == Enemy::get('Bowser Fire Generator')) {
+                                $acceptable = false;
+                                $this->log->writeVerbose("UNACCEPTABLE BOWSER FIRE GENERATOR GENERATED!!!\n");
+                            }
+                        }
 
                         $new_data = (($p | $h) | $new_enemy);
                         $game->addData($offset + $i + 1, pack('C*', $new_data));
                         $this->log->writeVerbose("\t\tChanged enemy to " . Enemy::getName($new_enemy) . "\n");
 
+                        // Fix coordinates of some enemies
                         if ($new_enemy == Enemy::get('Green Cheep-Cheep (slow)') || $new_enemy == Enemy::get('Red Cheep-Cheep (fast)')) {
                             $yyy = mt_rand(0, 0xB);
                             $pos = ($x << 4) | $yyy;
@@ -1437,25 +1473,25 @@ class Randomizer
         return strrev($flag_string);
     }
 
-    public function betterFlagsToOptions($flag_string, $options)
+    public function flagstringToOptions($flag_string, &$options)
     {
         $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         $alphabet_length = strlen($alphabet);
         $flag_number = 0;
         $option_values = [
-            [config('smbr.randomizer.options.randomizeBackground'), $options['randomizeBackground']],
-            [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
-            [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
-            [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
-            [config('smbr.randomizer.options.warpZones'), $options['warpZones']],
-            [config('smbr.randomizer.options.startingLives'), $options['startingLives']],
-            [config('smbr.randomizer.options.bowserHitpoints'), $options['bowserHitpoints']],
-            [config('smbr.randomizer.options.bowserAbilities'), $options['bowserAbilities']],
-            [config('smbr.randomizer.options.blocks'), $options['blocks']],
-            [config('smbr.randomizer.options.enemies'), $options['enemies']],
-            [config('smbr.randomizer.options.normalWorldLength'), $options['normalWorldLength']],
-            [config('smbr.randomizer.options.shuffleLevels'), $options['shuffleLevels']],
-            [config('smbr.randomizer.options.pipeTransitions'), $options['pipeTransitions']],
+            [config('smbr.randomizer.options.randomizeBackground'), 'randomizeBackground'],
+            [config('smbr.randomizer.options.shuffleUndergroundBonus'), 'shuffleUndergroundBonus'],
+            [config('smbr.randomizer.options.fireworks'), 'fireworks'],
+            [config('smbr.randomizer.options.hiddenWarpDestinations'), 'hiddenWarpDestinations'],
+            [config('smbr.randomizer.options.warpZones'), 'warpZones'],
+            [config('smbr.randomizer.options.startingLives'), 'startingLives'],
+            [config('smbr.randomizer.options.bowserHitpoints'), 'bowserHitpoints'],
+            [config('smbr.randomizer.options.bowserAbilities'), 'bowserAbilities'],
+            [config('smbr.randomizer.options.blocks'), 'blocks'],
+            [config('smbr.randomizer.options.enemies'), 'enemies'],
+            [config('smbr.randomizer.options.normalWorldLength'), 'normalWorldLength'],
+            [config('smbr.randomizer.options.shuffleLevels'), 'shuffleLevels'],
+            [config('smbr.randomizer.options.pipeTransitions'), 'pipeTransitions'],
         ];
 
         for ($i = 0; $i < strlen($flag_string); $i++) {
@@ -1465,7 +1501,7 @@ class Randomizer
             $flag_number += $j;
         }
 
-        print("Flag string decoded back to number: $flag_number \n");
+        // print("Flag string decoded back to number: $flag_number \n");
 
         // Now, go through options and set correct choice
         // TODO: improve variable names
@@ -1474,8 +1510,14 @@ class Randomizer
             $z = count($o);
             $selected_option = $flag_number % $z;
             $flag_number /= $z;
-            print("Selected option: $selected_option \n");
+            // print("Selected option: $selected_option \n");
+
             // Here we need to find out which key in array matches selected_option
+
+            $all_keys = array_keys($o);
+            // $all_keys[$selected_option] will now be the option choice we want
+            // print_r($selected . "\n");
+            $options[$selected] = $all_keys[$selected_option];
         }
     }
 
@@ -1527,7 +1569,7 @@ class Randomizer
     public function makeFlags()
     {
         $this->flags = $this->calculateFlags($this->options);
-        // $this->betterFlagsToOptions($this->calculateFlagsNew($this->options), $this->options);
+        //$this->betterFlagsToOptions("BIkZ", $this->options);
     }
 
     public function makeSeedHash()

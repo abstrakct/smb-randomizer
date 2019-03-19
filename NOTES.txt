@@ -44,8 +44,9 @@ BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! y
   ENEMIES 
   - algorithm needs big rework
   - idea: enemy groups?
+  TODO: Deal with the "only appears after 5-3" flag for enemies
   TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
-  ....... MAYBE JUST NOT RANDOMIZE PIRANHA PLANTS!?! that's probably the solution!
+  DONE ....... MAYBE JUST NOT RANDOMIZE PIRANHA PLANTS!?! that's probably the solution!
   TODO: Change/randomize y pos of (some) enemies? to prevent stuck enemies
   TODO: Shuffle enemies? or keep the randomization as it is now?
   TODO: Disappearing enemies/objects
@@ -55,7 +56,7 @@ BUG: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! y
         appear on the same page until a new page bit is found. However,
         there are limits to this. If 3 objects are on the same x position for the same
         page, every object following that will not show up."
-  TODO: Randomize enemies in pools better! from-/to-pools
+  DONE: Randomize enemies in pools better! from-/to-pools
   TODO: Disasm line  8370: fire bar spin speed / direction -- can be randomized!?
   TODO: Disasm line  8405: cheep cheep data -- can be randomized!?
   TODO: Disasm line  8698: enemy frenzy thing that checks for world 2 - should be changed??
