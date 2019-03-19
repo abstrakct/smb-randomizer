@@ -25,6 +25,7 @@ return [
             'fireworks' => 'true',
             'shuffleUndergroundBonus' => 'true',
             'randomizeBackground' => 'false',
+            'hardMode' => 'random',
         ],
 
         'options' => [
@@ -105,11 +106,11 @@ return [
                 'false' => "Do not randomize Bowser's abilities",
             ],
             'bowserHitpoints' => [
-                'normal' => 'Bowser has 5 hitpoints',
-                'easy' => 'Bowser has 1-5 hitpoints',
-                'medium' => 'Bowser has 5-10 hitpoints',
-                'hard' => 'Bowser has 10-20 hitpoints',
-                'random' => 'Bowser has 1-20 hitpoints',
+                'normal' => 'Normal: Bowser has 5 hitpoints',
+                'easy' => 'Easy: Bowser has 1-5 hitpoints',
+                'medium' => 'Medium: Bowser has 5-10 hitpoints',
+                'hard' => 'Hard: Bowser has 10-20 hitpoints',
+                'random' => 'Random: Bowser has 1-20 hitpoints',
             ],
             'startingLives' => [
                 'very-hard' => 'Very hard: Start with 1 life',
@@ -147,6 +148,12 @@ return [
                 'true' => 'Randomize the background and scenery of levels',
                 'false' => 'Do not randomize the background and scenery of levels',
             ],
+            'hardMode' => [
+                'always' => 'Secondary hard mode is activated on all levels',
+                'random' => 'Which level activates secondary hard mode is random',
+                // 'xxxxxx' => 'Like random, but certain levels are placed after the level which activates secondary hard mode',
+                'vanilla' => 'Vanilla - secondary hard mode is activated in 5-3',
+            ]
         ],
     ],
 ];

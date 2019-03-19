@@ -33,8 +33,9 @@
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
                     <smbr-select id="oen" label="Enemies" @input="updateInputted" storage-key="smbr.opt.enemies" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies"></smbr-select>
-                    <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserHitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
-                    <smbr-select id="osl" label="Starting Lives" @input="updateInputted" storage-key="smbr.opt.startingLives" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives"></smbr-select>
+                    <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserhitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
+                    <smbr-select id="osl" label="Starting Lives" @input="updateInputted" storage-key="smbr.opt.startinglives" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives"></smbr-select>
+                    <smbr-select id="ohm" label="Secondary Hard Mode" @input="updateInputted" storage-key="smbr.opt.hardmode" v-model="selectedOptions.hardMode" :options="randomizerOptions.hardMode"></smbr-select>
                   </b-col>
 
                   <b-col>
@@ -153,7 +154,8 @@ export default {
         fireworks: "",
         shuffleUndergroundBonus: "",
         randomizeBackground: "",
-        verboseLog: ""
+        hardMode: "",
+        verboseLog: "",
       }
     };
   },
@@ -257,6 +259,7 @@ export default {
           fireworks: this.selectedOptions.fireworks,
           shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
           randomizeBackground: this.selectedOptions.randomizeBackground,
+          hardMode: this.selectedOptions.hardMode,
           verboseLog: this.selectedOptions.verboseLog
         })
         .then(response => {
@@ -432,11 +435,11 @@ export default {
         { key: "smbr.opt.blocks", val: this.defaultOptions.blocks },
         { key: "smbr.opt.enemies", val: this.defaultOptions.enemies },
         {
-          key: "smbr.opt.bowserHitpoints",
+          key: "smbr.opt.bowserhitpoints",
           val: this.defaultOptions.bowserHitpoints
         },
         {
-          key: "smbr.opt.startingLives",
+          key: "smbr.opt.startinglives",
           val: this.defaultOptions.startingLives
         },
         {
@@ -480,9 +483,13 @@ export default {
           val: this.defaultOptions.randomizeBackground
         },
         {
+          key: "smbr.opt.hardmode",
+          val: this.defaultOptions.hardMode
+        },
+        {
           key: "smbr.opt.verboselog",
           val: this.defaultOptions.verboseLog
-        }
+        },
       ];
 
       arr.forEach(function(entry) {
@@ -543,6 +550,7 @@ export default {
           fireworks: this.selectedOptions.fireworks,
           shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
           randomizeBackground: this.selectedOptions.randomizeBackground,
+          hardMode: this.selectedOptions.hardMode,
         })
         .then(response => {
           console.log(response);

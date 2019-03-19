@@ -127,6 +127,8 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <p></p>
                         <b>Underground Bonus Areas</b> - you can shuffle the pipes that take you to an underground bonus area! That means: which underground area you end up in is shuffled around. The pipes that take you there will still be in their normal position.<br>
                         <p></p>
+                        <b>Secondary Hard Mode</b> - in vanilla SMB some levels appear two times, and if it appears after 5-3, there will be more enemies on the level. This is sometimes referred to as "secondary hard mode". With this option you can choose to have that always activated (meaning all enemies will spawn on each occurrence of these levels), or you can let the randomizer decide which level will activate this mode, or you can leave it unchanged. For now, these options do not influence where levels are placed, but there are plans for a mode where the level shuffling will take this option into account.
+                        <p></p>
                         <b>EXPERIMENTAL FEATURE: Randomize background and scenery</b> - this will change the background and scenery of each level. Results can get VERY strange, and there is very little sanity checking for this feature as of now, so there are no guarantees if you select this one. For now it's NOT recommended for races etc.
 
 

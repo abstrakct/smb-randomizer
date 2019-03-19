@@ -36,6 +36,7 @@ class Randomize extends Command
         . '{--fireworks=true : randomize when fireworks appear}'
         . '{--shuffle-underground-bonus=true : shuffle destinations of underground bonus level pipes }'
         . '{--randomize-background=false : randomize the background and scenery of levels }'
+        . '{--hard-mode=random : change where secondary hard mode is activated }'
         . '{--mariocolors=random : Mario Color Scheme}'
         . '{--luigicolors=random : Luigi Color Scheme}'
         . '{--firecolors=random : Fire Color Scheme}'
@@ -83,6 +84,7 @@ class Randomize extends Command
         $smbrOptions['fireworks'] = $this->option('fireworks');
         $smbrOptions['shuffleUndergroundBonus'] = $this->option('shuffle-underground-bonus');
         $smbrOptions['randomizeBackground'] = $this->option('randomize-background');
+        $smbrOptions['hardMode'] = $this->option('hard-mode');
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');

@@ -206,6 +206,11 @@ class Randomizer
     public function randomizeEnemies(&$game, $in_pools = false)
     {
         $this->log->write("Randomizing enemies" . ($in_pools ? " in pools." : ".") . "\n");
+        if ($this->options['hardMode'] == 'always') {
+            $this->log->write("Secondary hard mode will be activated for all levels.\n");
+        } else if ($this->options['hardMode'] == 'vanilla') {
+            $this->log->write("Secondary hard mode will be vanilla.\n");
+        }
         $vanilla = Level::all();
         foreach ($vanilla as $level) {
             if ($level->has_enemies) {
@@ -218,6 +223,11 @@ class Randomizer
     public function newRandomizeEnemies(&$game)
     {
         $this->log->write("NEW Randomizing enemies!\n");
+        if ($this->options['hardMode'] == 'always') {
+            $this->log->write("Secondary hard mode will be activated for all levels.\n");
+        } else if ($this->options['hardMode'] == 'vanilla') {
+            $this->log->write("Secondary hard mode will be vanilla.\n");
+        }
         $vanilla = Level::all();
         foreach ($vanilla as $level) {
             if ($level->has_enemies) {
@@ -227,10 +237,27 @@ class Randomizer
         }
     }
 
+
     /*
-     * NOTES:
-     * Experiment has shown that cheep cheep generator and bowser fire generator shouldn't coexist in the same level.
+     * A bit of circular logic here, but for the "controlled" mode,
+     * we can select a level where SHM starts, and then make the level shuffle conform to
+     * that.
      */
+    public function randomizeSecondaryHardModeStart(&$game)
+    {
+        $world_offset = 0x104b;
+        $level_offset = 0x1054;
+        $this->log->write("Randomizing where secondary hard mode starts...\n");
+
+        $new_world = mt_rand(0, 7);
+        $new_level = mt_rand(0, count($game->worlds[$new_world]->levels) - 1);
+
+        $this->log->write("New start for secondary hard mode: World $new_world Level $new_level\n");
+
+        $game->addData($world_offset, pack('C*', $new_world));
+        $game->addData($level_offset, pack('C*', $new_level));
+    }
+
     public function newRandomizeEnemiesOnLevel($offset, &$game)
     {
         $data = $this->rom->read($offset, 100);
@@ -257,6 +284,9 @@ class Randomizer
                     $do_randomize = true;
                     $p = $data[$i + 1] & 0b10000000;
                     $h = $data[$i + 1] & 0b01000000;
+                    if ($this->options['hardMode'] == 'always') {
+                        $h = 0;
+                    }
                     $o = $data[$i + 1] & 0b00111111;  // this is the enemy object
 
                     $this->log->writeVerbose("\tFound enemy: " . Enemy::getName($o) . "\n");
@@ -342,6 +372,9 @@ class Randomizer
                 if ($data[$i] != 0xFF) {
                     $p = $data[$i + 1] & 0b10000000;
                     $h = $data[$i + 1] & 0b01000000;
+                    if ($this->options['hardMode'] == 'always') {
+                        $h = 0;
+                    }
                     $o = $data[$i + 1] & 0b00111111; // this is the enemy object
 
                     /* Some enemies can't be randomized, so let's check for those */
@@ -1041,6 +1074,8 @@ class Randomizer
      */
     public function disableWarpPipes(&$game)
     {
+        $this->log->write("Disabling Warp Zones!\n");
+
         $game->addData(0x2cdc, pack('C*', 0x72));
         $game->addData(0x2cde, pack('C*', 0x72));
         $game->addData(0x2ce0, pack('C*', 0x72));
@@ -1486,6 +1521,7 @@ class Randomizer
             [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
             [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
             [config('smbr.randomizer.options.randomizeBackground'), $options['randomizeBackground']],
+            [config('smbr.randomizer.options.hardMode'), $options['hardMode']],
         ];
         $flag = 0;
 
@@ -1518,6 +1554,7 @@ class Randomizer
         $alphabet_length = strlen($alphabet);
         $flag_number = 0;
         $option_values = [
+            [config('smbr.randomizer.options.hardMode'), 'hardMode'],
             [config('smbr.randomizer.options.randomizeBackground'), 'randomizeBackground'],
             [config('smbr.randomizer.options.shuffleUndergroundBonus'), 'shuffleUndergroundBonus'],
             [config('smbr.randomizer.options.fireworks'), 'fireworks'],
@@ -1758,6 +1795,11 @@ class Randomizer
         // Randomize background/scenery
         if ($this->options['randomizeBackground'] == "true") {
             $this->randomizeBackground($game);
+        }
+
+        // Randomize where secondary hard mode starts
+        if ($this->options['hardMode'] == 'random') {
+            $this->randomizeSecondaryHardModeStart($game);
         }
 
         // Fix Midway Points
