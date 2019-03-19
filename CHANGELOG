@@ -1,15 +1,20 @@
 v0.9.4
+- Improvements to new enemy randomization algorithm
+- Improvements to background/scenery randomization
+- Added option to disable warp pipes! Use at your own risk!
+- Initial support for randomizing/changing "secondary hard mode"
+- Web frontend: dynamic display of flagstring for currently selected options
+- Web frontend: general improvements and updates
 
 v0.9.3
 - New and improved enemy randomization algorithm!
-- Added option to disable warp pipes! Use at own risk!
 - Actually use the new flagstring algorithm
 - Fixed some sanity checks which in turn fixed some bugs
 - Cleaned up the log file, moved many messages to the verbose log option
 - Zero out coin tallies for bonus 1ups - not sure if this is actually working
 - Allow longer seed numbers
 - Removed numbers from the flagstring
-- EXPERIMENTAL: Added randomization of background and scenery
+- EXPERIMENTAL: Added initial support for randomization of background and scenery
 
 v0.9.2
 - Implemented new and better flagstring generation algorithm stolen from Fred Coughlin - thanks!
