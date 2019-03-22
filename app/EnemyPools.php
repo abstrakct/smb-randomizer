@@ -170,7 +170,9 @@ class EnemyPools
                 Enemy::get('Red Cheep-Cheep (fast)'),
             ],
             Enemy::get('Hammer Bro') => [ 
-                Enemy::get('Hammer Bro') 
+                Enemy::get('Hammer Bro'),
+                Enemy::get('Blooper'),
+                Enemy::get('Podoboo'),
             ],
             Enemy::get('Goomba') => [ 
                 Enemy::get('Green Koopa Troopa'),
@@ -416,7 +418,7 @@ class EnemyPools
             Enemy::get('Hammer Bro') => 0xC8,
             Enemy::get('Pirhana Plant') => 0x9B,
             Enemy::get('Green Cheep-Cheep (slow)') => 0x98,
-            Enemy::get('Red Cheep-Cheep (fast)') => 0x98,
+            Enemy::get('Red Cheep-Cheep (fast)') => 0xD8,
             Enemy::get('Yellow Koopa Paratroopa (does not move)') => 0x88,
         ];
 
