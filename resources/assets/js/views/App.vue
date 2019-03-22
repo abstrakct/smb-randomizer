@@ -6,7 +6,7 @@
         <b-col cols="8">
           <b-card :title="'Super Mario Bros. Randomizer v' + this.version" style="max-width: 150rem;">
             <b-alert dismissible :show="true" variant="info">NOTE: this software is still under development, and currently in a beta/testing stage (at best)! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
-            <b-alert dismissible fade :show="error" variant="danger">
+            <b-alert dismissible fade :show="error" variant="danger" v-html="this.errorMessage">
               Error: {{ this.errorMessage }}
             </b-alert>
 
@@ -45,7 +45,7 @@
                     <smbr-checkbox id="owl" label="Worlds can have varying lengths" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true"></smbr-checkbox>
                     <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
                     <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
-                    <smbr-checkbox id="oub" label="Shuffle destinations of pipes going to underground bonus areas" @input="updateInputted" storage-key="smbr.opt.shuffleundegroundbonus" v-model="selectedOptions.shuffleUndergroundBonus" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="oub" label="Shuffle destinations of pipes going to underground bonus areas" @input="updateInputted" storage-key="smbr.opt.shuffleundergroundbonus" v-model="selectedOptions.shuffleUndergroundBonus" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="orb" label="Randomize background and scenery (EXPERIMENTAL)" @input="updateInputted" storage-key="smbr.opt.randomizebackground" v-model="selectedOptions.randomizeBackground" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ofw" label="Randomize fireworks" @input="updateInputted" storage-key="smbr.opt.fireworks" v-model="selectedOptions.fireworks" checked-value="true" unchecked-value="false"></smbr-checkbox>
@@ -391,7 +391,7 @@ export default {
       ) {
         this.error = true;
         this.errorMessage +=
-          "Warp Zones Gamble require 'Hide warp pipe destinations' to be selected.";
+          "Warp Zones Gamble require 'Hide warp pipe destinations' to be selected.<br>";
       }
 
       if (
@@ -400,7 +400,7 @@ export default {
       ) {
         this.error = true;
         this.errorMessage +=
-          "Invalid combination: 'Shuffle world order only' and 'Worlds can have varying length'";
+          "Invalid combination: 'Shuffle world order only' and 'Worlds can have varying length'<br>";
       }
 
       if (
@@ -409,7 +409,7 @@ export default {
       ) {
         this.error = true;
         this.errorMessage +=
-          "Invalid combination: 'Do not shuffle levels' and 'Worlds can have varying length'";
+          "Invalid combination: 'Do not shuffle levels' and 'Worlds can have varying length'<br>";
       }
 
       if (
@@ -419,7 +419,16 @@ export default {
       ) {
         this.error = true;
         this.errorMessage +=
-          "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'";
+          "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'<br>";
+      }
+
+      if (
+        this.selectedOptions.shuffleLevels == "none" &&
+        this.selectedOptions.shuffleUndergroundBonus == "true"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Invalid combination: Options 'no level shuffle' and 'shuffle underground bonus areas' does not currently work correctly together.<br>"
       }
 
       if (this.selectedOptions.randomizeBackground == "true") {

@@ -21,6 +21,8 @@
                         <i>Please read the Guide, Notes and Bugs/Todo sections before playing for the first time. The randomizer is still in a beta stage, and
 although I haven't personally come across an impossible/unwinable seed at this point, I cannot guarantee 100% that every seed will produce a winable seed.</i><br>
                         <p></p>
+                        <h1>Who made this?</h1>
+                        <p>I go by the name RKaid, or sometimes RKaidgaming. I'm a hobby programmer and a randomizer fan.</p>
                         <h1>Guide</h1>
                         <p></p>
                         <b>You need to provide a Super Mario Bros. ROM file to be randomized. The recommended ROM is named "Super Mario Bros. (JU) [!].nes", but other versions of SMB might work as well. If you upload a ROM the randomizer doesn't recognize, it might still go ahead and try to use that ROM, but in that case there are no guarantees that the randomized ROM will work correctly!</b>
@@ -172,6 +174,8 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too
                             many other enemies on screen. This must be fixed. UPDATE: I haven't seen this happen in a long time, it might be fixed.</li>
                         <p></p>
+                        
+                        <!--
                         <h2>TODO / Upcoming Features / Ideas</h2>
                         <del><li>Require user to upload a ROM instead of providing one</li></del>
                         <del><li>Improve web interface</li></del>
@@ -206,6 +210,7 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <del><li>Store a cookie or something when user has uploaded a valid ROM so they don't have to repeat it every
                             time they use the randomizer. Note: base rom gets stored in your browser's local storage.</li></del>
                         <p></p>
+                        -->
                         <h2>Credits / thanks</h2>
                         <li>Thanks to the SMB3 Randomizer and its author, fcoughlin, for a lot of inspiration, and hours of fun
                             watching and playing SMB3 Rando!</li>
