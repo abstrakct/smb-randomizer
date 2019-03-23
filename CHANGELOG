@@ -1,10 +1,10 @@
 v0.9.5
-- Improvements to new enemy randomization algorithm
-- Frontend improvements
 - Added two new modes for item block randomization
 - Added option to randomize content of brick blocks in underground bonus areas
 - Bug fixes
+- Improvements to new enemy randomization algorithm
 - Fixed Lakitu's coordinates so he doesn't spawn near the ground
+- Frontend improvements
 - If you input a seed number, the frontend will now store/remember it.
 - The button that links to the most recently created logfile now works every time!
   (Previously it only worked once, due to a bug.)
