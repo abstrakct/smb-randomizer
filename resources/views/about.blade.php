@@ -87,7 +87,7 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <p></p>
                         <b>Block Randomization:</b><br>
                         <b>All</b> randomizes all kinds of single blocks that contain an item (mushroom/flower, star, 1-up,
-                        coin).
+                        coin). This includes hidden blocks, so it can get kinda weird, and sometimes the hidden blocks don't work for some reason. I'm looking into why.
                         <br>
                         <b>Power-Ups</b> randomizes all single blocks that contain a power-up (mushroom/flower, star, 1-up).
                         Coins are not included in the randomization.<br>
@@ -95,6 +95,8 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         words: any vanilla question block can become a different kind of question block, any hidden block
                         can become a different kind of hidden block, etc. Note that this only applies to single blocks, so
                         rows of e.g. several question blocks do not get randomized.<br>
+                        <b>Bricks</b> randomizes the contents of "brick blocks" that have an item (mushroom/flower, star, multiple coins, 1-UP). Question blocks and hidden blocks remain unchanged.<br>
+                        <b>Bricks and Question Blocks</b> is like the <i>bricks</i> option, but will also randomize the content of question blocks (mushroom/flower or coin).<br>
                         <b>Coins</b> removes ALL power-ups (mushrooms/flowers, stars, 1-ups) and replaces them with coins!
                         Probably quite hard!<br>
                         <b>No block shuffle</b> means blocks are NOT randomized in any way.<br>

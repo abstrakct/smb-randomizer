@@ -329,7 +329,7 @@ class Randomizer
                         // Fix coordinates of some enemies
                         if ($new_enemy == Enemy::get('Green Cheep-Cheep (slow)') || $new_enemy == Enemy::get('Red Cheep-Cheep (fast)')) {
                             $yyy = mt_rand(0, 0xB);
-                            $pos = ($x << 4) | $yyy;
+                            $pos = $x | $yyy;
                             $game->addData($offset + $i, pack('C*', $pos));
                             $this->log->writeVerbose("\t\t\tChanged Y position to $yyy\n");
                         }
@@ -1752,6 +1752,11 @@ class Randomizer
             $this->randomizeBlocks($game, $item_pools->all_question_blocks, $item_pools->all_question_blocks);
             $this->randomizeBlocks($game, $item_pools->all_hidden_blocks, $item_pools->all_hidden_blocks);
             $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
+        } else if ($this->options['blocks'] == "randomizeBricks") {
+            $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
+        } else if ($this->options['blocks'] == "randomizeBricksQuestion") {
+            $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
+            $this->randomizeBlocks($game, $item_pools->all_question_blocks, $item_pools->all_question_blocks);
         } else if ($this->options['blocks'] == "randomizeCoins") {
             $this->randomizeBlocks($game, $item_pools->all_items, $item_pools->all_coins);
         } else if ($this->options['blocks'] == "randomizeNone") {

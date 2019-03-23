@@ -97,6 +97,8 @@ return [
                 'randomizeAll' => 'Randomize all blocks',
                 'randomizePowerups' => 'Randomize blocks normally containing a power up',
                 'randomizeGrouped' => 'Randomize blocks in groups',
+                'randomizeBricks' => 'Randomize content of brick blocks',
+                'randomizeBricksQuestion' => 'Randomize content of brick blocks and question blocks',
                 'randomizeCoins' => 'Replace all power ups with coins',
                 'randomizeNone' => 'Do not randomize blocks',
                 //    'shufflexxxxx' => 'NOT IMPLEMENTED: Shuffle Blocks',
