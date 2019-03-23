@@ -26,8 +26,8 @@
                 <b-row>
                   <b-col>
                     <p><strong>Current flags: {{ currentFlags }}</strong></p>
-                    <smbr-input id="seed" label="Seed number" v-model="selectedOptions.seed" type="number" placeholder="Input seed number here, or leave blank for random"></smbr-input>
-                    <smbr-input id="flags" label="Flags" v-model="inputFlags" type="string" @input="updateInputted" placeholder="(NOT IMPLEMENTED) Input flagstring here to set all options from a flag string"></smbr-input>
+                    <smbr-input id="seed" label="Seed number" @input="updateInputted" storage-key="smbr.opt.seed" v-model="selectedOptions.seed" type="number" placeholder="Input seed number here, or leave blank for random"></smbr-input>
+                    <smbr-input id="flags" label="Flags" v-model="inputFlags" type="text" @input="updateInputted" placeholder="(NOT IMPLEMENTED) Input flagstring here to set all options from a flag string"></smbr-input>
                     <b-button @click="applyFlagstring">Apply flagstring</b-button>
                     <smbr-select id="olw" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
@@ -68,7 +68,7 @@
                       <p></p>
 
                       <div v-if="generateLog">
-                        <b-button variant="info" class="w-100" :href="rando.logfullpath">View log (contains spoilers!)</b-button>
+                        <b-button variant="link" class="w-100" :href="rando.logfullpath">View log (contains spoilers!)</b-button>
                       </div>
                     </div>
                   </b-col>
@@ -220,6 +220,11 @@ export default {
       }
       EventBus.$emit("loadBlob", { target: { files: [new Blob([blob])] } });
     });
+
+    // Load stored seed number
+    localforage.getItem("smbr.opt.seed").then(function(value) {
+      this.selectedOptions.seed = value;
+    }.bind(this));
 
     EventBus.$on("update-baserom-filename", this.updateFilename);
     EventBus.$on("store-randomized-rom", this.storeRandomizedRom);
