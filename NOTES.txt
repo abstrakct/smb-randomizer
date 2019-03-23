@@ -35,14 +35,13 @@ TODO
      BUGS
 BUG: FIXED? in enemies-randomize-pools Bowser can get randomized to something else!
 BUG: Bowser + cheep cheep generator (?) can despawn Bowser! not good!
-BUG: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
+FIXED: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
 BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
 FIXED PROBABLY: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! you still win though, so.
 
       TODO
 
-      Look into item blocks algorithms 
   ENEMIES 
   - DONEISH algorithm needs big rework
   - idea: enemy groups?
@@ -80,10 +79,10 @@ FIXED PROBABLY: Toad turned into hammer bro in 8-4 can actually walk over and ki
   TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
   spiny in enemy pools - if possible
 
-
 TODO: Investigate super speed koopa!
 DONE: Generators sometimes get weird, especially bowser fire. Could be because of more than one generator on screen at the same time. Investigate and fix!
-TODO: Randomize blocks in underground bonus areas.
+DONE: Randomize blocks in underground bonus areas.
+TODO: Randomize enemies in Underwater Area and Underwater Area 8-4
 TODO: easy/hard warp zone gamble - easy = 2 good 1 bad - hard = 1 good 2 bad pipes
 TODO: Option to disable beating Bowser by removing the bridge under him? So that you must shoot Bowser with fireballs.....
 ----- Can lead to softlocks, will need to guarantee powerups in the castles.

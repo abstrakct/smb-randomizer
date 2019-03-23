@@ -446,6 +446,7 @@ class Randomizer
                     break;
                 }
 
+                $this->log->write("Randomizing item blocks in $level->name\n");
                 $end = 0;
                 $data = $this->rom->read($level->level_data_offset, 200);
                 foreach ($data as $byte) {
@@ -468,9 +469,10 @@ class Randomizer
                         $new_data = 0x99;
                         if (in_array($object, $frompool)) {
                             $pull_key = mt_rand(0, count($topool) - 1);
-                            $new_data = $topool[$pull_key];
-                            $new_object = $p | $new_data;
-                            $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_object));
+                            $new_object = $topool[$pull_key];
+                            $new_data = $p | $new_object;
+                            $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_data));
+                            $this->log->writeVerbose("  Changed " . Item::getName($object) . " to " . Item::getName($new_object) . "\n");
                         }
                     }
                 }
@@ -478,6 +480,44 @@ class Randomizer
         }
     }
 
+    // Randomize the few blocks that exist in underground bonus areas
+    // 
+    public function randomizeBlocksInUndergroundBonus(Game &$game, $frompool, $topool)
+    {
+        $this->log->write("Randomizing blocks in underground bonus areas!\n");
+
+        $level = Level::get('underground-bonus');
+        $end = 0;
+        $data = $this->rom->read($level->level_data_offset, 200);
+
+        foreach ($data as $byte) {
+            $end++;
+            if ($byte == 0xFD) {
+                break;
+            }
+        }
+
+        for ($i = 2; $i < $end; $i += 2) {
+            $do_randomize = true;
+            $y = $data[$i] & 0b00001111;
+            if ($y > 0x0B) {
+                $do_randomize = false;
+            }
+
+            if ($do_randomize) {
+                $p = $data[$i + 1] & 0b10000000;
+                $object = $data[$i + 1] & 0b01111111;
+                $new_data = 0x99;
+                if (in_array($object, $frompool)) {
+                    $pull_key = mt_rand(0, count($topool) - 1);
+                    $new_object = $topool[$pull_key];
+                    $new_data = $p | $new_object;
+                    $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_data));
+                    $this->log->writeVerbose("  Changed " . Item::getName($object) . " to " . Item::getName($new_object) . "\n");
+                }
+            }
+        }
+    }
     /*
      * Shuffle levels, but castles can appear anywhere, except 8-4 which is always last.
      * Each castle represents the end of a world, but currently there are no restrictions on how
@@ -1522,6 +1562,7 @@ class Randomizer
             [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
             [config('smbr.randomizer.options.randomizeBackground'), $options['randomizeBackground']],
             [config('smbr.randomizer.options.hardMode'), $options['hardMode']],
+            [config('smbr.randomizer.options.randomizeUndergroundBricks'), $options['randomizeUndergroundBricks']],
         ];
         $flag = 0;
 
@@ -1554,6 +1595,7 @@ class Randomizer
         $alphabet_length = strlen($alphabet);
         $flag_number = 0;
         $option_values = [
+            [config('smbr.randomizer.options.randomizeUndergroundBricks'), 'randomizeUndergroundBricks'],
             [config('smbr.randomizer.options.hardMode'), 'hardMode'],
             [config('smbr.randomizer.options.randomizeBackground'), 'randomizeBackground'],
             [config('smbr.randomizer.options.shuffleUndergroundBonus'), 'shuffleUndergroundBonus'],
@@ -1743,7 +1785,7 @@ class Randomizer
             $this->log->write("No randomization of enemies!\n");
         }
 
-        // Shuffle Blocks
+        // Randomize Blocks
         if ($this->options['blocks'] == "randomizeAll") {
             $this->randomizeBlocks($game, $item_pools->all_items, $item_pools->all_items);
         } else if ($this->options['blocks'] == "randomizePowerups") {
@@ -1761,6 +1803,11 @@ class Randomizer
             $this->randomizeBlocks($game, $item_pools->all_items, $item_pools->all_coins);
         } else if ($this->options['blocks'] == "randomizeNone") {
             $this->log->write("No randomization of blocks!\n");
+        }
+
+        // Randomize Blocks in Underground Bonus Areas
+        if ($this->options['randomizeUndergroundBricks'] == 'true') {
+            $this->randomizeBlocksInUndergroundBonus($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
         }
 
         // Randomize Bowser's Abilities

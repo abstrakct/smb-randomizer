@@ -89,8 +89,8 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <b>All</b> randomizes all kinds of single blocks that contain an item (mushroom/flower, star, 1-up,
                         coin). This includes hidden blocks, so it can get kinda weird, and sometimes the hidden blocks don't work for some reason. I'm looking into why.
                         <br>
-                        <b>Power-Ups</b> randomizes all single blocks that contain a power-up (mushroom/flower, star, 1-up).
-                        Coins are not included in the randomization.<br>
+                        <b>Power-Ups</b> randomizes all brick blocks that contain a power-up (mushroom/flower, star, 1-up). 
+                        Coins, powerups in question blocks and hidden 1-UPs are not included in the randomization.<br>
                         <b>Grouped</b> randomizes single blocks in groups (bricks, question blocks, hidden blocks). In other
                         words: any vanilla question block can become a different kind of question block, any hidden block
                         can become a different kind of hidden block, etc. Note that this only applies to single blocks, so
@@ -130,6 +130,8 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         or your opponent had to sit through 9 fireworks explosions?<br>
                         <p></p>
                         <b>Underground Bonus Areas</b> - you can shuffle the pipes that take you to an underground bonus area! That means: which underground area you end up in is shuffled around. The pipes that take you there will still be in their normal position.<br>
+                        <p></p>
+                        <b>Randomize brick blocks in underground bonus areas</b> - select this to randomize the content of the few brick blocks in underground bonus areas that normally have a mushroom or coins.
                         <p></p>
                         <b>Secondary Hard Mode</b> - in vanilla SMB some levels appear two times, and if it appears after 5-3, there will be more enemies on the level. This is sometimes referred to as "secondary hard mode". With this option you can choose to have that always activated (meaning all enemies will spawn on each occurrence of these levels), or you can let the randomizer decide which level will activate this mode, or you can leave it unchanged. For now, these options do not influence where levels are placed, but there are plans for a mode where the level shuffling will take this option into account.
                         <p></p>

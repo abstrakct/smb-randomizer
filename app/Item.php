@@ -23,7 +23,7 @@ class Item
         }
     }
 
-    public static function getName($num)
+    public static function getName($object)
     {
         $items = static::all();
         foreach ($items as $i) {
@@ -99,8 +99,6 @@ class ItemPools
             Item::get('Brick (1-UP)'),
         ];
         $this->powerups = [
-            Item::get('Question Block (Mushroom)'),
-            Item::get('Hidden Block (1-UP)'),
             Item::get('Brick (Mushroom)'),
             Item::get('Brick (Star)'),
             Item::get('Brick (1-UP)'),

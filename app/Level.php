@@ -184,9 +184,8 @@ class Level
             'Cloud Area 2' => new Level('cloud-area-2', 0x34, 0x20ba, 0x0000, [], -1, false),
             'Water Area' => new Level('water-area', 0x00, 0x2170, 0x0000, [], -1, false),
             'Water Area 8-4' => new Level('water-8-4', 0x02, 0x21ab, 0x0000, [], -1, false),
-            'Underground Bonus' => new Level('underground-bonus', 0x42, 0x2143, 0x0000, [], -1, false), // pretty sure this is 0x42, but c2 also works.......
+            'Underground Bonus' => new Level('underground-bonus', 0x42, 0x2143, 0x2d89, [], -1, false), // pretty sure this is 0x42, but c2 also works.......
             '4-2 Warp Zone' => new Level('warp-zone-4-2', 0x2f, 0x200a, 0x0000, [], -1, false),
-
         ];
 
         return static::all();

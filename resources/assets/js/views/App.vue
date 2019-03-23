@@ -49,6 +49,7 @@
                     <smbr-checkbox id="orb" label="Randomize background and scenery (EXPERIMENTAL)" @input="updateInputted" storage-key="smbr.opt.randomizebackground" v-model="selectedOptions.randomizeBackground" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ofw" label="Randomize fireworks" @input="updateInputted" storage-key="smbr.opt.fireworks" v-model="selectedOptions.fireworks" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ofw" label="Randomize brick blocks in underground bonus areas" @input="updateInputted" storage-key="smbr.opt.randomizeundergroundbricks" v-model="selectedOptions.randomizeUndergroundBricks" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ovl" label="Generate verbose debug log" @input="updateInputted" storage-key="smbr.opt.verboselog" v-model="selectedOptions.verboseLog" checked-value="true" unchecked-value="false"></smbr-checkbox>
 
                     <p> </p>
@@ -155,6 +156,7 @@ export default {
         shuffleUndergroundBonus: "",
         randomizeBackground: "",
         hardMode: "",
+        randomizeUndergroundBricks: "",
         verboseLog: "",
       }
     };
@@ -260,6 +262,7 @@ export default {
           shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
           randomizeBackground: this.selectedOptions.randomizeBackground,
           hardMode: this.selectedOptions.hardMode,
+          randomizeUndergroundBricks: this.selectedOptions.randomizeUndergroundBricks,
           verboseLog: this.selectedOptions.verboseLog
         })
         .then(response => {
@@ -496,6 +499,10 @@ export default {
           val: this.defaultOptions.hardMode
         },
         {
+          key: "smbr.opt.randomizeundergroundbricks",
+          val: this.defaultOptions.randomizeUndergroundBricks
+        },
+        {
           key: "smbr.opt.verboselog",
           val: this.defaultOptions.verboseLog
         },
@@ -560,6 +567,7 @@ export default {
           shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
           randomizeBackground: this.selectedOptions.randomizeBackground,
           hardMode: this.selectedOptions.hardMode,
+          randomizeUndergroundBricks: this.selectedOptions.randomizeUndergroundBricks,
         })
         .then(response => {
           console.log(response);

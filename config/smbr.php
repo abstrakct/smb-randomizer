@@ -26,6 +26,7 @@ return [
             'shuffleUndergroundBonus' => 'true',
             'randomizeBackground' => 'false',
             'hardMode' => 'random',
+            'randomizeUndergroundBricks' => 'true',
         ],
 
         'options' => [
@@ -95,7 +96,7 @@ return [
             ],
             'blocks' => [
                 'randomizeAll' => 'Randomize all blocks',
-                'randomizePowerups' => 'Randomize blocks normally containing a power up',
+                'randomizePowerups' => 'Randomize brick blocks normally containing a power up',
                 'randomizeGrouped' => 'Randomize blocks in groups',
                 'randomizeBricks' => 'Randomize content of brick blocks',
                 'randomizeBricksQuestion' => 'Randomize content of brick blocks and question blocks',
@@ -155,6 +156,10 @@ return [
                 'random' => 'Which level activates secondary hard mode is random',
                 // 'xxxxxx' => 'Like random, but certain levels are placed after the level which activates secondary hard mode',
                 'vanilla' => 'Vanilla - secondary hard mode is activated in 5-3',
+            ],
+            'randomizeUndergroundBricks' => [
+                'true' => 'Randomize content of brick blocks in underground bonus areas',
+                'false' => 'Do not randomize brick blocks in underground bonus areas',
             ]
         ],
     ],

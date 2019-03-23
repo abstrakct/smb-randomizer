@@ -38,6 +38,7 @@ class RandomizerController extends Controller
         $options['shuffleUndergroundBonus'] = $request->input('shuffleUndergroundBonus');
         $options['randomizeBackground'] = $request->input('randomizeBackground');
         $options['hardMode'] = $request->input('hardMode');
+        $options['randomizeUndergroundBricks'] = $request->input('randomizeUndergroundBricks');
 
         $options['mariocolors'] = $request->input('mario');
         $options['luigicolors'] = $request->input('luigi');
@@ -122,6 +123,7 @@ class RandomizerController extends Controller
         $options['shuffleUndergroundBonus'] = $request->input('shuffleUndergroundBonus');
         $options['randomizeBackground'] = $request->input('randomizeBackground');
         $options['hardMode'] = $request->input('hardMode');
+        $options['randomizeUndergroundBricks'] = $request->input('randomizeUndergroundBricks');
 
         $rando = new Randomizer(0, $options, null);
         return $rando->calculateFlags($options);
