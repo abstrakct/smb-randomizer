@@ -68,7 +68,7 @@
                       <p></p>
 
                       <div v-if="generateLog">
-                        <b-button variant="link" class="w-100" :href="rando.logfullpath">View log (contains spoilers!)</b-button>
+                        <b-button variant="info" class="w-100" :href="rando.logfullpath">View log (contains spoilers!)</b-button>
                       </div>
                     </div>
                   </b-col>
@@ -226,6 +226,11 @@ export default {
       this.selectedOptions.seed = value;
     }.bind(this));
 
+    // Load stored path to logfile
+    localforage.getItem("smbr.rom.randomized.logfilename").then(function(value) {
+      this.rando.logfullpath = value;
+    }.bind(this));
+
     EventBus.$on("update-baserom-filename", this.updateFilename);
     EventBus.$on("store-randomized-rom", this.storeRandomizedRom);
   },
@@ -276,6 +281,7 @@ export default {
           this.rando.logfullpath = response.data.logfullpath;
           this.rando.base64data = response.data.base64data;
           this.rando.done = true;
+          localforage.setItem("smbr.rom.randomized.logfilename", this.rando.logfullpath);
         })
         .then(() => {
           EventBus.$emit("store-randomized-rom");
