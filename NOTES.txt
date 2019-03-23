@@ -29,6 +29,8 @@ TODO
 -- like, a little text or animation, "generating..." 
 - A way to share seeds via a link or similar (use database?)
 
+-- Save inputted seed number!
+
 **************
 * RANDOMIZER *
 **************

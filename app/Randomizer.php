@@ -203,6 +203,26 @@ class Randomizer
         $this->rom->setLuigiInnerColor($inner, $game);
     }
 
+    /*
+     * A bit of circular logic here, but for the "controlled" mode,
+     * we can select a level where SHM starts, and then make the level shuffle conform to
+     * that.
+     */
+    public function randomizeSecondaryHardModeStart(&$game)
+    {
+        $world_offset = 0x104b;
+        $level_offset = 0x1054;
+        $this->log->write("Randomizing where secondary hard mode starts...\n");
+
+        $new_world = mt_rand(0, 7);
+        $new_level = mt_rand(0, count($game->worlds[$new_world]->levels) - 1);
+
+        $this->log->write("New start for secondary hard mode: World $new_world Level $new_level\n");
+
+        $game->addData($world_offset, pack('C*', $new_world));
+        $game->addData($level_offset, pack('C*', $new_level));
+    }
+
     public function randomizeEnemies(&$game, $in_pools = false)
     {
         $this->log->write("Randomizing enemies" . ($in_pools ? " in pools." : ".") . "\n");
@@ -235,27 +255,6 @@ class Randomizer
                 $this->newRandomizeEnemiesOnLevel($level->enemy_data_offset, $game);
             }
         }
-    }
-
-
-    /*
-     * A bit of circular logic here, but for the "controlled" mode,
-     * we can select a level where SHM starts, and then make the level shuffle conform to
-     * that.
-     */
-    public function randomizeSecondaryHardModeStart(&$game)
-    {
-        $world_offset = 0x104b;
-        $level_offset = 0x1054;
-        $this->log->write("Randomizing where secondary hard mode starts...\n");
-
-        $new_world = mt_rand(0, 7);
-        $new_level = mt_rand(0, count($game->worlds[$new_world]->levels) - 1);
-
-        $this->log->write("New start for secondary hard mode: World $new_world Level $new_level\n");
-
-        $game->addData($world_offset, pack('C*', $new_world));
-        $game->addData($level_offset, pack('C*', $new_level));
     }
 
     public function newRandomizeEnemiesOnLevel($offset, &$game)
@@ -334,6 +333,12 @@ class Randomizer
                             $this->log->writeVerbose("\t\t\tChanged Y position to $yyy\n");
                         }
 
+                        if ($new_enemy == Enemy::get('Lakitu')) {
+                            $new_coord = 0xE2;
+                            $game->addData($offset + $i, pack('C*', $new_coord));
+                            $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
+                        }
+
                         if ($o == Enemy::get('Toad') && $new_enemy != Enemy::get('Toad')) {
                             $new_coord = $this->enemy_pools->toad_new_coords[$new_enemy];
                             $game->addData($offset + $i, pack('C*', $new_coord));
@@ -409,6 +414,13 @@ class Randomizer
                                 $new_data = (($p | $h) | $new_object);
                                 $game->addData($offset + $i + 1, pack('C*', $new_data));
                                 $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
+
+                                if ($new_object == Enemy::get('Lakitu')) {
+                                    $new_coord = 0xE2;
+                                    $game->addData($offset + $i, pack('C*', $new_coord));
+                                    $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
+                                }
+
                             }
                         } else {
                             $new_data = 0;
@@ -427,6 +439,13 @@ class Randomizer
                                 $new_data = (($p | $h) | $new_object);
                                 $game->addData($offset + $i + 1, pack('C*', $new_data));
                                 $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
+
+                                if ($new_object == Enemy::get('Lakitu')) {
+                                    $new_coord = 0xE2;
+                                    $game->addData($offset + $i, pack('C*', $new_coord));
+                                    $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
+                                }
+
                             }
                         }
                     }
