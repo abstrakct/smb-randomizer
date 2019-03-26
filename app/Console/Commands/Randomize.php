@@ -18,6 +18,8 @@ class Randomize extends Command
      *
      * @var string
      */
+
+     // TODO: this should, if possible, use default options from config
     protected $signature = 'smbr:randomize {input_file : base rom to randomize}'
         . '{output_dir : where to save the randomized rom}'
         . '{--log=normal : Log level}'
@@ -31,7 +33,7 @@ class Randomize extends Command
         . '{--bowser-abilities=true : randomize Bowser abilities}'
         . '{--bowser-hitpoints=random : randomize Bowser hitpoints}'
         . '{--starting-lives=random : randomize player starting lives}'
-        . '{--warp-zones=random : randomize warp zones}'
+        . '{--warp-zones=shuffle : randomize warp zones}'
         . '{--hidden-warp-destinations=false : hidden warp destinations}'
         . '{--fireworks=true : randomize when fireworks appear}'
         . '{--shuffle-underground-bonus=true : shuffle destinations of underground bonus level pipes }'
@@ -40,7 +42,7 @@ class Randomize extends Command
         . '{--randomize-underground-bricks=true : randomize content of brick blocks in underground bonus areas }'
         . '{--exclude-firebars=false : exclude fire bars from enemy randomization }'
         . '{--randomize-spin-speed=false : randomize fire bar spin speeds }'
-        . '{--shuffle-spin-directions=false: shuffle fire bar spin directions }'
+        . '{--shuffle-spin-directions=false : shuffle fire bar spin directions }'
         . '{--mariocolors=random : Mario Color Scheme}'
         . '{--luigicolors=random : Luigi Color Scheme}'
         . '{--firecolors=random : Fire Color Scheme}'

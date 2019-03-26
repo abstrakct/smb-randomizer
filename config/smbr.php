@@ -12,7 +12,7 @@ return [
                 'luigi' => 'random',
                 'fire' => 'random',
             ],
-            'normalWorldLength' => 'true',
+            'normalWorldLength' => 'false',
             'pipeTransitions' => 'remove',
             'shuffleLevels' => 'all',
             'enemies' => 'randomizeControlled',

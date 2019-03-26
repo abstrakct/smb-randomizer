@@ -235,7 +235,7 @@ class Randomizer
         foreach ($vanilla as $level) {
             if ($level->has_enemies) {
                 $this->log->write("Randomizing enemies on level " . $level->name . "\n");
-                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game, $in_pools);
+                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game);
             }
         }
     }
@@ -1590,7 +1590,7 @@ class Randomizer
             $selected_index = array_search($selected, array_keys($o)); // TODO: do we need + 1 here?? probably not?
             $flag *= count($o);
             $flag += $selected_index;
-            // print("Flag: $flag\n");
+            //print("Flag: $flag\n");
         }
 
         // print("Flag number: " . $flag . "\n");
@@ -1657,7 +1657,7 @@ class Randomizer
 
             $all_keys = array_keys($o);
             // $all_keys[$selected_option] will now be the option choice we want
-            // print_r($selected . "\n");
+            //print_r($selected . " " . $all_keys[$selected_option] . "\n");
             $options[$selected] = $all_keys[$selected_option];
         }
     }
@@ -1710,7 +1710,7 @@ class Randomizer
     public function makeFlags()
     {
         $this->flags = $this->calculateFlags($this->options);
-        //$this->betterFlagsToOptions("BIkZ", $this->options);
+        //$this->flagstringToOptions($this->flags, $this->options);
     }
 
     public function makeSeedHash()
