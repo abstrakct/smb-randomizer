@@ -1,13 +1,18 @@
 v0.9.5
 - Added two new modes for item block randomization
 - Added option to randomize content of brick blocks in underground bonus areas
-- Bug fixes
+- Added options to:
+  - Randomize Fire Bar spin speed
+  - Shuffle Fire Bar spin directions
+  - Exclude Fire Bars from enemy randomization
+- Removed old enemy randomization algorithm
 - Improvements to new enemy randomization algorithm
 - Fixed Lakitu's coordinates so he doesn't spawn near the ground
-- Frontend improvements
-- If you input a seed number, the frontend will now store/remember it.
-- The button that links to the most recently created logfile now works every time!
-  (Previously it only worked once, due to a bug.)
+- Other bug fixes
+- Frontend improvements, including but not limited to:
+  - If you input a seed number, the frontend will now store/remember it.
+  - The button that links to the most recently created logfile now works every time!
+    (Previously it only worked once, due to a bug.)
 
 v0.9.4
 - Improvements to new enemy randomization algorithm
