@@ -223,9 +223,9 @@ class Randomizer
         $game->addData($level_offset, pack('C*', $new_level));
     }
 
-    public function randomizeEnemies(&$game, $in_pools = false)
+    public function randomizeEnemiesChaos(&$game)
     {
-        $this->log->write("Randomizing enemies" . ($in_pools ? " in pools." : ".") . "\n");
+        $this->log->write("Randomizing enemies: CHAOS!\n");
         if ($this->options['hardMode'] == 'always') {
             $this->log->write("Secondary hard mode will be activated for all levels.\n");
         } else if ($this->options['hardMode'] == 'vanilla') {
@@ -240,9 +240,9 @@ class Randomizer
         }
     }
 
-    public function newRandomizeEnemies(&$game)
+    public function randomizeEnemiesControlled(&$game)
     {
-        $this->log->write("NEW Randomizing enemies!\n");
+        $this->log->write("Randomizing enemies: Controlled.\n");
         if ($this->options['hardMode'] == 'always') {
             $this->log->write("Secondary hard mode will be activated for all levels.\n");
         } else if ($this->options['hardMode'] == 'vanilla') {
@@ -291,10 +291,13 @@ class Randomizer
                     $this->log->writeVerbose("\tFound enemy: " . Enemy::getName($o) . "\n");
 
                     /* Some enemies can't be randomized, so let's check for those */
-                    foreach ($this->enemy_pools->dont_randomize as $nope) {
-                        if ($o == $nope) {
-                            $do_randomize = false;
-                        }
+                    if (enemyIsInPool($o, $this->enemy_pools->dont_randomize)) {
+                        $do_randomize = false;
+                    }
+
+                    if ($this->options['excludeFirebars'] == 'true' && enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
+                        $do_randomize = false;
+                        $this->log->write("Fire Bar found, but excludeFirebars is set to true.\n");
                     }
 
                     if ($do_randomize) {
@@ -318,6 +321,11 @@ class Randomizer
                             if ($level_has_cheepcheepgenerator && $new_enemy == Enemy::get('Bowser Fire Generator')) {
                                 $acceptable = false;
                                 $this->log->writeVerbose("UNACCEPTABLE BOWSER FIRE GENERATOR GENERATED!!!\n");
+                            }
+
+                            if ($this->options['excludeFirebars'] == 'true' && enemyIsInPool($new_enemy, $this->enemy_pools->firebar_pool)) {
+                                $acceptable = false;
+                                $this->log->writeVerbose("Unacceptable Fire Bar generated! Retrying...\n");
                             }
                         }
 
@@ -350,7 +358,7 @@ class Randomizer
         }
     }
 
-    public function randomizeEnemiesOnLevel($offset, &$game, $in_pools = false)
+    public function randomizeEnemiesOnLevel($offset, &$game)
     {
         $end = 0;
         $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
@@ -383,70 +391,38 @@ class Randomizer
                     $o = $data[$i + 1] & 0b00111111; // this is the enemy object
 
                     /* Some enemies can't be randomized, so let's check for those */
-                    foreach ($this->enemy_pools->dont_randomize as $nope) {
-                        if ($o == $nope) {
-                            $do_randomize = false;
-                        }
+                    if (enemyIsInPool($o, $this->enemy_pools->dont_randomize)) {
+                        $do_randomize = false;
                     }
 
                     if ($do_randomize) {
-                        if ($in_pools) {
-                            $new_data = 0;
-                            if (mt_rand(1, 100) <= $percentage) {
-                                $new_object = 0;
-                                if ($o == Enemy::get('Toad')) {
-                                    $z = count($this->enemy_pools->toad_pool);
-                                    $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                    $new_coord = 0xc8;
-                                    $game->addData($offset + $i, pack('C*', $new_coord));
-                                } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
-                                    $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
-                                } else if (enemyIsInPool($o, $this->enemy_pools->goomba_pool)) {
-                                    $new_object = $this->enemy_pools->goomba_pool[mt_rand(0, count($this->enemy_pools->goomba_pool) - 1)];
-                                } else if (enemyIsInPool($o, $this->enemy_pools->koopa_pool)) {
-                                    $new_object = $this->enemy_pools->koopa_pool[mt_rand(0, count($this->enemy_pools->koopa_pool) - 1)];
-                                } else if (enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
-                                    $new_object = $this->enemy_pools->firebar_pool[mt_rand(0, count($this->enemy_pools->firebar_pool) - 1)];
-                                } else if ($o == Enemy::get("Lakitu")) {
-                                    $new_object = $this->enemy_pools->lakitu_pool[mt_rand(0, count($this->enemy_pools->lakitu_pool) - 1)];
-                                }
-
-                                $new_data = (($p | $h) | $new_object);
-                                $game->addData($offset + $i + 1, pack('C*', $new_data));
-                                $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
-
-                                if ($new_object == Enemy::get('Lakitu')) {
-                                    $new_coord = 0xE2;
-                                    $game->addData($offset + $i, pack('C*', $new_coord));
-                                    $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
-                                }
-
-                            }
-                        } else {
-                            $new_data = 0;
-                            if (mt_rand(1, 100) <= $percentage) {
-                                if ($o == Enemy::get('Toad')) {
-                                    $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                    $new_coord = 0xc8;
-                                    $game->addData($offset + $i, pack('C*', $new_coord));
-                                } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
-                                    // TODO: should Bowser Fire Generator be included in this?
-                                    $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
+                        $new_data = 0;
+                        if (mt_rand(1, 100) <= $percentage) {
+                            if ($o == Enemy::get('Toad')) {
+                                $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
+                                $new_coord = 0xc8;
+                                $game->addData($offset + $i, pack('C*', $new_coord));
+                            } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
+                                // TODO: should Bowser Fire Generator be included in this?
+                                $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
+                            } else {
+                                if ($this->options['excludeFirebars'] == 'true') {
+                                    $new_object = $this->enemy_pools->reasonable_enemy_pool_no_firebars[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool_no_firebars) - 1)];
                                 } else {
                                     $new_object = $this->enemy_pools->reasonable_enemy_pool[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool) - 1)];
                                 }
-
-                                $new_data = (($p | $h) | $new_object);
-                                $game->addData($offset + $i + 1, pack('C*', $new_data));
-                                $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
-
-                                if ($new_object == Enemy::get('Lakitu')) {
-                                    $new_coord = 0xE2;
-                                    $game->addData($offset + $i, pack('C*', $new_coord));
-                                    $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
-                                }
-
                             }
+
+                            $new_data = (($p | $h) | $new_object);
+                            $game->addData($offset + $i + 1, pack('C*', $new_data));
+                            $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
+
+                            if ($new_object == Enemy::get('Lakitu')) {
+                                $new_coord = 0xE2;
+                                $game->addData($offset + $i, pack('C*', $new_coord));
+                                $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
+                            }
+
                         }
                     }
                 }
@@ -1823,11 +1799,9 @@ class Randomizer
 
         // Randomize Enemies
         if ($this->options['enemies'] == "randomizeChaos") {
-            $this->randomizeEnemies($game, false);
-        } else if ($this->options['enemies'] == "randomizeOld") {
-            $this->randomizeEnemies($game, true);
+            $this->randomizeEnemiesChaos($game);
         } else if ($this->options['enemies'] == "randomizeControlled") {
-            $this->newRandomizeEnemies($game);
+            $this->randomizeEnemiesControlled($game);
         } else if ($this->options['enemies'] == "randomizeNone") {
             $this->log->write("No randomization of enemies!\n");
         }

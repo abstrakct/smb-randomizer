@@ -93,7 +93,7 @@ return [
             'enemies' => [
                 'randomizeControlled' => 'Controlled: randomize enemies in a controlled fashion',
                 'randomizeChaos' => 'Chaos: randomize all enemies (within reason)',
-                'randomizeOld' => 'Randomize enemies within smaller pools of related or similar enemies (old algorithm)',
+                // 'randomizeOld' => 'Randomize enemies within smaller pools of related or similar enemies (old algorithm)',
                 'randomizeNone' => 'Do not randomize enemies',
                 //    'shufflexxxxxx' => 'NOT IMPLEMENTED: Shuffle Enemies',
             ],

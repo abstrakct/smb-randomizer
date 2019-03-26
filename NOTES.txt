@@ -65,7 +65,7 @@ BUG: 4-4 can be broken (no correct path out, flags Kmyw, chaos enemy rng probabl
   DONEISH: Change/randomize y pos of (some) enemies? to prevent stuck enemies
 
   TODO: Option to exclude firebars from randomization
-  TODO: Options to randomize/shuffle firebar spin speed / directions!
+  DONE: Options to randomize/shuffle firebar spin speed / directions!
       Offset 0x445f (5 bytes) = spin speed data (28 38 28 38 28)
       Offset 0x4464 (5 bytes) = spin direction (00 00 10 10 00) - 00 = clockwise, 10 = counter-clockwise
 

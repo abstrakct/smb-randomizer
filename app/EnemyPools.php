@@ -5,7 +5,7 @@ use \SMBR\Enemy;
 class EnemyPools
 {
     public $full_enemy_pool;
-    public $reasonable_enemy_pool;
+    public $reasonable_enemy_pool, $reasonable_enemy_pool_no_firebars;
     public $toad_pool, $generator_pool, $firebar_pool, $koopa_pool, $goomba_pool, $lakitu_pool, $dont_use;
     public $new_pools, $toad_new_coords;
     public $dont_randomize;
@@ -86,7 +86,35 @@ class EnemyPools
             Enemy::get('3 Green Koopa Troopas V6'),
         ];
 
-//  TODO: rework pools! add to- and from-pools! (basically DONE)
+        $this->reasonable_enemy_pool_no_firebars = [
+            Enemy::get('Green Koopa Troopa'),
+            Enemy::get('Red Koopa Troopa (walks off floors)'),
+            Enemy::get('Buzzy Beetle'),
+            Enemy::get('Red Koopa Troopa (stays on floors)'),
+            Enemy::get('Green Koopa Troopa (does not move)'),
+            Enemy::get('Hammer Bro'),
+            Enemy::get('Goomba'),
+            Enemy::get('Blooper'),
+            Enemy::get('Bullet Bill'),
+            Enemy::get('Yellow Koopa Paratroopa (does not move)'),
+            Enemy::get('Green Cheep-Cheep (slow)'),
+            Enemy::get('Red Cheep-Cheep (fast)'),
+            Enemy::get('Podoboo'),
+            Enemy::get('Green Koopa Paratroopa (leaping)'),
+            Enemy::get('Red Koopa Troopa (down then up)'),
+            Enemy::get('Green Koopa Troopa (left then right)'),
+            Enemy::get('Lakitu'),
+            Enemy::get('Bowser Fire Generator'),
+            Enemy::get('Bullet Bill/Cheep-Cheep Generator'),
+            Enemy::get('2 Goombas V10'),
+            Enemy::get('3 Goombas V10'),
+            Enemy::get('2 Goombas V6'),
+            Enemy::get('3 Goombas V6'),
+            Enemy::get('2 Green Koopa Troopas V10'),
+            Enemy::get('3 Green Koopa Troopas V10'),
+            Enemy::get('2 Green Koopa Troopas V6'),
+            Enemy::get('3 Green Koopa Troopas V6'),
+        ];
 
         $this->new_pools = [
             Enemy::get('Green Koopa Troopa') => [
@@ -444,56 +472,6 @@ class EnemyPools
             Enemy::get('Fire Bar (Counter-Clockwise)'),
             Enemy::get('Fast Fire Bar (Counter-Clockwise)'),
             Enemy::get('Long Fire Bar (Clockwise)'),
-            Enemy::get('Podoboo'),
-        ];
-
-        $this->koopa_pool = [
-            Enemy::get('Green Koopa Troopa'),
-            Enemy::get('Red Koopa Troopa (walks off floors)'),
-            Enemy::get('Red Koopa Troopa (stays on floors)'),
-            Enemy::get('Green Koopa Troopa (does not move)'),
-            Enemy::get('Yellow Koopa Paratroopa (does not move)'),
-            Enemy::get('Green Koopa Paratroopa (leaping)'),
-            Enemy::get('Red Koopa Troopa (down then up)'),
-            Enemy::get('Green Koopa Troopa (left then right)'),
-            Enemy::get('2 Green Koopa Troopas V10'),
-            Enemy::get('3 Green Koopa Troopas V10'),
-            Enemy::get('2 Green Koopa Troopas V6'),
-            Enemy::get('3 Green Koopa Troopas V6'),
-            Enemy::get('Buzzy Beetle'),
-            Enemy::get('Hammer Bro'),
-            Enemy::get('Blooper'),
-        ];
-
-        $this->goomba_pool = [
-            Enemy::get('Goomba'),
-            Enemy::get('2 Goombas V10'),
-            Enemy::get('3 Goombas V10'),
-            Enemy::get('2 Goombas V6'),
-            Enemy::get('3 Goombas V6'),
-            Enemy::get('Buzzy Beetle'),
-            Enemy::get('Hammer Bro'),
-            Enemy::get('Blooper'),
-            // Note: adding a Spiny to a level, without Lakitu, still makes Lakitu spawn for some reason.
-            //Enemy::get('Spiny'),
-            //Enemy::get('Red Flying Cheep-Cheep Generator'),
-            //Enemy::get('Bowser Fire Generator'),
-            //Enemy::get('Bullet Bill/Cheep-Cheep Generator'),
-        ];
-
-        // TODO: maybe not change Lakitu?
-        $this->lakitu_pool = [
-            Enemy::get('Lakitu'),
-            Enemy::get('Lakitu'),
-            Enemy::get('Podoboo'),
-            Enemy::get('Green Koopa Paratroopa (leaping)'),
-            Enemy::get('Green Koopa Troopa (left then right)'),
-            Enemy::get('Lakitu'),
-            Enemy::get('2 Green Koopa Troopas V10'),
-            Enemy::get('3 Green Koopa Troopas V10'),
-            Enemy::get('2 Green Koopa Troopas V6'),
-            Enemy::get('3 Green Koopa Troopas V6'),
-            Enemy::get('Lakitu'),
         ];
 
         $this->dont_randomize = [
