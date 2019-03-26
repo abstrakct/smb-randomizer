@@ -40,6 +40,7 @@ BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
 FIXED PROBABLY: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! you still win though, so.
 BUG: 4-4 can be broken (no correct path out, flags Kmyw, chaos enemy rng probable cause )
+
       TODO
 
   ENEMIES 
@@ -62,6 +63,12 @@ BUG: 4-4 can be broken (no correct path out, flags Kmyw, chaos enemy rng probabl
   DONE ....... MAYBE JUST NOT RANDOMIZE PIRANHA PLANTS!?! that's probably the solution!
   TODO: maybe remove the "does not move" koopa troopa from the enemy pool? it's quite meh to have an enemy that doesn't move..
   DONEISH: Change/randomize y pos of (some) enemies? to prevent stuck enemies
+
+  TODO: Option to exclude firebars from randomization
+  TODO: Options to randomize/shuffle firebar spin speed / directions!
+      Offset 0x445f (5 bytes) = spin speed data (28 38 28 38 28)
+      Offset 0x4464 (5 bytes) = spin direction (00 00 10 10 00) - 00 = clockwise, 10 = counter-clockwise
+
   TODO: Shuffle enemies? or keep the randomization as it is now?
   TODO: Disappearing enemies/objects
         (goes for enemies and objects) "The level format is divided into "pages", so that only a small amount

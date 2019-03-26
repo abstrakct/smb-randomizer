@@ -39,9 +39,6 @@
                   </b-col>
 
                   <b-col>
-                    <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
-                    <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
-                    <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
                     <smbr-checkbox id="owl" label="Worlds can have varying lengths" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true"></smbr-checkbox>
                     <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
                     <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
@@ -50,7 +47,13 @@
                     <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ofw" label="Randomize fireworks" @input="updateInputted" storage-key="smbr.opt.fireworks" v-model="selectedOptions.fireworks" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ofw" label="Randomize brick blocks in underground bonus areas" @input="updateInputted" storage-key="smbr.opt.randomizeundergroundbricks" v-model="selectedOptions.randomizeUndergroundBricks" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="oef" label="Exclude Fire Bars from enemy randomization" @input="updateInputted" v-model="selectedOptions.excludeFirebars" storage-key="smbr.opt.excludefirebars" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ors" label="Randomize the spin speed of Fire Bars" @input="updateInputted" v-model="selectedOptions.randomizeSpinSpeed" storage-key="smbr.opt.randomizespinspeed" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ord" label="Shuffle the spin directions of Fire Bars" @input="updateInputted" v-model="selectedOptions.shuffleSpinDirections" storage-key="smbr.opt.shufflespindirections" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ovl" label="Generate verbose debug log" @input="updateInputted" storage-key="smbr.opt.verboselog" v-model="selectedOptions.verboseLog" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
+                    <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
+                    <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
 
                     <p> </p>
 
@@ -157,6 +160,9 @@ export default {
         randomizeBackground: "",
         hardMode: "",
         randomizeUndergroundBricks: "",
+        excludeFirebars: "",
+        randomizeSpinSpeed: "",
+        shuffleSpinDirections: "",
         verboseLog: "",
       }
     };
@@ -273,6 +279,9 @@ export default {
           randomizeBackground: this.selectedOptions.randomizeBackground,
           hardMode: this.selectedOptions.hardMode,
           randomizeUndergroundBricks: this.selectedOptions.randomizeUndergroundBricks,
+          excludeFirebars: this.selectedOptions.excludeFirebars,
+          randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
+          shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
           verboseLog: this.selectedOptions.verboseLog
         })
         .then(response => {
@@ -514,6 +523,18 @@ export default {
           val: this.defaultOptions.randomizeUndergroundBricks
         },
         {
+          key: "smbr.opt.excludefirebars",
+          val: this.defaultOptions.excludeFirebars
+        },
+        {
+          key: "smbr.opt.randomizespinspeed",
+          val: this.defaultOptions.randomizeSpinSpeed
+        },
+        {
+          key: "smbr.opt.shufflespindirections",
+          val: this.defaultOptions.shuffleSpinDirections
+        },
+        {
           key: "smbr.opt.verboselog",
           val: this.defaultOptions.verboseLog
         },
@@ -579,6 +600,9 @@ export default {
           randomizeBackground: this.selectedOptions.randomizeBackground,
           hardMode: this.selectedOptions.hardMode,
           randomizeUndergroundBricks: this.selectedOptions.randomizeUndergroundBricks,
+          excludeFirebars: this.selectedOptions.excludeFirebars,
+          randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
+          shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
         })
         .then(response => {
           console.log(response);

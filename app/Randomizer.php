@@ -454,6 +454,26 @@ class Randomizer
         }
     }
 
+    public function randomizeSpinSpeed(&$game)
+    {
+        $offset = 0x445f;
+        for ($i = 0; $i < 5; $i++) {
+            $x = mt_rand(0x20, 0x60);
+            $game->addData($offset + $i, pack('C*', $x));
+        }
+    }
+
+    public function shuffleSpinDirections(&$game)
+    {
+        $offset = 0x4464;
+        $data = [ 0x00, 0x00, 0x10, 0x10, 0x00 ];
+        $new_data = mt_shuffle($data);
+
+        for ($i = 0; $i < 5; $i++) {
+            $game->addData($offset + $i, pack('C*', $new_data[$i]));
+        }
+    }
+
     public function randomizeBlocks(Game &$game, $frompool, $topool)
     {
         $this->log->write("Randomizing blocks!\n");
@@ -1156,12 +1176,14 @@ class Randomizer
             "NO WARP ZONE FOR YOU!",
             "   NO WARP FOR YOU!  ",
             "     YOU DINGUS!     ",
+            "     YOU DONGLE!     ",
             "     BREAK ROOM!     ",
             "TAKE A DEEP BREATH...",
             "    OUT OF ORDER     ",
             " UNDER CONSTRUCTION  ",
             "   PLUMBER NEEDED    ",
             "ERROR- WARP NOT FOUND",
+            "     FEELSBADMAN     ",
         ];
         $text = $warp_text_variations[mt_rand(0, count($warp_text_variations) - 1)];
         // $text = $warp_text_variations[16];
@@ -1582,6 +1604,9 @@ class Randomizer
             [config('smbr.randomizer.options.randomizeBackground'), $options['randomizeBackground']],
             [config('smbr.randomizer.options.hardMode'), $options['hardMode']],
             [config('smbr.randomizer.options.randomizeUndergroundBricks'), $options['randomizeUndergroundBricks']],
+            [config('smbr.randomizer.options.excludeFirebars'), $options['excludeFirebars']],
+            [config('smbr.randomizer.options.randomizeSpinSpeed'), $options['randomizeSpinSpeed']],
+            [config('smbr.randomizer.options.shuffleSpinDirections'), $options['shuffleSpinDirections']],
         ];
         $flag = 0;
 
@@ -1614,6 +1639,9 @@ class Randomizer
         $alphabet_length = strlen($alphabet);
         $flag_number = 0;
         $option_values = [
+            [config('smbr.randomizer.options.shuffleSpinDirections'), 'shuffleSpinDirections'],
+            [config('smbr.randomizer.options.randomizeSpinSpeed'), 'randomizeSpinSpeed'],
+            [config('smbr.randomizer.options.excludeFirebars'), 'excludeFirebars'],
             [config('smbr.randomizer.options.randomizeUndergroundBricks'), 'randomizeUndergroundBricks'],
             [config('smbr.randomizer.options.hardMode'), 'hardMode'],
             [config('smbr.randomizer.options.randomizeBackground'), 'randomizeBackground'],
@@ -1871,6 +1899,16 @@ class Randomizer
         // Randomize where secondary hard mode starts
         if ($this->options['hardMode'] == 'random') {
             $this->randomizeSecondaryHardModeStart($game);
+        }
+
+        // Randomize Fire Bar Spin Speed
+        if ($this->options['randomizeSpinSpeed'] == 'true') {
+            $this->randomizeSpinSpeed($game);
+        }
+
+        // Shuffle Fire Bar Spin Directions
+        if ($this->options['shuffleSpinDirections'] == 'true') {
+            $this->shuffleSpinDirections($game);
         }
 
         // Fix Midway Points

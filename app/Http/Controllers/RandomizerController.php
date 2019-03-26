@@ -39,6 +39,9 @@ class RandomizerController extends Controller
         $options['randomizeBackground'] = $request->input('randomizeBackground');
         $options['hardMode'] = $request->input('hardMode');
         $options['randomizeUndergroundBricks'] = $request->input('randomizeUndergroundBricks');
+        $options['excludeFirebars'] = $request->input('excludeFirebars');
+        $options['randomizeSpinSpeed'] = $request->input('randomizeSpinSpeed');
+        $options['shuffleSpinDirections'] = $request->input('shuffleSpinDirections');
 
         $options['mariocolors'] = $request->input('mario');
         $options['luigicolors'] = $request->input('luigi');
@@ -124,6 +127,9 @@ class RandomizerController extends Controller
         $options['randomizeBackground'] = $request->input('randomizeBackground');
         $options['hardMode'] = $request->input('hardMode');
         $options['randomizeUndergroundBricks'] = $request->input('randomizeUndergroundBricks');
+        $options['excludeFirebars'] = $request->input('excludeFirebars');
+        $options['randomizeSpinSpeed'] = $request->input('randomizeSpinSpeed');
+        $options['shuffleSpinDirections'] = $request->input('shuffleSpinDirections');
 
         $rando = new Randomizer(0, $options, null);
         return $rando->calculateFlags($options);

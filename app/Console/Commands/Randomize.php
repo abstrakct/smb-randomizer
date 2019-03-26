@@ -38,6 +38,9 @@ class Randomize extends Command
         . '{--randomize-background=false : randomize the background and scenery of levels }'
         . '{--hard-mode=random : change where secondary hard mode is activated }'
         . '{--randomize-underground-bricks=true : randomize content of brick blocks in underground bonus areas }'
+        . '{--exclude-firebars=false : exclude fire bars from enemy randomization }'
+        . '{--randomize-spin-speed=false : randomize fire bar spin speeds }'
+        . '{--shuffle-spin-directions=false: shuffle fire bar spin directions }'
         . '{--mariocolors=random : Mario Color Scheme}'
         . '{--luigicolors=random : Luigi Color Scheme}'
         . '{--firecolors=random : Fire Color Scheme}'
@@ -87,6 +90,9 @@ class Randomize extends Command
         $smbrOptions['randomizeBackground'] = $this->option('randomize-background');
         $smbrOptions['hardMode'] = $this->option('hard-mode');
         $smbrOptions['randomizeUndergroundBricks'] = $this->option('randomize-underground-bricks');
+        $smbrOptions['excludeFirebars'] = $this->option('exclude-firebars');
+        $smbrOptions['randomizeSpinSpeed'] = $this->option('randomize-spin-speed');
+        $smbrOptions['shuffleSpinDirections'] = $this->option('shuffle-spin-directions');
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');

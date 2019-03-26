@@ -27,6 +27,9 @@ return [
             'randomizeBackground' => 'false',
             'hardMode' => 'random',
             'randomizeUndergroundBricks' => 'true',
+            'excludeFirebars' => 'false',
+            'randomizeSpinSpeed' => 'false',
+            'shuffleSpinDirections' => 'false',
         ],
 
         'options' => [
@@ -160,6 +163,18 @@ return [
             'randomizeUndergroundBricks' => [
                 'true' => 'Randomize content of brick blocks in underground bonus areas',
                 'false' => 'Do not randomize brick blocks in underground bonus areas',
+            ],
+            'excludeFirebars' => [
+                'true' => 'Exclude Fire Bars from enemy randomization',
+                'false' => 'Include Fire Bars in enemy randomization',
+            ],
+            'randomizeSpinSpeed' => [
+                'true' => 'Randomize the spin speed of Fire Bars',
+                'false' => 'Do not randomize the spin speed of Fire Bars',
+            ],
+            'shuffleSpinDirections' => [
+                'true' => 'Shuffle the spin directions of Fire Bars',
+                'false' => 'Do not shuffle the spin directions of Fire Bars',
             ]
         ],
     ],
