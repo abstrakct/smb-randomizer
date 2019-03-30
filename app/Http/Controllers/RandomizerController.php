@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use SMBR\Logger;
 use SMBR\Randomizer;
 use SMBR\Rom;
+use SMBR\Flagstring;
+
 
 class RandomizerController extends Controller
 {
@@ -131,14 +133,14 @@ class RandomizerController extends Controller
         $options['randomizeSpinSpeed'] = $request->input('randomizeSpinSpeed');
         $options['shuffleSpinDirections'] = $request->input('shuffleSpinDirections');
 
-        $rando = new Randomizer(0, $options, null);
-        return $rando->calculateFlags($options);
+        $f = new Flagstring($options);
+        return $f->getFlagstring();
     }
 
     public function setOptionsFromFlagstring(Request $request)
     {
-        $rando = new Randomizer(0);
-        $rando->setOptionsFromFlagstring($request->input('flagstring'));
-        return $rando->getOptions();
+        //$rando = new Randomizer(0);
+        //$rando->setOptionsFromFlagstring($request->input('flagstring'));
+        //return $rando->getOptions();
     }
 }

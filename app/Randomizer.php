@@ -16,6 +16,7 @@ use SMBR\Game;
 use SMBR\ItemPools;
 use SMBR\Level;
 use SMBR\Translator;
+use SMBR\Flagstring;
 
 // TODO: move these somewhere better!
 const HammerTimeOffset = 0x512b;
@@ -45,6 +46,7 @@ function enemyIsInPool($o, $pool)
 class Randomizer
 {
     public $flags;
+    public $flagstring;
     public $seedhash;
     protected $rng_seed;
     protected $seed;
@@ -75,6 +77,7 @@ class Randomizer
         $this->rng_seed = $seed;
         $this->options = $opt;
         $this->rom = $rom;
+        $this->flagstring = new Flagstring($opt);
         $this->trans = new Translator();
         $this->enemy_pools = new \SMBR\EnemyPools();
         $this->colorschemes = array('random' => new Colorscheme(0, 0, 0),
@@ -556,7 +559,7 @@ class Randomizer
         if ($this->options['pipeTransitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
 
-                // print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex is $worldindex levelindex = $levelindex\n");
+                // print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex = $worldindex levelindex = $levelindex\n");
                 // Select next level in list of shuffled levels, set its data
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
@@ -1555,161 +1558,10 @@ class Randomizer
     //     return $options;
     // }
 
-    // New flag encoding and decoding algorithm - thanks to Fred Coughlin!
-    // I've pretty much stolen the entire algorithm from Fred.
-    // Don't know if he got it from somewhere or came up with it himself.
-    // It's pretty simple actually.
-    public function calculateFlags($options = null)
-    {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        //$alphabet = 'MpQa8WoNsBiEd3VuRfCyT2tXgJeZnU4hI7kAlSwOj6DmPxFqL5bGrKv9HzY1c0';
-        $flag_string = '';
-        $option_values = [
-            [config('smbr.randomizer.options.pipeTransitions'), $options['pipeTransitions']],
-            [config('smbr.randomizer.options.shuffleLevels'), $options['shuffleLevels']],
-            [config('smbr.randomizer.options.normalWorldLength'), $options['normalWorldLength']],
-            [config('smbr.randomizer.options.enemies'), $options['enemies']],
-            [config('smbr.randomizer.options.blocks'), $options['blocks']],
-            [config('smbr.randomizer.options.bowserAbilities'), $options['bowserAbilities']],
-            [config('smbr.randomizer.options.bowserHitpoints'), $options['bowserHitpoints']],
-            [config('smbr.randomizer.options.startingLives'), $options['startingLives']],
-            [config('smbr.randomizer.options.warpZones'), $options['warpZones']],
-            [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
-            [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
-            [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
-            [config('smbr.randomizer.options.randomizeBackground'), $options['randomizeBackground']],
-            [config('smbr.randomizer.options.hardMode'), $options['hardMode']],
-            [config('smbr.randomizer.options.randomizeUndergroundBricks'), $options['randomizeUndergroundBricks']],
-            [config('smbr.randomizer.options.excludeFirebars'), $options['excludeFirebars']],
-            [config('smbr.randomizer.options.randomizeSpinSpeed'), $options['randomizeSpinSpeed']],
-            [config('smbr.randomizer.options.shuffleSpinDirections'), $options['shuffleSpinDirections']],
-        ];
-        $flag = 0;
-
-        foreach ($option_values as list($o, $selected)) {
-            $selected_index = array_search($selected, array_keys($o)); // TODO: do we need + 1 here?? probably not?
-            $flag *= count($o);
-            $flag += $selected_index;
-            //print("Flag: $flag\n");
-        }
-
-        // print("Flag number: " . $flag . "\n");
-
-        $i = 0;
-        $alphabet_length = strlen($alphabet);
-        do {
-            $z = $flag % $alphabet_length;
-            // print("Z: $z - flag: " . round($flag) . " - " . $alphabet[$z] . "\n");
-            $flag_string[$i] = $alphabet[$z];
-            $flag /= $alphabet_length;
-            $i++;
-        } while ($flag > 1);
-
-        // print("New flag string: $flag_string \n");
-        return strrev($flag_string);
-    }
-
-    public function flagstringToOptions($flag_string, &$options)
-    {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $alphabet_length = strlen($alphabet);
-        $flag_number = 0;
-        $option_values = [
-            [config('smbr.randomizer.options.shuffleSpinDirections'), 'shuffleSpinDirections'],
-            [config('smbr.randomizer.options.randomizeSpinSpeed'), 'randomizeSpinSpeed'],
-            [config('smbr.randomizer.options.excludeFirebars'), 'excludeFirebars'],
-            [config('smbr.randomizer.options.randomizeUndergroundBricks'), 'randomizeUndergroundBricks'],
-            [config('smbr.randomizer.options.hardMode'), 'hardMode'],
-            [config('smbr.randomizer.options.randomizeBackground'), 'randomizeBackground'],
-            [config('smbr.randomizer.options.shuffleUndergroundBonus'), 'shuffleUndergroundBonus'],
-            [config('smbr.randomizer.options.fireworks'), 'fireworks'],
-            [config('smbr.randomizer.options.hiddenWarpDestinations'), 'hiddenWarpDestinations'],
-            [config('smbr.randomizer.options.warpZones'), 'warpZones'],
-            [config('smbr.randomizer.options.startingLives'), 'startingLives'],
-            [config('smbr.randomizer.options.bowserHitpoints'), 'bowserHitpoints'],
-            [config('smbr.randomizer.options.bowserAbilities'), 'bowserAbilities'],
-            [config('smbr.randomizer.options.blocks'), 'blocks'],
-            [config('smbr.randomizer.options.enemies'), 'enemies'],
-            [config('smbr.randomizer.options.normalWorldLength'), 'normalWorldLength'],
-            [config('smbr.randomizer.options.shuffleLevels'), 'shuffleLevels'],
-            [config('smbr.randomizer.options.pipeTransitions'), 'pipeTransitions'],
-        ];
-
-        for ($i = 0; $i < strlen($flag_string); $i++) {
-            $j = 0;
-            for ($j = 0; $j < $alphabet_length && $alphabet[$j] != $flag_string[$i]; $j++);
-            $flag_number *= $alphabet_length;
-            $flag_number += $j;
-        }
-
-        // print("Flag string decoded back to number: $flag_number \n");
-
-        // Now, go through options and set correct choice
-        // TODO: improve variable names
-        // TODO: understand this algorithm completely!
-        foreach ($option_values as list($o, $selected)) {
-            $z = count($o);
-            $selected_option = $flag_number % $z;
-            $flag_number /= $z;
-            // print("Selected option: $selected_option \n");
-
-            // Here we need to find out which key in array matches selected_option
-
-            $all_keys = array_keys($o);
-            // $all_keys[$selected_option] will now be the option choice we want
-            //print_r($selected . " " . $all_keys[$selected_option] . "\n");
-            $options[$selected] = $all_keys[$selected_option];
-        }
-    }
-
-    /*
-    public function getFlags($options)
-    {
-        $flags[0] = $options['pipeTransitions'][2];
-        $flags[1] = $options['shuffleLevels'][1];
-        $flags[1]++;
-        $flags[1]++;
-        $flags[2] = $options['normalWorldLength'][1];
-        $flags[2]++;
-        $flags[2]++;
-        $flags[3] = $options['enemies'][12];
-        $flags[4] = $options['blocks'][11];
-        $flags[4]++;
-        $flags[4]++;
-        $flags[5] = $options['bowserAbilities'][3];
-        $flags[6] = $options['bowserHitpoints'][0];
-        $flags[6]++;
-        $flags[7] = $options['startingLives'][0];
-        $flags[7]++;
-        $flags[7]++;
-        $flags[8] = $options['warpZones'][2];
-        $flags[8]++;
-        $flags[8]++;
-        $flags[8]++;
-        $flags[9] = $options['hiddenWarpDestinations'][3];
-        $flags[9]++;
-        $flags[9]++;
-        $flags[9]++;
-        $flags[10] = $options['fireworks'][3];
-        $flags[10]--;
-        $flags[10]--;
-        $flags[10]--;
-        $flags[11] = $options['shuffleUndergroundBonus'][2];
-        $flags[11]++;
-        $flags[11]++;
-        $flags[11]++;
-        $flags[11]++;
-
-        $s = implode("", $flags);
-        $f = strtoupper($s);
-
-        return $f;
-    }
-    */
 
     public function makeFlags()
     {
-        $this->flags = $this->calculateFlags($this->options);
+        $this->flags = $this->flagstring->getFlagstring();
         //$this->flagstringToOptions($this->flags, $this->options);
     }
 

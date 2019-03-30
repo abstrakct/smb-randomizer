@@ -38,6 +38,7 @@ BUG: Bowser + cheep cheep generator (?) can despawn Bowser! not good!
 BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
 BUG: 4-4 can be broken (no correct path out, chaos enemy rng probable cause )
+BUG: long firebars sometimes just stop. seems related to spin speed randomization.
 
       TODO
 
