@@ -70,10 +70,8 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
         appear on the same page until a new page bit is found. However,
         there are limits to this. If 3 objects are on the same x position for the same
         page, every object following that will not show up."
-  TODO: Disasm line  8405: cheep cheep data -- can be randomized!?
   TODO: Disasm line  8698: enemy frenzy thing that checks for world 2 - should be changed??
   TODO: Disasm line 11440: it's possible/easy(?) to change which enemies can be stomped and not!
-  RARE: Sometimes enemies "hide" behind scenery?
   TODO: Enemy Frenzy mode - guaranteed many more fire/bullet/cheep cheeps (generators)!!!!!
   spiny in enemy pools - if possible
 
@@ -120,7 +118,7 @@ TODO: No level shuffle + remove pipe transitions combo does not remove pipe tran
 TODO: Check that all options are set to a valid value!
 TODO: Disasm line  1084: change demo action data in order to not spoil first level??  offset 0x350 in rom, length 20 bytes
 TODO: Disasm line  7338: maybe a better way to shuffle powerups? for mode that changes all powerups of one type to another.
-TODO: Disasm line  7787: respawn points - I think. look at that
+TODO: Disasm line  7792: Worlds with castles that can loop!
 TODO: Disasm line  8549: randomize fire Y positions?
 TODO: A way to let individual options not change other aspects of randomization?!
       So that if you e.g. generate a new rom with the same seed, but enemy randomization turned off, all other aspects should be the same as before.
@@ -159,6 +157,7 @@ needs:
 *********************************************************
 DISCARDED IDEAS (AT LEAST FOR NOW)
 *********************************************************
+TODO: Disasm line  8405: cheep cheep data -- can be randomized!? Yeah, but cheep cheeps are kind of random to begin with, so probably not interesting.
 TODO: Deceptive warp pipes? Possible? Will need changing code. 
 TODO: Technically, could we warp to a level that is NOT level 1 of a world?
       - No, not without code changes/additions
@@ -208,6 +207,7 @@ FIXED: Pipe pointers not always correct! See smb-rando-2829311682-MNCLNESGQVE
 FIXED: fix warp zones! warp zone pipes have strange behavior (pipes with no number take you to world -1)
       not sure if anything can be done about this, except maybe keep levels with warp zones in their vanilla world?!
       see line 1682 in disasm
+  RARE: Sometimes enemies "hide" behind scenery? Can't remember the last time it happened, so probably fixed?
 
 
 

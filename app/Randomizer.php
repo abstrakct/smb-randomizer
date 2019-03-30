@@ -1449,6 +1449,38 @@ class Randomizer
         }
     }
 
+    public function fixLoopingCastles(Game &$game)
+    {
+        $this->log->write("Fixing looping castles (4-4 and 7-4)...\n");
+        $offset44 = 0x407b;
+        $offset74 = 0x407d;
+        $world44 = 0;
+        $world74 = 0;
+
+        foreach ($game->worlds as $world) {
+            if ($world->hasLevel('4-4')) {
+                $world44 = $world->num;
+            }
+            if ($world->hasLevel('7-4')) {
+                $world74 = $world->num;
+            }
+        }
+
+        if ($world44 == $world74) {
+            $this->log->write("FATAL ERROR: 4-4 and 7-4 are in the same world?!?!?!?!?!\n");
+            exit(1);
+        }
+
+        $game->addData($offset44, pack('C*', $world44));
+        $game->addData($offset44 + 1, pack('C*', $world44));
+        $game->addData($offset74, pack('C*', $world74));
+        $game->addData($offset74 + 1, pack('C*', $world74));
+        $game->addData($offset74 + 2, pack('C*', $world74));
+        $game->addData($offset74 + 3, pack('C*', $world74));
+        $game->addData($offset74 + 4, pack('C*', $world74));
+        $game->addData($offset74 + 5, pack('C*', $world74));
+    }
+
     /*
      * Set coin tallies needed to activate bonus hidden 1-UP blocks to zero
      */
@@ -1739,6 +1771,9 @@ class Randomizer
 
         // Fix Midway Points
         $this->fixMidwayPoints($game);
+
+        // Fix Looping Castles
+        $this->fixLoopingCastles($game);
 
         // Zero coin tallies
         $this->zeroCoinTallies($game);

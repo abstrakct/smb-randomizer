@@ -140,7 +140,7 @@ class Level
             '2-1' => new Level('2-1', 0x28, 0x1f61, 0x27dd, [
                 [Pipe::get('2-1 Entry Cloud Area 1'), Pipe::get('2-1 Exit Cloud Area 1')],
                 [Pipe::get('2-1 Entry 1'), Pipe::get('2-1 Exit 1')]], 6),
-            '2-2' => new Level('2-2', 0x01, 0x2181, 0x2e55, [[Pipe::get('2-2 End'), null]], 5/*0x2181 + 7, 0x2181 + 10 ]*/),
+            '2-2' => new Level('2-2', 0x01, 0x2181, 0x2e55, [[Pipe::get('2-2 End'), null]], 5 /*0x2181 + 7, 0x2181 + 10 ]*/),
             '2-3' => new Level('2-3', 0x27, 0x1f4c, 0x2758, null, 7),
             '2-4' => new Level('2-4', 0x62, 0x1dc0, 0x229f, null, 0),
             '3-1' => new Level('3-1', 0x24, 0x1ee0, 0x2629, [
