@@ -1,3 +1,8 @@
+v0.9.6
+- Fixed looping castles
+- "Toad" at the end of 8-4 is no longer randomized, thus ensuring you get the princess when you win
+- Internal changes
+
 v0.9.5
 - Added two new modes for item block randomization
 - Added option to randomize content of brick blocks in underground bonus areas

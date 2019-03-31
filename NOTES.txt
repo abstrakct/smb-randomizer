@@ -35,9 +35,9 @@ TODO
      BUGS
 BUG: Bowser + cheep cheep generator (?) can despawn Bowser! not good!
      More correctly: sprite overload can despawn Bowser! OK, or not?
+     - it even happens with a low number of sprites on screen......
 BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
-BUG: 4-4 can be broken (no correct path out, chaos enemy rng probable cause )
 BUG: long firebars sometimes just stop. seems related to spin speed randomization.
 
       TODO
@@ -82,26 +82,36 @@ TODO: Option to disable beating Bowser by removing the bridge under him? So that
 ----- Can lead to softlocks, will need to guarantee powerups in the castles.
 DONE: Better handling of seed flags
  - DONE: better algorithm, taken from Fred
- - we need a way to convert flag -> config options
- - DONE we need a way to show flags in UI, changing when user changes settings
- - fun: enter VANILLA to get vanilla game?
- - DONE maybe figure out better algorithm
- NAH - currently, 12 letters, vanilla could be: vanillamario
- NAH -- and then we change those based on chosen settings?
+ - TODO: we need a way to convert flag -> config options
+ - DONE: we need a way to show flags in UI, changing when user changes settings
+ - TODO: fun? enter VANILLA to get vanilla game?
+ - DONE: maybe figure out better algorithm
 TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
+----  enabling hard mode from the start requires code hijacking which might be possible
+----- maybe:
+      - jump to subroutine
+      - push A 
+      - store 1 in A 
+      - store A in correct RAM position
+      - pull A 
+      - rts 
+----- but how to fit it in 10 bytes? and where to jump to this routine?
 TODO: inverted controls??
 TODO: randomized levels?? As in, not shuffled, but random! levels can appear multiple times!? nah......
+TODO: disasm line 3217 - castle metatile stuff that can be changed?
 TODO: deceptive enemies? e.g. change graphics of enemies! (13555 in disasm, starts at offset 0x674e)
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
+TODO: flagball unused bytes: rom offset 0x19a4 - 10 bytes
 TODO: Option to leave 8-4 un-randomized (enemies, items)
+TODO: Don't change Toad in 8-4?
 IDEA: Is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
 TODO: DONE FOR UNDERGROUND BONUS AREA - Randomize where pipes lead to?
       -- option to include 4-2 warp zone or not in shuffle - if possible.
       -- also include cloud/water areas
 TODO: Shuffle which pipes can be entered?
-TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!!
+TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!! rom offset 0x5746
 TODO: Option to randomize music? (line 2790 in disasm)
-      -- ROM offset 0x10f7 - 0x10fc - star power music = line 11254 in disasm
+      -- ROM offset 0x10f7 - 4 bytes - shuffle 01, 02, 04, 08
 TODO: Option to disable fireworks completely? (just set all to zero)
 TODO: Randomize fireworks X,Y (line 8632 in disasm)
 TODO: Shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
@@ -118,7 +128,6 @@ TODO: No level shuffle + remove pipe transitions combo does not remove pipe tran
 TODO: Check that all options are set to a valid value!
 TODO: Disasm line  1084: change demo action data in order to not spoil first level??  offset 0x350 in rom, length 20 bytes
 TODO: Disasm line  7338: maybe a better way to shuffle powerups? for mode that changes all powerups of one type to another.
-TODO: Disasm line  7792: Worlds with castles that can loop!
 TODO: Disasm line  8549: randomize fire Y positions?
 TODO: A way to let individual options not change other aspects of randomization?!
       So that if you e.g. generate a new rom with the same seed, but enemy randomization turned off, all other aspects should be the same as before.
@@ -198,7 +207,8 @@ DONE: Randomize when fireworks appear? (line 10469 of disasm)
 DONE: Spoiler free generation (don't write a log file at all, or write one and set permissions to g-r group minus read ?)
       - for now we don't write a log at all.
 DONE: Option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
-
+DONE: Disasm line  7792: Worlds with castles that can loop!
+FIXED: 4-4 can be broken (no correct path out, chaos enemy rng probable cause )
 FIXED: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! you still win though, so.
 FIXED: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
 FIXED: shuffle levels with normal world order = infinite loop now (after adding 8-4 to sanity checks)

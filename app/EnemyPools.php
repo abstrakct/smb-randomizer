@@ -9,6 +9,7 @@ class EnemyPools
     public $toad_pool, $generator_pool, $firebar_pool, $koopa_pool, $goomba_pool, $lakitu_pool, $dont_use;
     public $new_pools, $toad_new_coords;
     public $dont_randomize;
+    public $exceptions;
 
     public function __construct()
     {
@@ -489,5 +490,10 @@ class EnemyPools
         ];
 
         $this->dont_use = [Enemy::get('Spiny')];
+
+        // offsets for enemies to leave unchanged
+        $this->exceptions = [
+            0x1e66,              // Toad/Princess in 8-4
+        ];
     }
 }

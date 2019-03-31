@@ -298,6 +298,11 @@ class Randomizer
                         $do_randomize = false;
                     }
 
+                    if (in_array(($offset + $i), $this->enemy_pools->exceptions)) {
+                        $this->log->writeVerbose("Found exception to enemy randomization!\n");
+                        $do_randomize = false;
+                    }
+
                     if ($this->options['excludeFirebars'] == 'true' && enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
                         $do_randomize = false;
                         $this->log->write("Fire Bar found, but excludeFirebars is set to true.\n");
@@ -395,6 +400,11 @@ class Randomizer
 
                     /* Some enemies can't be randomized, so let's check for those */
                     if (enemyIsInPool($o, $this->enemy_pools->dont_randomize)) {
+                        $do_randomize = false;
+                    }
+
+                    if (in_array(($offset + $i), $this->enemy_pools->exceptions)) {
+                        $this->log->writeVerbose("Found exception to enemy randomization!\n");
                         $do_randomize = false;
                     }
 
