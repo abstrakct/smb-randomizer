@@ -28,6 +28,7 @@ class Rom
 
     private $tmpfile;
     private $log;
+    private $num_writes = [];
     protected $rom;
     protected $level;
 
@@ -46,6 +47,8 @@ class Rom
         }
 
         $this->rom = fopen($this->tmpfile, "r+");
+
+        $this->num_writes = array_fill(0, 0xa010, 0);
     }
 
     public function setLogger($l)
@@ -143,6 +146,14 @@ class Rom
             $this->log->writeVerbose(sprintf("%02x ", $value));
         }
         $this->log->writeVerbose("\n");
+
+        // Log how many writes to each address
+        $this->num_writes[$offset]++;
+        if ($this->num_writes[$offset] > 1) {
+            $s = sprintf("Address 0x%04x written %d times!\n", $offset, $this->num_writes[$offset]);
+            $this->log->writeVerbose($s);
+        }
+
         return $this;
     }
 

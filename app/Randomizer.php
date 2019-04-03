@@ -1041,7 +1041,8 @@ class Randomizer
          * If we do, then warp zones can get a bit strange, but as long as that's communicated
          * to the player that might be ok?
          */
-         /*
+
+        /*
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('1-2') && $world->num != 0) {
                     $this->log->writeVerbose("Sanity check fail: 1-2 is not in world 1!\n");
@@ -1064,7 +1065,8 @@ class Randomizer
                     return false;
                 }
             }
-            */
+        */
+
 
         // Underground Bonus Area shuffle happens here
         // BUT WHY?
@@ -1451,7 +1453,7 @@ class Randomizer
     // TODO: rewrite! (???)
     public function fixPipes(Game &$game)
     {
-        $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
+        $levels = ['1-1', '1-2', '2-1', '2-2', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '7-2', '8-1', '8-2'];
         $this->log->write("Fixing Pipes...\n");
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
