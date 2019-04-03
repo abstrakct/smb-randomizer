@@ -91,6 +91,8 @@ class Randomizer
             'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
             'Mustard Man' => new Colorscheme(0xd8, 0x27, 0x28),
             'Pretty In Pink' => new Colorscheme(0xe3, 0xb2, 0x14),
+            'Outrun' => new Colorscheme(0x61, 0x27, 0x94),
+            'Outrun 2' => new Colorscheme(0x94, 0x27, 0x61),
         );
     }
 
@@ -860,8 +862,8 @@ class Randomizer
                     array_splice($pipeList, $key, 1);
                 } else {
                     $fail++;
-                    if ($fail > 100) {
-                        $this->log->write("Failed more than 100 attempts - giving up...\n");
+                    if ($fail > 10) {
+                        $this->log->write("Failed more than 10 attempts - giving up...\n");
                         return false;
                     }
                 }
@@ -1287,7 +1289,8 @@ class Randomizer
                 foreach ($world->levels as $level) {
                     if ($level->name == '1-2') {
                         for ($i = 0; $i < 3; $i++) {
-                            $new_warp = mt_rand($world->num + 2, 8);
+                            $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                            $new_warp = mt_rand($min_world, 8);
                             $game->addData($offset + $i, pack('C*', $new_warp));
                             $this->log->write("Warp pipe in 1-2 (world $world->num) randomized to $new_warp\n");
                         }
@@ -1295,12 +1298,14 @@ class Randomizer
                     if ($level->name == '4-2') {
                         // area accessed by beanstalk
                         for ($i = 8; $i < 11; $i++) {
-                            $new_warp = mt_rand($world->num + 2, 8);
+                            $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                            $new_warp = mt_rand($min_world, 8);
                             $game->addData($offset + $i, pack('C*', $new_warp));
                             $this->log->write("Warp pipe in 4-2 (beanstalk area) (world $world->num) randomized to $new_warp\n");
                         }
                         // area at end of level (only one pipe there)
-                        $new_warp = mt_rand($world->num + 2, 8);
+                        $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                        $new_warp = mt_rand($min_world, 8);
                         $game->addData($offset + 5, pack('C*', $new_warp));
                         $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
                     }
@@ -1340,8 +1345,9 @@ class Randomizer
             foreach ($game->worlds as $world) {
                 foreach ($world->levels as $level) {
                     if ($level->name == '1-2') {
-                        $good_warp[0] = mt_rand($world->num + 2, 8);
-                        $good_warp[1] = mt_rand($world->num + 2, 8);
+                        $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                        $good_warp[0] = mt_rand($min_world, 8);
+                        $good_warp[1] = mt_rand($min_world, 8);
                         $bad_warp = mt_rand(1, $world->num + 1);
                         // make sure we shuffle the order so you can't know which pipe is which
                         $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
@@ -1354,8 +1360,9 @@ class Randomizer
                     }
                     if ($level->name == '4-2') {
                         // area accessed by beanstalk
-                        $good_warp[0] = mt_rand($world->num + 2, 8);
-                        $good_warp[1] = mt_rand($world->num + 2, 8);
+                        $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                        $good_warp[0] = mt_rand($min_world, 8);
+                        $good_warp[1] = mt_rand($min_world, 8);
                         $bad_warp = mt_rand(1, $world->num + 1);
                         $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
 
@@ -1368,7 +1375,8 @@ class Randomizer
                         // warp zone at end of 4-2 will be 50/50 good or bad
                         $chance = mt_rand(1, 100);
                         if ($chance <= 50) {
-                            $new_warp = mt_rand($world->num + 2, 8);
+                            $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                            $new_warp = mt_rand($min_world, 8);
                         } else {
                             $new_warp = mt_rand(1, $world->num + 1);
                         }

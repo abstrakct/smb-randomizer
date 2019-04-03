@@ -47,6 +47,8 @@ return [
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
                     'Pretty In Pink' => 'Pretty In Pink',
+                    'Outrun' => 'Outrun',
+                    'Outrun 2' => 'Outrun 2',
                 ],
                 'luigi' => [
                     'random' => 'Totally random color scheme',
@@ -61,6 +63,8 @@ return [
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
                     'Pretty In Pink' => 'Pretty In Pink',
+                    'Outrun' => 'Outrun',
+                    'Outrun 2' => 'Outrun 2',
                 ],
                 'fire' => [
                     'random' => 'Totally random color scheme',
@@ -75,6 +79,8 @@ return [
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
                     'Pretty In Pink' => 'Pretty In Pink',
+                    'Outrun' => 'Outrun',
+                    'Outrun 2' => 'Outrun 2',
                 ],
             ],
             'pipeTransitions' => [
