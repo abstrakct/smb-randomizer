@@ -1291,7 +1291,12 @@ class Randomizer
                 foreach ($world->levels as $level) {
                     if ($level->name == '1-2') {
                         for ($i = 0; $i < 3; $i++) {
-                            $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                            $min_world = 1;
+                            if (($world->num + 2) > 8) {
+                                $min_world = 8;
+                            } else {
+                                $min_world = $world->num + 2;
+                            }
                             $new_warp = mt_rand($min_world, 8);
                             $game->addData($offset + $i, pack('C*', $new_warp));
                             $this->log->write("Warp pipe in 1-2 (world $world->num) randomized to $new_warp\n");
@@ -1300,13 +1305,23 @@ class Randomizer
                     if ($level->name == '4-2') {
                         // area accessed by beanstalk
                         for ($i = 8; $i < 11; $i++) {
-                            $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                            $min_world = 1;
+                            if (($world->num + 2) > 8) {
+                                $min_world = 8;
+                            } else {
+                                $min_world = $world->num + 2;
+                            }
                             $new_warp = mt_rand($min_world, 8);
                             $game->addData($offset + $i, pack('C*', $new_warp));
                             $this->log->write("Warp pipe in 4-2 (beanstalk area) (world $world->num) randomized to $new_warp\n");
                         }
                         // area at end of level (only one pipe there)
-                        $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                        $min_world = 1;
+                        if (($world->num + 2) > 8) {
+                            $min_world = 8;
+                        } else {
+                            $min_world = $world->num + 2;
+                        }
                         $new_warp = mt_rand($min_world, 8);
                         $game->addData($offset + 5, pack('C*', $new_warp));
                         $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
