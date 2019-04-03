@@ -1039,7 +1039,7 @@ class Randomizer
          * If we do, then warp zones can get a bit strange, but as long as that's communicated
          * to the player that might be ok?
          */
-        // if ($this->options['warpZones'] != "normal") {
+         /*
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('1-2') && $world->num != 0) {
                     $this->log->writeVerbose("Sanity check fail: 1-2 is not in world 1!\n");
@@ -1062,7 +1062,7 @@ class Randomizer
                     return false;
                 }
             }
-        // }
+            */
 
         // Underground Bonus Area shuffle happens here
         // BUT WHY?
@@ -1177,6 +1177,37 @@ class Randomizer
         $text = $warp_text_variations[mt_rand(0, count($warp_text_variations) - 1)];
         // $text = $warp_text_variations[16];
         $this->setText($game, "Warp", $text);
+    }
+
+    public function injectNewWarpZoneCode(&$game)
+    {
+        // NEW ROUTINE:
+        // ldx #$04        A2 04
+        // lda $e9         A5 E9
+        // cmp #$d8        C9 D8
+        // beq WarpNum     F0 07
+        // inx             E8
+        // cmp #$05        C9 05
+        // beq WarpNum     F0 02
+        // inx             E8
+        // nop             EA
+        $new_code = [
+            0xA2, 0x04,
+            0xA5, 0xE9,
+            0xC9, 0xD8,
+            0xF0, 0x07,
+            0xE8,
+            0xC9, 0x05,
+            0xF0, 0x02,
+            0xE8,
+            0xEA
+        ];
+
+        $offset = 0x1702;
+
+        for ($i = 0; $i < count($new_code); $i++) {
+            $game->addData($offset + $i, pack('C*', $new_code[$i]));
+        }
     }
 
     public function randomizeWarpZones(&$game)
@@ -1588,19 +1619,6 @@ class Randomizer
         $this->log->write("Randomized win text to entry " . $variation . " (" . $win_variations[$variation][0] . ")\n");
     }
 
-    // public function basicallyHowGetOptionsFromFlagsWouldWork($flags)
-    // {
-    //     if ($flags[0] == 'M') {
-    //         $options['pipeTransitions'] = 'remove';
-    //     } else if ($flags[0] == 'E') {
-    //         $options['pipeTransitions'] = 'keep';
-    //     } else {
-    //         $options['pipeTransitions'] = 'invalid';
-    //     }
-    //     return $options;
-    // }
-
-
     public function makeFlags()
     {
         $this->flags = $this->flagstring->getFlagstring();
@@ -1786,7 +1804,11 @@ class Randomizer
         $this->fixLoopingCastles($game);
 
         // Zero coin tallies
+        // TODO: THIS DOESN'T SEEM TO WORK!!!!!
         $this->zeroCoinTallies($game);
+
+        // Inject New Warp Zone Code :D
+        $this->injectNewWarpZoneCode($game);
 
         // Set seedhash text
         $this->setTextSeedhash($this->seedhash, $game);

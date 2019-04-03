@@ -39,6 +39,9 @@ BUG: Bowser + cheep cheep generator (?) can despawn Bowser! not good!
 BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
 BUG: long firebars sometimes just stop. seems related to spin speed randomization.
+BUG: Add exclusions to item block randomization. Specifically: the hidden blocks needed to get to warp zone in 4-2 should NOT be randomized.
+
+
 
       TODO
 
@@ -61,6 +64,8 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
   TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
   TODO: maybe remove the "does not move" koopa troopa from the enemy pool? it's quite meh to have an enemy that doesn't move..
   DONEISH: Change/randomize y pos of (some) enemies? to prevent stuck enemies
+
+  TODO: option to choose whether to allow 1-2/4-2 anywhere or not?
 
   TODO: Shuffle enemies? or keep the randomization as it is now?
   TODO: Disappearing enemies/objects
@@ -103,7 +108,6 @@ TODO: deceptive enemies? e.g. change graphics of enemies! (13555 in disasm, star
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
 TODO: flagball unused bytes: rom offset 0x19a4 - 10 bytes
 TODO: Option to leave 8-4 un-randomized (enemies, items)
-TODO: Don't change Toad in 8-4?
 IDEA: Is it possible to change how high Bowser jumps? to make it more difficult to just run under him. maybe around disasm line 10239
 TODO: DONE FOR UNDERGROUND BONUS AREA - Randomize where pipes lead to?
       -- option to include 4-2 warp zone or not in shuffle - if possible.
@@ -208,6 +212,7 @@ DONE: Spoiler free generation (don't write a log file at all, or write one and s
       - for now we don't write a log at all.
 DONE: Option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
 DONE: Disasm line  7792: Worlds with castles that can loop!
+DONE: Don't change Toad in 8-4?
 FIXED: 4-4 can be broken (no correct path out, chaos enemy rng probable cause )
 FIXED: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! you still win though, so.
 FIXED: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
