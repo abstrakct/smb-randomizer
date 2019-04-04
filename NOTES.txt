@@ -34,16 +34,16 @@ TODO
 **************
      BUGS
 BUG: Bowser + cheep cheep generator (?) can despawn Bowser! not good!
-     More correctly: sprite overload can despawn Bowser! OK, or not?
-     - it even happens with a low number of sprites on screen......
+     More correctly: sprite overload can despawn Bowser!? OK, or not?
+     - it even happens with a low number of sprites on screen...
+     - and sometimes it works correctly with many sprites on screen...
 BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
 BUG: long firebars sometimes just stop. seems related to spin speed randomization.
-BUG: Add exclusions to item block randomization. Specifically: the hidden blocks needed to get to warp zone in 4-2 should NOT be randomized.
 
 
 
-      TODO
+    TODO
 
   ENEMIES 
   - DONEISH algorithm needs big rework
@@ -89,8 +89,7 @@ DONE: Better handling of seed flags
  - DONE: better algorithm, taken from Fred
  - TODO: we need a way to convert flag -> config options
  - DONE: we need a way to show flags in UI, changing when user changes settings
- - TODO: fun? enter VANILLA to get vanilla game?
- - DONE: maybe figure out better algorithm
+ - TODO: enter VANILLA to get vanilla game? a silly easter egg...
 TODO: Option to enable hard mode from the start? If so, can we also disable world select mode?
 ----  enabling hard mode from the start requires code hijacking which might be possible
 ----- maybe:
@@ -102,7 +101,6 @@ TODO: Option to enable hard mode from the start? If so, can we also disable worl
       - rts 
 ----- but how to fit it in 10 bytes? and where to jump to this routine?
 TODO: inverted controls??
-TODO: randomized levels?? As in, not shuffled, but random! levels can appear multiple times!? nah......
 TODO: disasm line 3217 - castle metatile stuff that can be changed?
 TODO: deceptive enemies? e.g. change graphics of enemies! (13555 in disasm, starts at offset 0x674e)
 TODO: UNUSED BYTES: lines 4350, 11058, 15044 in disasm! (also that flagball thing)
@@ -177,6 +175,7 @@ TODO: Technically, could we warp to a level that is NOT level 1 of a world?
 TODO: Disasm line 13475: it's possible/easy(?) to change the appearance of a powerup!!!    NOPE DOESN'T WORK (sprites get weird)
 TODO: randomly add swimming to levels?? investigate how swimming levels work!
       - Can't be done, afaik.
+TODO: randomized levels?? As in, not shuffled, but random! levels can appear multiple times!? nah......
 
 *********************************************************
 DONE
@@ -213,6 +212,7 @@ DONE: Spoiler free generation (don't write a log file at all, or write one and s
 DONE: Option to only randomize clothes for mario/luigi, for more reasonable colors, hopefully.
 DONE: Disasm line  7792: Worlds with castles that can loop!
 DONE: Don't change Toad in 8-4?
+DONE: Add exclusions to item block randomization. Specifically: the hidden blocks needed to get to warp zone in 4-2 should NOT be randomized.
 FIXED: 4-4 can be broken (no correct path out, chaos enemy rng probable cause )
 FIXED: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! you still win though, so.
 FIXED: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)

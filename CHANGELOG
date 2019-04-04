@@ -1,10 +1,9 @@
 v0.9.6
 - 1-2 and 4-2 can now be placed anywhere in the world layout!! (and warp zone randomization is aware of this!)
---- this is thanks to me finally figuring out some custom code to make this work! (as in, custom NES/6502 code!)
---- note: for a little while, this seems to have messed with pipes, but just as suddenly as it appeared this bug seems to have disappeared.
---- more testing is required
+  - this is possible because I finally figured out a solution and wrote some custom code to make this work! (as in, custom NES/6502 code! yes, I'm proud :)
 - Fixed looping castles
-- "Toad" at the end of 8-4 is no longer randomized, thus ensuring you get the princess when you win
+- Toad at the end of 8-4 is no longer randomized, thus ensuring you get the princess when you win
+- The hidden coin blocks in 4-2 needed to access the warp zone are no longer randomized, thus ensuring you can always get to the warp zone
 - Added two "80s/outrun/vaporwave" colorschemes
 - Internal changes
 
