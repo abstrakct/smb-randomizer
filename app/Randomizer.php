@@ -56,6 +56,7 @@ class Randomizer
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
+    public $item_pools;
     const VERSION = "0.9.5";
 
     // Color schemes. TODO: improve
@@ -80,6 +81,7 @@ class Randomizer
         $this->flagstring = new Flagstring($opt);
         $this->trans = new Translator();
         $this->enemy_pools = new \SMBR\EnemyPools();
+        $this->item_pools = new \SMBR\ItemPools();
         $this->colorschemes = array('random' => new Colorscheme(0, 0, 0),
             'Vanilla Mario' => new Colorscheme(0x16, 0x27, 0x18),
             'Vanilla Luigi' => new Colorscheme(0x30, 0x27, 0x19),
@@ -491,6 +493,10 @@ class Randomizer
                     $y = $data[$i] & 0b00001111;
                     if ($y > 0x0B) {
                         $do_randomize = false;
+                    }
+                    if (in_array($level->level_data_offset + $i, $this->item_pools->exceptions)) {
+                        $do_randomize = false;
+                        $this->log->writeVerbose("Found Item Block randomization exception!\n");
                     }
 
                     if ($do_randomize) {

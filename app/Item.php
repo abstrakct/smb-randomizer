@@ -85,6 +85,7 @@ class Item
 class ItemPools
 {
     public $all_items, $powerups, $all_question_blocks, $all_hidden_blocks, $all_brick_blocks, $all_coins;
+    public $exceptions;
 
     public function __construct()
     {
@@ -121,6 +122,10 @@ class ItemPools
             Item::get('Question Block (Coin)'),
             Item::get('Hidden Block (Coin)'),
             Item::get('Brick (Multiple Coins)'),
+        ];
+        $this->exceptions = [
+            // Hidden coin blocks in 4-2 needed for accessing warp zone.
+            0x2d16, 0x2d1a, 0x2d1e, 0x2d20,
         ];
     }
 }
