@@ -862,8 +862,8 @@ class Randomizer
                     array_splice($pipeList, $key, 1);
                 } else {
                     $fail++;
-                    if ($fail > 10) {
-                        $this->log->write("Failed more than 10 attempts - giving up...\n");
+                    if ($fail > 100) {
+                        $this->log->write("Failed more than 100 attempts - giving up...\n");
                         return false;
                     }
                 }
@@ -1183,7 +1183,7 @@ class Randomizer
         $this->setText($game, "Warp", $text);
     }
 
-    public function injectNewWarpZoneCode(&$game)
+    public function writeNewWarpZoneCode(&$game)
     {
         // NEW ROUTINE:
         // ldx #$04        A2 04
@@ -1832,8 +1832,8 @@ class Randomizer
         // TODO: THIS DOESN'T SEEM TO WORK!!!!!
         $this->zeroCoinTallies($game);
 
-        // Inject New Warp Zone Code :D
-        $this->injectNewWarpZoneCode($game);
+        // Write New Warp Zone Code :D
+        $this->writeNewWarpZoneCode($game);
 
         // Set seedhash text
         $this->setTextSeedhash($this->seedhash, $game);
