@@ -242,7 +242,7 @@ class Randomizer
         foreach ($vanilla as $level) {
             if ($level->has_enemies) {
                 $this->log->write("Randomizing enemies on level " . $level->name . "\n");
-                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game);
+                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $level->name, $game);
             }
         }
     }
@@ -258,7 +258,7 @@ class Randomizer
         $vanilla = Level::all();
         foreach ($vanilla as $level) {
             if ($level->has_enemies) {
-                $this->log->write("RANDOMIZING ENEMIES ON LEVEL " . $level->name . "\n");
+                $this->log->writeVerbose("RANDOMIZING ENEMIES ON LEVEL " . $level->name . "\n");
                 $this->newRandomizeEnemiesOnLevel($level->enemy_data_offset, $game);
             }
         }
@@ -370,7 +370,7 @@ class Randomizer
         }
     }
 
-    public function randomizeEnemiesOnLevel($offset, &$game)
+    public function randomizeEnemiesOnLevel($offset, $level, &$game)
     {
         $end = 0;
         $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
@@ -412,34 +412,46 @@ class Randomizer
                         $do_randomize = false;
                     }
 
+                    // TODO: 
+                    // if original enemy was firebar and new enemy is not firebar, set Y coord to one higher (-1).
+                    // Will hopefully prevent enemies from being stuck inside the block where the firebar was
                     if ($do_randomize) {
                         $new_data = 0;
-                        if (mt_rand(1, 100) <= $percentage) {
+                        $acceptable = false;
+
+                        while (!$acceptable) {
                             if ($o == Enemy::get('Toad')) {
                                 $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
                                 $new_coord = 0xc8;
                                 $game->addData($offset + $i, pack('C*', $new_coord));
-                            } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
+                                $acceptable = true;
+                            } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
                                 // TODO: should Bowser Fire Generator be included in this?
                                 $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
+                                $acceptable = true;
                             } else {
                                 if ($this->options['excludeFirebars'] == 'true') {
                                     $new_object = $this->enemy_pools->reasonable_enemy_pool_no_firebars[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool_no_firebars) - 1)];
+                                    $acceptable = true;
                                 } else {
                                     $new_object = $this->enemy_pools->reasonable_enemy_pool[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool) - 1)];
+                                    $acceptable = true;
                                 }
                             }
 
-                            $new_data = (($p | $h) | $new_object);
-                            $game->addData($offset + $i + 1, pack('C*', $new_data));
-                            $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
-
-                            if ($new_object == Enemy::get('Lakitu')) {
-                                $new_coord = 0xE2;
-                                $game->addData($offset + $i, pack('C*', $new_coord));
-                                $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
+                            if ($level == '1-2' && enemyIsInPool($new_object, $this->enemy_pools->generator_pool)) {
+                                $acceptable = false;
                             }
+                        }
 
+                        $new_data = (($p | $h) | $new_object);
+                        $game->addData($offset + $i + 1, pack('C*', $new_data));
+                        $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
+
+                        if ($new_object == Enemy::get('Lakitu')) {
+                            $new_coord = 0xE2;
+                            $game->addData($offset + $i, pack('C*', $new_coord));
+                            $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
                         }
                     }
                 }
@@ -478,7 +490,7 @@ class Randomizer
                     break;
                 }
 
-                $this->log->write("Randomizing item blocks in $level->name\n");
+                $this->log->writeVerbose("Randomizing item blocks in $level->name\n");
                 $end = 0;
                 $data = $this->rom->read($level->level_data_offset, 200);
                 foreach ($data as $byte) {

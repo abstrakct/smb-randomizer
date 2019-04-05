@@ -61,6 +61,9 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
        b) DONE option to randomize where it's activated
        c) tighter control of where levels are placed, possibly together with b)
 
+  TODO: DemoActionData change. Offset: 0x350 - 0x364 (actions) 0x365 - 0x37a (timing)
+        action: 00 = no action, 80 = A button
+
   TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
   TODO: maybe remove the "does not move" koopa troopa from the enemy pool? it's quite meh to have an enemy that doesn't move..
   DONEISH: Change/randomize y pos of (some) enemies? to prevent stuck enemies
