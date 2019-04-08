@@ -1572,7 +1572,14 @@ class Randomizer
     {
         $offset = 0x32d2;
         for ($i = 0; $i < 8; $i++) {
-            $game->addData($offset + $i, pack('C*', 0));
+            $game->addData($offset + $i, pack('C*', 0x00));
+        }
+    }
+
+    public function disableDemoActions(Game &$game)
+    {
+        for ($offset = 0x350; $offset < 0x364; $offset++) {
+            $game->addData($offset, pack('C*', 0x80));
         }
     }
 
@@ -1852,6 +1859,9 @@ class Randomizer
 
         // Write New Warp Zone Code :D
         $this->writeNewWarpZoneCode($game);
+
+        // Disable demo actions
+        $this->disableDemoActions($game);
 
         // Set seedhash text
         $this->setTextSeedhash($this->seedhash, $game);

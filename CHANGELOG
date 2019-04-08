@@ -1,3 +1,10 @@
+v0.9.7
+- The autoplay/demo actions that Mario does while waiting for you to press start have been disabled.
+  This is to minimize any spoilers you get about the first level.
+  If there is a demand for it, I can make this optional.
+  Mario will jump once to let you know the game is in "demo mode".
+- I've hopefully fixed despawning lifts in 1-2, but I'm not 100% sure.
+
 v0.9.6
 - 1-2 and 4-2 can now be placed anywhere in the world layout!! (and warp zone randomization is aware of this!)
   - this is possible because I finally figured out a solution and wrote some custom code to make this work! (as in, custom NES/6502 code! yes, I'm proud :)
