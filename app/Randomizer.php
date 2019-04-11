@@ -567,16 +567,36 @@ class Randomizer
         }
     }
     /*
-     * Shuffle levels, but castles can appear anywhere, except 8-4 which is always last.
+     * Shuffle levels, but castles can appear anywhere, except 8-4 which is always the last level.
      * Each castle represents the end of a world, but currently there are no restrictions on how
      * many levels can be in a world, except that there will be no more than 32 levels total like in vanilla.
      */
-    public function shuffleAllLevels(&$game)
+    public function shuffleAllLevels(&$game, $subset = false)
     {
-        $all_levels = [
-            '1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4',
-            '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3', '8-4',
-        ];
+        if ($subset) {
+            $levels = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
+            $possible_levels = [
+                '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', 
+                '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3', 
+            ];
+            $num_levels = mt_rand(8, 24);
+
+            $possible_shuffled = mt_shuffle($possible_levels);
+            for ($i = 0; $i < $num_levels; $i++) {
+                array_push($levels, $possible_shuffled[$i]);
+            }
+
+            // $levels += array_slice($possible_levels, 0, $num_levels);
+            $all_levels = mt_shuffle($levels);
+            // print_r($levels);
+            // print_r($all_levels);
+            $game->num_levels = $num_levels + 8;
+        } else {
+            $all_levels = [
+                '1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4',
+                '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3', '8-4',
+            ];
+        }
 
         $shuffledlevels = mt_shuffle($all_levels);
         //print_r($shuffledlevels);
@@ -588,7 +608,6 @@ class Randomizer
         // TODO: reduce code duplication!
         if ($this->options['pipeTransitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
-
                 // print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex = $worldindex levelindex = $levelindex\n");
                 // Select next level in list of shuffled levels, set its data
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
@@ -921,20 +940,20 @@ class Randomizer
         // TODO: 32 IS NOT ALWAYS CORRECT!!! because of pipe transitions etc
         // therefore: handle all variations here.
         $levels = 0;
-        if ($this->options["shuffleLevels"] == "none") {
-            $num_levels = 35;
-        } else if ($this->options["shuffleLevels"] == "all" && $this->options["pipeTransitions"] == "keep") {
-            $num_levels = 35;
-        } else {
-            $num_levels = 32;
-        }
+        //if ($this->options["shuffleLevels"] == "none") {
+        //    $num_levels = 35;
+        //} else if ($this->options["shuffleLevels"] == "all" && $this->options["pipeTransitions"] == "keep") {
+        //    $num_levels = 35;
+        //} else {
+        //    $num_levels = 32;
+        //}
         
         foreach ($game->worlds as $world) {
             $levels += count($world->levels);
         }
 
-        if ($levels != $num_levels) {
-            $this->log->writeVerbose("Sanity check fail: Not $num_levels levels in world layout (levels = $levels)!\n");
+        if ($levels != $game->num_levels) {
+            $this->log->writeVerbose("Sanity check fail: Not $game->num_levels levels in world layout (levels = $levels)!\n");
             return false;
         }
 
@@ -1718,6 +1737,11 @@ class Randomizer
         // Note: Sanity checking takes care of underground bonus area shuffling!
         // TODO: maybe structure that differently?
         if ($this->options['shuffleLevels'] == "all") {
+            if ($this->options['pipeTransitions'] == "keep") {
+                $game->num_levels = 35;
+            } else {
+                $game->num_levels = 32;
+            }
             if ($this->options['normalWorldLength'] == "true") {
                 // normal world length
                 $this->log->write("Shuffling all levels (normal world length)...\n");
@@ -1737,6 +1761,7 @@ class Randomizer
             }
         } else if ($this->options['shuffleLevels'] == "worlds") {
             $this->log->write('Shuffling world order...');
+            $game->num_levels = 32;
             $this->shuffleWorldOrder($game);
             while (!$this->sanityCheckWorldLayout($game)) {
                 $game->resetWorlds();
@@ -1745,6 +1770,7 @@ class Randomizer
             $game->setVanillaWorldData();
         } else if ($this->options['shuffleLevels'] == "none") {
             $game->setVanillaWorldData();
+            $game->num_levels = 35;
             while (!$this->sanityCheckWorldLayout($game)) {
                 $this->log->write("Vanilla World Layout sanity check failed?!! Something is very wrong - that shouldn't happen!\n");
                 exit(1);

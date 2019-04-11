@@ -31,6 +31,7 @@ class Game
     public $worlds = [];
     public $midway_points = [];
     public $options;
+    public $num_levels;
     private $data_packets = [];
 
     public function __construct($options)
