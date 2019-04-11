@@ -25,7 +25,7 @@ return [
             'fireworks' => 'true',
             'shuffleUndergroundBonus' => 'true',
             'randomizeBackground' => 'false',
-            'hardMode' => 'random',
+            'hardMode' => 'vanilla',
             'randomizeUndergroundBricks' => 'true',
             'excludeFirebars' => 'false',
             'randomizeSpinSpeed' => 'false',
@@ -162,7 +162,7 @@ return [
             ],
             'hardMode' => [
                 'always' => 'Secondary hard mode is activated on all levels',
-                'random' => 'Which level activates secondary hard mode is random',
+                // 'random' => 'Which level activates secondary hard mode is random',
                 // 'xxxxxx' => 'Like random, but certain levels are placed after the level which activates secondary hard mode',
                 'vanilla' => 'Vanilla - secondary hard mode is activated in 5-3',
             ],

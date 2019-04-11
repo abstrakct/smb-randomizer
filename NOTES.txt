@@ -37,6 +37,9 @@ BUG: Bowser + cheep cheep generator (?) can despawn Bowser! not good!
      More correctly: sprite overload can despawn Bowser!? OK, or not?
      - it even happens with a low number of sprites on screen...
      - and sometimes it works correctly with many sprites on screen...
+BUG: Bowser can despawn in general!! I don't know why! Even with no other enemies on screen! WHY
+  UPDATE: it's related to changing where secondary hard mode starts! Still not sure why though.....
+
 BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
 BUG: long firebars sometimes just stop. seems related to spin speed randomization.
@@ -65,7 +68,6 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
         action: 00 = no action, 80 = A button
 
   TODO: exclude hidden block next to pipe in 8-4
-  TODO: add secondary hard mode always enabled!
   
   TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
   TODO: maybe remove the "does not move" koopa troopa from the enemy pool? it's quite meh to have an enemy that doesn't move..

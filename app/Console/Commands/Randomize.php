@@ -38,7 +38,7 @@ class Randomize extends Command
         . '{--fireworks=true : randomize when fireworks appear}'
         . '{--shuffle-underground-bonus=true : shuffle destinations of underground bonus level pipes }'
         . '{--randomize-background=false : randomize the background and scenery of levels }'
-        . '{--hard-mode=random : change where secondary hard mode is activated }'
+        . '{--hard-mode=vanilla : change where secondary hard mode is activated }'
         . '{--randomize-underground-bricks=true : randomize content of brick blocks in underground bonus areas }'
         . '{--exclude-firebars=false : exclude fire bars from enemy randomization }'
         . '{--randomize-spin-speed=false : randomize fire bar spin speeds }'

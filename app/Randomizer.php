@@ -214,6 +214,12 @@ class Randomizer
      * A bit of circular logic here, but for the "controlled" mode,
      * we can select a level where SHM starts, and then make the level shuffle conform to
      * that.
+     * 
+     * 2019-04-11
+     * Also, it appears that we might have to force certain levels to be after start
+     * of secondary hard mode, e.g. 7-4
+     * ???
+     * Solution: disable this stuff for now!???
      */
     public function randomizeSecondaryHardModeStart(&$game)
     {
@@ -1859,9 +1865,11 @@ class Randomizer
         }
 
         // Randomize where secondary hard mode starts
-        if ($this->options['hardMode'] == 'random') {
-            $this->randomizeSecondaryHardModeStart($game);
-        }
+        // if ($this->options['hardMode'] == 'random') {
+        //     $this->randomizeSecondaryHardModeStart($game);
+        // } else if ($this->options['hardMode'] == 'always') {
+        //     $this->setAlwaysSecondaryHardMode($game);
+        // }
 
         // Randomize Fire Bar Spin Speed
         if ($this->options['randomizeSpinSpeed'] == 'true') {
