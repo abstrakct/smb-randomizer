@@ -1608,6 +1608,17 @@ class Randomizer
         }
     }
 
+    public function shuffleMusic(Game &$game)
+    {
+        $bytes = [ 0x01, 0x02, 0x04, 0x08 ];
+        $offset = 0x10f7;
+        $shuffled = mt_shuffle($bytes);
+
+        for ($i = 0; $i < 4; $i++) {
+            $game->addData($offset + $i, pack('C*', $shuffled[$i]));
+        }
+    }
+
     public function setTextSeedhash(string $text, Game &$game)
     {
         $offset = 0x9fa1; // + 0x8000;   if using smb+duckhunt rom
@@ -1879,6 +1890,11 @@ class Randomizer
         // Shuffle Fire Bar Spin Directions
         if ($this->options['shuffleSpinDirections'] == 'true') {
             $this->shuffleSpinDirections($game);
+        }
+
+        // Shuffle music
+        if ($this->options['shuffleMusic'] == 'true') {
+            $this->shuffleMusic($game);
         }
 
         // Fix Midway Points

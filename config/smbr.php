@@ -30,6 +30,7 @@ return [
             'excludeFirebars' => 'false',
             'randomizeSpinSpeed' => 'false',
             'shuffleSpinDirections' => 'false',
+            'shuffleMusic' => 'false',
         ],
 
         'options' => [
@@ -181,7 +182,11 @@ return [
             'shuffleSpinDirections' => [
                 'true' => 'Shuffle the spin directions of Fire Bars',
                 'false' => 'Do not shuffle the spin directions of Fire Bars',
-            ]
+            ],
+            'shuffleMusic' => [
+                'true' => 'Shuffle the music',
+                'false' => 'Do not shuffle the music',
+            ],
         ],
     ],
 ];

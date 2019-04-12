@@ -51,6 +51,7 @@
                     <smbr-checkbox id="ors" label="Randomize the spin speed of Fire Bars" @input="updateInputted" v-model="selectedOptions.randomizeSpinSpeed" storage-key="smbr.opt.randomizespinspeed" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ord" label="Shuffle the spin directions of Fire Bars" @input="updateInputted" v-model="selectedOptions.shuffleSpinDirections" storage-key="smbr.opt.shufflespindirections" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ovl" label="Generate verbose debug log" @input="updateInputted" storage-key="smbr.opt.verboselog" v-model="selectedOptions.verboseLog" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="omu" label="Shuffle the music (does not change flags/seedhash)" @input="updateInputted" storage-key="smbr.opt.shufflemusic" v-model="selectedOptions.shuffleMusic" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
                     <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
                     <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
@@ -164,6 +165,7 @@ export default {
         randomizeSpinSpeed: "",
         shuffleSpinDirections: "",
         verboseLog: "",
+        shuffleMusic: "",
       }
     };
   },
@@ -282,7 +284,8 @@ export default {
           excludeFirebars: this.selectedOptions.excludeFirebars,
           randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
           shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
-          verboseLog: this.selectedOptions.verboseLog
+          verboseLog: this.selectedOptions.verboseLog,
+          shuffleMusic: this.selectedOptions.shuffleMusic,
         })
         .then(response => {
           this.rando.fullpath = response.data.fullpath;
@@ -538,6 +541,10 @@ export default {
           key: "smbr.opt.verboselog",
           val: this.defaultOptions.verboseLog
         },
+        {
+          key: "smbr.opt.shufflemusic",
+          val: this.defaultOptions.shuffleMusic
+        },,
       ];
 
       arr.forEach(function(entry) {
@@ -603,6 +610,7 @@ export default {
           excludeFirebars: this.selectedOptions.excludeFirebars,
           randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
           shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
+          shuffleMusic: this.selectedOptions.shuffleMusic,
         })
         .then(response => {
           console.log(response);
