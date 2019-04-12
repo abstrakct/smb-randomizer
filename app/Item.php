@@ -126,6 +126,8 @@ class ItemPools
         $this->exceptions = [
             // Hidden coin blocks in 4-2 needed for accessing warp zone.
             0x2d16, 0x2d1a, 0x2d1e, 0x2d20,
+            // Hidden coin block in 8-4 needed to complete level normally
+            0x2440,
         ];
     }
 }

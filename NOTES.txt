@@ -67,7 +67,6 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
   DONE: DemoActionData change. Offset: 0x350 - 0x364 (actions) 0x365 - 0x37a (timing)
         action: 00 = no action, 80 = A button
 
-  TODO: exclude hidden block next to pipe in 8-4
   
   TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
   TODO: maybe remove the "does not move" koopa troopa from the enemy pool? it's quite meh to have an enemy that doesn't move..
@@ -221,6 +220,7 @@ DONE: Option to only randomize clothes for mario/luigi, for more reasonable colo
 DONE: Disasm line  7792: Worlds with castles that can loop!
 DONE: Don't change Toad in 8-4?
 DONE: Add exclusions to item block randomization. Specifically: the hidden blocks needed to get to warp zone in 4-2 should NOT be randomized.
+DONE: exclude hidden block next to pipe in 8-4
 FIXED: 4-4 can be broken (no correct path out, chaos enemy rng probable cause )
 FIXED: Toad turned into hammer bro in 8-4 can actually walk over and kill mario! you still win though, so.
 FIXED: Set Y pos of Lakitu to correct value (-> enemy algorithm rework)
