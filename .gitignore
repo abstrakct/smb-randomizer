@@ -3,6 +3,7 @@
 /public/storage
 public/mix-manifest.json
 /storage/*.key
+/storage/tinx
 /vendor
 /.idea
 /.vscode

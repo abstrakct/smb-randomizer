@@ -12,11 +12,11 @@ return [
                 'luigi' => 'random',
                 'fire' => 'random',
             ],
-            'normalWorldLength' => 'true',
+            'normalWorldLength' => 'false',
             'pipeTransitions' => 'remove',
             'shuffleLevels' => 'all',
-            'enemies' => 'randomizePools',
-            'blocks' => 'randomizeAll',
+            'enemies' => 'randomizeControlled',
+            'blocks' => 'randomizeGrouped',
             'bowserHitpoints' => 'random',
             'bowserAbilities' => 'true',
             'startingLives' => 'normal',
@@ -24,6 +24,13 @@ return [
             'hiddenWarpDestinations' => 'false',
             'fireworks' => 'true',
             'shuffleUndergroundBonus' => 'true',
+            'randomizeBackground' => 'false',
+            'hardMode' => 'vanilla',
+            'randomizeUndergroundBricks' => 'true',
+            'excludeFirebars' => 'false',
+            'randomizeSpinSpeed' => 'false',
+            'shuffleSpinDirections' => 'false',
+            'shuffleMusic' => 'false',
         ],
 
         'options' => [
@@ -41,6 +48,8 @@ return [
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
                     'Pretty In Pink' => 'Pretty In Pink',
+                    'Outrun' => 'Outrun',
+                    'Outrun 2' => 'Outrun 2',
                 ],
                 'luigi' => [
                     'random' => 'Totally random color scheme',
@@ -55,6 +64,8 @@ return [
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
                     'Pretty In Pink' => 'Pretty In Pink',
+                    'Outrun' => 'Outrun',
+                    'Outrun 2' => 'Outrun 2',
                 ],
                 'fire' => [
                     'random' => 'Totally random color scheme',
@@ -69,6 +80,8 @@ return [
                     'Denim' => 'Denim',
                     'Mustard Man' => 'Mustard Man',
                     'Pretty In Pink' => 'Pretty In Pink',
+                    'Outrun' => 'Outrun',
+                    'Outrun 2' => 'Outrun 2',
                 ],
             ],
             'pipeTransitions' => [
@@ -85,15 +98,18 @@ return [
                 'false' => 'Worlds can have varying lengths',
             ],
             'enemies' => [
-                'randomizeFull' => 'Chaos: randomize all enemies (within reason)',
-                'randomizePools' => 'Controlled: randomize enemies within smaller pools of related or similar enemies',
+                'randomizeControlled' => 'Controlled: randomize enemies in a controlled fashion',
+                'randomizeChaos' => 'Chaos: randomize all enemies (within reason)',
+                // 'randomizeOld' => 'Randomize enemies within smaller pools of related or similar enemies (old algorithm)',
                 'randomizeNone' => 'Do not randomize enemies',
                 //    'shufflexxxxxx' => 'NOT IMPLEMENTED: Shuffle Enemies',
             ],
             'blocks' => [
                 'randomizeAll' => 'Randomize all blocks',
-                'randomizePowerups' => 'Randomize blocks normally containing a power up',
+                'randomizePowerups' => 'Randomize brick blocks normally containing a power up',
                 'randomizeGrouped' => 'Randomize blocks in groups',
+                'randomizeBricks' => 'Randomize content of brick blocks',
+                'randomizeBricksQuestion' => 'Randomize content of brick blocks and question blocks',
                 'randomizeCoins' => 'Replace all power ups with coins',
                 'randomizeNone' => 'Do not randomize blocks',
                 //    'shufflexxxxx' => 'NOT IMPLEMENTED: Shuffle Blocks',
@@ -103,11 +119,11 @@ return [
                 'false' => "Do not randomize Bowser's abilities",
             ],
             'bowserHitpoints' => [
-                'normal' => 'Bowser has 5 hitpoints',
-                'easy' => 'Bowser has 1-5 hitpoints',
-                'medium' => 'Bowser has 5-10 hitpoints',
-                'hard' => 'Bowser has 10-20 hitpoints',
-                'random' => 'Bowser has 1-20 hitpoints',
+                'normal' => 'Normal: Bowser has 5 hitpoints',
+                'easy' => 'Easy: Bowser has 1-5 hitpoints',
+                'medium' => 'Medium: Bowser has 5-10 hitpoints',
+                'hard' => 'Hard: Bowser has 10-20 hitpoints',
+                'random' => 'Random: Bowser has 1-20 hitpoints',
             ],
             'startingLives' => [
                 'very-hard' => 'Very hard: Start with 1 life',
@@ -127,6 +143,7 @@ return [
                 'allbad' => 'All bad: All warp pipes will be bad (they will take you to start of current world or earlier)',
                 // TODO: easy/hard gamble modes
                 'gamble' => 'Gamble: Warp destinations will be hidden, 2 pipes are good, 1 pipe is bad',
+                'disable' => 'Disable: Warp pipes will not work at all!',
             ],
             'hiddenWarpDestinations' => [
                 'true' => 'Warp Zone destination worlds will not be written above the warp pipes',
@@ -139,6 +156,36 @@ return [
             'shuffleUndergroundBonus' => [
                 'true' => 'Shuffle the destinations of pipes going to underground bonus levels',
                 'false' => 'Do not shuffle underground bonus levels',
+            ],
+            'randomizeBackground' => [
+                'true' => 'Randomize the background and scenery of levels',
+                'false' => 'Do not randomize the background and scenery of levels',
+            ],
+            'hardMode' => [
+                'always' => 'Secondary hard mode is activated on all levels',
+                // 'random' => 'Which level activates secondary hard mode is random',
+                // 'xxxxxx' => 'Like random, but certain levels are placed after the level which activates secondary hard mode',
+                'vanilla' => 'Vanilla - secondary hard mode is activated in 5-3',
+            ],
+            'randomizeUndergroundBricks' => [
+                'true' => 'Randomize content of brick blocks in underground bonus areas',
+                'false' => 'Do not randomize brick blocks in underground bonus areas',
+            ],
+            'excludeFirebars' => [
+                'true' => 'Exclude Fire Bars from enemy randomization',
+                'false' => 'Include Fire Bars in enemy randomization',
+            ],
+            'randomizeSpinSpeed' => [
+                'true' => 'Randomize the spin speed of Fire Bars',
+                'false' => 'Do not randomize the spin speed of Fire Bars',
+            ],
+            'shuffleSpinDirections' => [
+                'true' => 'Shuffle the spin directions of Fire Bars',
+                'false' => 'Do not shuffle the spin directions of Fire Bars',
+            ],
+            'shuffleMusic' => [
+                'true' => 'Shuffle the music',
+                'false' => 'Do not shuffle the music',
             ],
         ],
     ],

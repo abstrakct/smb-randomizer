@@ -16,6 +16,7 @@ use SMBR\Game;
 use SMBR\ItemPools;
 use SMBR\Level;
 use SMBR\Translator;
+use SMBR\Flagstring;
 
 // TODO: move these somewhere better!
 const HammerTimeOffset = 0x512b;
@@ -45,23 +46,24 @@ function enemyIsInPool($o, $pool)
 class Randomizer
 {
     public $flags;
+    public $flagstring;
     public $seedhash;
     protected $rng_seed;
     protected $seed;
     protected $options;
     protected $rom;
-    private $level = [];
     private $trans;
     private $log;
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
-    const VERSION = "0.9.2";
+    public $item_pools;
+    const VERSION = "0.9.6";
 
     // Color schemes. TODO: improve
     public $colorschemes = [];
 
     /**
-     * Create a new randomzer.
+     * Create a new randomizer.
      *
      * TODO: error checking etc.
      *
@@ -76,8 +78,10 @@ class Randomizer
         $this->rng_seed = $seed;
         $this->options = $opt;
         $this->rom = $rom;
+        $this->flagstring = new Flagstring($opt);
         $this->trans = new Translator();
         $this->enemy_pools = new \SMBR\EnemyPools();
+        $this->item_pools = new \SMBR\ItemPools();
         $this->colorschemes = array('random' => new Colorscheme(0, 0, 0),
             'Vanilla Mario' => new Colorscheme(0x16, 0x27, 0x18),
             'Vanilla Luigi' => new Colorscheme(0x30, 0x27, 0x19),
@@ -89,6 +93,8 @@ class Randomizer
             'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
             'Mustard Man' => new Colorscheme(0xd8, 0x27, 0x28),
             'Pretty In Pink' => new Colorscheme(0xe3, 0xb2, 0x14),
+            'Outrun' => new Colorscheme(0x61, 0x27, 0x94),
+            'Outrun 2' => new Colorscheme(0x94, 0x27, 0x61),
         );
     }
 
@@ -116,6 +122,21 @@ class Randomizer
     public function getSeed()
     {
         return $this->rng_seed;
+    }
+
+    public function setOptions($opt)
+    {
+        $this->options = $opt;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function setOptionsFromFlagstring($flag_string)
+    {
+        $this->flagstringToOptions($flag_string, $this->options);
     }
 
     public function setMarioColorScheme(string $colorscheme, Game &$game)
@@ -189,19 +210,173 @@ class Randomizer
         $this->rom->setLuigiInnerColor($inner, $game);
     }
 
-    public function randomizeEnemies(&$game, $in_pools = false)
+    /*
+     * A bit of circular logic here, but for the "controlled" mode,
+     * we can select a level where SHM starts, and then make the level shuffle conform to
+     * that.
+     * 
+     * 2019-04-11
+     * Also, it appears that we might have to force certain levels to be after start
+     * of secondary hard mode, e.g. 7-4
+     * ???
+     * Solution: disable this stuff for now!???
+     */
+    public function randomizeSecondaryHardModeStart(&$game)
     {
-        $this->log->write("Randomizing enemies" . ($in_pools ? " in pools." : ".") . "\n");
+        $world_offset = 0x104b;
+        $level_offset = 0x1054;
+        $this->log->write("Randomizing where secondary hard mode starts...\n");
+
+        $new_world = mt_rand(0, 7);
+        $new_level = mt_rand(0, count($game->worlds[$new_world]->levels) - 1);
+
+        $this->log->write("New start for secondary hard mode: World $new_world Level $new_level\n");
+
+        $game->addData($world_offset, pack('C*', $new_world));
+        $game->addData($level_offset, pack('C*', $new_level));
+    }
+
+    public function randomizeEnemiesChaos(&$game)
+    {
+        $this->log->write("Randomizing enemies: CHAOS!\n");
+        if ($this->options['hardMode'] == 'always') {
+            $this->log->write("Secondary hard mode will be activated for all levels.\n");
+        } else if ($this->options['hardMode'] == 'vanilla') {
+            $this->log->write("Secondary hard mode will be vanilla.\n");
+        }
         $vanilla = Level::all();
         foreach ($vanilla as $level) {
             if ($level->has_enemies) {
                 $this->log->write("Randomizing enemies on level " . $level->name . "\n");
-                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $game, $in_pools);
+                $this->randomizeEnemiesOnLevel($level->enemy_data_offset, $level->name, $game);
             }
         }
     }
 
-    public function randomizeEnemiesOnLevel($offset, &$game, $in_pools = false)
+    public function randomizeEnemiesControlled(&$game)
+    {
+        $this->log->write("Randomizing enemies: Controlled.\n");
+        if ($this->options['hardMode'] == 'always') {
+            $this->log->write("Secondary hard mode will be activated for all levels.\n");
+        } else if ($this->options['hardMode'] == 'vanilla') {
+            $this->log->write("Secondary hard mode will be vanilla.\n");
+        }
+        $vanilla = Level::all();
+        foreach ($vanilla as $level) {
+            if ($level->has_enemies) {
+                $this->log->writeVerbose("RANDOMIZING ENEMIES ON LEVEL " . $level->name . "\n");
+                $this->newRandomizeEnemiesOnLevel($level->enemy_data_offset, $game);
+            }
+        }
+    }
+
+    public function newRandomizeEnemiesOnLevel($offset, &$game)
+    {
+        $data = $this->rom->read($offset, 100);
+        $end = 0;
+        $level_has_cheepcheepgenerator = false;
+
+        foreach ($data as $byte) {
+            $end++;
+            if ($byte == 0xFF) {
+                break;
+            }
+        }
+
+        for ($i = 0; $i < $end; $i += 2) {
+            $x = $data[$i] & 0xF0;
+            $y = $data[$i] & 0x0F;
+            if ($y == 0xE) {
+                $i++;
+            } else if ($y > 0xE) {
+                continue;
+            } else {
+                if ($data[$i] != 0xFF) {
+                    // Let's randomize!
+                    $do_randomize = true;
+                    $p = $data[$i + 1] & 0b10000000;
+                    $h = $data[$i + 1] & 0b01000000;
+                    if ($this->options['hardMode'] == 'always') {
+                        $h = 0;
+                    }
+                    $o = $data[$i + 1] & 0b00111111;  // this is the enemy object
+
+                    $this->log->writeVerbose("\tFound enemy: " . Enemy::getName($o) . "\n");
+
+                    /* Some enemies can't be randomized, so let's check for those */
+                    if (enemyIsInPool($o, $this->enemy_pools->dont_randomize)) {
+                        $do_randomize = false;
+                    }
+
+                    if (in_array(($offset + $i), $this->enemy_pools->exceptions)) {
+                        $this->log->writeVerbose("Found exception to enemy randomization!\n");
+                        $do_randomize = false;
+                    }
+
+                    if ($this->options['excludeFirebars'] == 'true' && enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
+                        $do_randomize = false;
+                        $this->log->write("Fire Bar found, but excludeFirebars is set to true.\n");
+                    }
+
+                    if ($do_randomize) {
+                        $new_candidates = $this->enemy_pools->new_pools[$o];
+
+                        if (count($new_candidates) == 0) {
+                            $this->log->write("ERROR: list of new candidates for enemy is empty!\n");
+                            break;
+                        }
+
+                        $acceptable = false;
+
+                        while (!$acceptable) {
+                            $acceptable = true;
+                            $new_enemy = $new_candidates[mt_rand(0, count($new_candidates) - 1)];
+
+                            if ($new_enemy == Enemy::get('Red Flying Cheep-Cheep Generator')) {
+                                $level_has_cheepcheepgenerator = true;
+                            }
+
+                            if ($level_has_cheepcheepgenerator && $new_enemy == Enemy::get('Bowser Fire Generator')) {
+                                $acceptable = false;
+                                $this->log->writeVerbose("UNACCEPTABLE BOWSER FIRE GENERATOR GENERATED!!!\n");
+                            }
+
+                            if ($this->options['excludeFirebars'] == 'true' && enemyIsInPool($new_enemy, $this->enemy_pools->firebar_pool)) {
+                                $acceptable = false;
+                                $this->log->writeVerbose("Unacceptable Fire Bar generated! Retrying...\n");
+                            }
+                        }
+
+                        $new_data = (($p | $h) | $new_enemy);
+                        $game->addData($offset + $i + 1, pack('C*', $new_data));
+                        $this->log->writeVerbose("\t\tChanged enemy to " . Enemy::getName($new_enemy) . "\n");
+
+                        // Fix coordinates of some enemies
+                        if ($new_enemy == Enemy::get('Green Cheep-Cheep (slow)') || $new_enemy == Enemy::get('Red Cheep-Cheep (fast)')) {
+                            $yyy = mt_rand(0, 0xB);
+                            $pos = $x | $yyy;
+                            $game->addData($offset + $i, pack('C*', $pos));
+                            $this->log->writeVerbose("\t\t\tChanged Y position to $yyy\n");
+                        }
+
+                        if ($new_enemy == Enemy::get('Lakitu')) {
+                            $new_coord = 0xE2;
+                            $game->addData($offset + $i, pack('C*', $new_coord));
+                            $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
+                        }
+
+                        if ($o == Enemy::get('Toad') && $new_enemy != Enemy::get('Toad')) {
+                            $new_coord = $this->enemy_pools->toad_new_coords[$new_enemy];
+                            $game->addData($offset + $i, pack('C*', $new_coord));
+                            $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function randomizeEnemiesOnLevel($offset, $level, &$game)
     {
         $end = 0;
         $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
@@ -228,63 +403,85 @@ class Randomizer
                 if ($data[$i] != 0xFF) {
                     $p = $data[$i + 1] & 0b10000000;
                     $h = $data[$i + 1] & 0b01000000;
+                    if ($this->options['hardMode'] == 'always') {
+                        $h = 0;
+                    }
                     $o = $data[$i + 1] & 0b00111111; // this is the enemy object
 
                     /* Some enemies can't be randomized, so let's check for those */
-                    foreach ($this->enemy_pools->dont_randomize as $nope) {
-                        if ($o == $nope) {
-                            $do_randomize = false;
-                        }
+                    if (enemyIsInPool($o, $this->enemy_pools->dont_randomize)) {
+                        $do_randomize = false;
                     }
 
-                    if ($do_randomize) {
-                        if ($in_pools) {
-                            $new_data = 0;
-                            if (mt_rand(1, 100) <= $percentage) {
-                                $new_object = 0;
-                                if ($o == Enemy::get('Toad')) {
-                                    $z = count($this->enemy_pools->toad_pool);
-                                    $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                    $new_coord = 0xc8;
-                                    $game->addData($offset + $i, pack('C*', $new_coord));
-                                } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
-                                    $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
-                                } else if (enemyIsInPool($o, $this->enemy_pools->goomba_pool)) {
-                                    $new_object = $this->enemy_pools->goomba_pool[mt_rand(0, count($this->enemy_pools->goomba_pool) - 1)];
-                                } else if (enemyIsInPool($o, $this->enemy_pools->koopa_pool)) {
-                                    $new_object = $this->enemy_pools->koopa_pool[mt_rand(0, count($this->enemy_pools->koopa_pool) - 1)];
-                                } else if (enemyIsInPool($o, $this->enemy_pools->firebar_pool)) {
-                                    $new_object = $this->enemy_pools->firebar_pool[mt_rand(0, count($this->enemy_pools->firebar_pool) - 1)];
-                                } else if ($o == Enemy::get("Lakitu")) {
-                                    $new_object = $this->enemy_pools->lakitu_pool[mt_rand(0, count($this->enemy_pools->lakitu_pool) - 1)];
-                                }
+                    if (in_array(($offset + $i), $this->enemy_pools->exceptions)) {
+                        $this->log->writeVerbose("Found exception to enemy randomization!\n");
+                        $do_randomize = false;
+                    }
 
-                                $new_data = (($p | $h) | $new_object);
-                                $game->addData($offset + $i + 1, pack('C*', $new_data));
-                                $this->log->write("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
-                            }
-                        } else {
-                            $new_data = 0;
-                            if (mt_rand(1, 100) <= $percentage) {
-                                if ($o == Enemy::get('Toad')) {
-                                    $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                    $new_coord = 0xc8;
-                                    $game->addData($offset + $i, pack('C*', $new_coord));
-                                } else if ($o == Enemy::get('Bowser Fire Generator') or $o == Enemy::get('Red Flying Cheep-Cheep Generator') or $o == Enemy::get('Bullet Bill/Cheep-Cheep Generator')) {
-                                    // TODO: should Bowser Fire Generator be included in this?
-                                    $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
+                    // TODO: 
+                    // if original enemy was firebar and new enemy is not firebar, set Y coord to one higher (-1).
+                    // Will hopefully prevent enemies from being stuck inside the block where the firebar was
+                    if ($do_randomize) {
+                        $new_data = 0;
+                        $acceptable = false;
+
+                        while (!$acceptable) {
+                            if ($o == Enemy::get('Toad')) {
+                                $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
+                                $new_coord = 0xc8;
+                                $game->addData($offset + $i, pack('C*', $new_coord));
+                                $acceptable = true;
+                            } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
+                                // TODO: should Bowser Fire Generator be included in this?
+                                $new_object = $this->enemy_pools->generator_pool[mt_rand(0, count($this->enemy_pools->generator_pool) - 1)];
+                                $acceptable = true;
+                            } else {
+                                if ($this->options['excludeFirebars'] == 'true') {
+                                    $new_object = $this->enemy_pools->reasonable_enemy_pool_no_firebars[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool_no_firebars) - 1)];
+                                    $acceptable = true;
                                 } else {
                                     $new_object = $this->enemy_pools->reasonable_enemy_pool[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool) - 1)];
+                                    $acceptable = true;
                                 }
-
-                                $new_data = (($p | $h) | $new_object);
-                                $game->addData($offset + $i + 1, pack('C*', $new_data));
-                                $this->log->write("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
                             }
+
+                            if ($level == '1-2' && enemyIsInPool($new_object, $this->enemy_pools->generator_pool)) {
+                                $acceptable = false;
+                            }
+                        }
+
+                        $new_data = (($p | $h) | $new_object);
+                        $game->addData($offset + $i + 1, pack('C*', $new_data));
+                        $this->log->writeVerbose("Changed enemy: " . Enemy::getName($o) . " to " . Enemy::getName($new_object) . "\n");
+
+                        if ($new_object == Enemy::get('Lakitu')) {
+                            $new_coord = 0xE2;
+                            $game->addData($offset + $i, pack('C*', $new_coord));
+                            $this->log->writeVerbose(sprintf("\t\t\tChanged coordinates to %02x\n", $new_coord));
                         }
                     }
                 }
             }
+        }
+    }
+
+    public function randomizeSpinSpeed(&$game)
+    {
+        $offset = 0x445f;
+        for ($i = 0; $i < 5; $i++) {
+            $x = mt_rand(0x20, 0x60);
+            $game->addData($offset + $i, pack('C*', $x));
+        }
+    }
+
+    public function shuffleSpinDirections(&$game)
+    {
+        $offset = 0x4464;
+        $data = [ 0x00, 0x00, 0x10, 0x10, 0x00 ];
+        $new_data = mt_shuffle($data);
+
+        for ($i = 0; $i < 5; $i++) {
+            $game->addData($offset + $i, pack('C*', $new_data[$i]));
         }
     }
 
@@ -299,6 +496,7 @@ class Randomizer
                     break;
                 }
 
+                $this->log->writeVerbose("Randomizing item blocks in $level->name\n");
                 $end = 0;
                 $data = $this->rom->read($level->level_data_offset, 200);
                 foreach ($data as $byte) {
@@ -314,6 +512,10 @@ class Randomizer
                     if ($y > 0x0B) {
                         $do_randomize = false;
                     }
+                    if (in_array($level->level_data_offset + $i, $this->item_pools->exceptions)) {
+                        $do_randomize = false;
+                        $this->log->writeVerbose("Found Item Block randomization exception!\n");
+                    }
 
                     if ($do_randomize) {
                         $p = $data[$i + 1] & 0b10000000;
@@ -321,9 +523,10 @@ class Randomizer
                         $new_data = 0x99;
                         if (in_array($object, $frompool)) {
                             $pull_key = mt_rand(0, count($topool) - 1);
-                            $new_data = $topool[$pull_key];
-                            $new_object = $p | $new_data;
-                            $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_object));
+                            $new_object = $topool[$pull_key];
+                            $new_data = $p | $new_object;
+                            $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_data));
+                            $this->log->writeVerbose("  Changed " . Item::getName($object) . " to " . Item::getName($new_object) . "\n");
                         }
                     }
                 }
@@ -331,17 +534,75 @@ class Randomizer
         }
     }
 
+    // Randomize the few blocks that exist in underground bonus areas
+    // 
+    public function randomizeBlocksInUndergroundBonus(Game &$game, $frompool, $topool)
+    {
+        $this->log->write("Randomizing blocks in underground bonus areas!\n");
+
+        $level = Level::get('underground-bonus');
+        $end = 0;
+        $data = $this->rom->read($level->level_data_offset, 200);
+
+        foreach ($data as $byte) {
+            $end++;
+            if ($byte == 0xFD) {
+                break;
+            }
+        }
+
+        for ($i = 2; $i < $end; $i += 2) {
+            $do_randomize = true;
+            $y = $data[$i] & 0b00001111;
+            if ($y > 0x0B) {
+                $do_randomize = false;
+            }
+
+            if ($do_randomize) {
+                $p = $data[$i + 1] & 0b10000000;
+                $object = $data[$i + 1] & 0b01111111;
+                $new_data = 0x99;
+                if (in_array($object, $frompool)) {
+                    $pull_key = mt_rand(0, count($topool) - 1);
+                    $new_object = $topool[$pull_key];
+                    $new_data = $p | $new_object;
+                    $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_data));
+                    $this->log->writeVerbose("  Changed " . Item::getName($object) . " to " . Item::getName($new_object) . "\n");
+                }
+            }
+        }
+    }
     /*
-     * Shuffle levels, but castles can appear anywhere, except 8-4 which is always last.
+     * Shuffle levels, but castles can appear anywhere, except 8-4 which is always the last level.
      * Each castle represents the end of a world, but currently there are no restrictions on how
      * many levels can be in a world, except that there will be no more than 32 levels total like in vanilla.
      */
-    public function shuffleAllLevels(&$game)
+    public function shuffleAllLevels(&$game, $subset = false)
     {
-        $all_levels = [
-            '1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4',
-            '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3', '8-4',
-        ];
+        if ($subset) {
+            $levels = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
+            $possible_levels = [
+                '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', 
+                '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3', 
+            ];
+            $num_levels = mt_rand(8, 24);
+
+            $possible_shuffled = mt_shuffle($possible_levels);
+            for ($i = 0; $i < $num_levels; $i++) {
+                array_push($levels, $possible_shuffled[$i]);
+            }
+
+            // $levels += array_slice($possible_levels, 0, $num_levels);
+            $all_levels = mt_shuffle($levels);
+            // print_r($levels);
+            // print_r($all_levels);
+            $game->num_levels = $num_levels + 8;
+        } else {
+            $all_levels = [
+                '1-1', '1-2', '1-3', '1-4', '2-1', '2-2', '2-3', '2-4', '3-1', '3-2', '3-3', '3-4', '4-1', '4-2', '4-3', '4-4',
+                '5-1', '5-2', '5-3', '5-4', '6-1', '6-2', '6-3', '6-4', '7-1', '7-2', '7-3', '7-4', '8-1', '8-2', '8-3', '8-4',
+            ];
+        }
 
         $shuffledlevels = mt_shuffle($all_levels);
         //print_r($shuffledlevels);
@@ -353,8 +614,7 @@ class Randomizer
         // TODO: reduce code duplication!
         if ($this->options['pipeTransitions'] == 'remove') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
-
-                // print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex is $worldindex levelindex = $levelindex\n");
+                // print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex = $worldindex levelindex = $levelindex\n");
                 // Select next level in list of shuffled levels, set its data
                 $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
@@ -484,7 +744,6 @@ class Randomizer
         $shuffledcastles = mt_shuffle($castles);
 
         if ($this->options['pipeTransitions'] == 'remove') {
-            $this->log->write("Removing pipe transitions\n");
             $levelindex = 0;
             $castleindex = 0;
             for ($w = 0; $w < 8; $w++) {
@@ -623,7 +882,6 @@ class Randomizer
             }
         }
 
-
         // TODO: I'm pretty sure we need this, but should check that to be absolutely sure
         $this->fixPipes($game);
 
@@ -640,7 +898,7 @@ class Randomizer
 
                     // print info
                     $w = $pipeList[$key][0]->getWorldActive();
-                    $this->log->write("found usable pipe for page $page in world $w\n");
+                    $this->log->writeVerbose("found usable pipe for page $page in world $w\n");
 
                     // end
                     $n++;
@@ -688,16 +946,20 @@ class Randomizer
         // TODO: 32 IS NOT ALWAYS CORRECT!!! because of pipe transitions etc
         // therefore: handle all variations here.
         $levels = 0;
-        if ($this->options["shuffleLevels"] == "none") {
-            $num_levels = 35;
-        } else {
-            $num_levels = 32;
-        }
+        //if ($this->options["shuffleLevels"] == "none") {
+        //    $num_levels = 35;
+        //} else if ($this->options["shuffleLevels"] == "all" && $this->options["pipeTransitions"] == "keep") {
+        //    $num_levels = 35;
+        //} else {
+        //    $num_levels = 32;
+        //}
+        
         foreach ($game->worlds as $world) {
             $levels += count($world->levels);
         }
-        if ($levels != $num_levels) {
-            $this->log->writeVerbose("Sanity check fail: Not $num_levels levels in world layout (levels = $levels)!\n");
+
+        if ($levels != $game->num_levels) {
+            $this->log->writeVerbose("Sanity check fail: Not $game->num_levels levels in world layout (levels = $levels)!\n");
             return false;
         }
 
@@ -822,7 +1084,8 @@ class Randomizer
          * If we do, then warp zones can get a bit strange, but as long as that's communicated
          * to the player that might be ok?
          */
-        if ($this->options['warpZones'] != "normal") {
+
+        /*
             foreach ($game->worlds as $world) {
                 if ($world->hasLevel('1-2') && $world->num != 0) {
                     $this->log->writeVerbose("Sanity check fail: 1-2 is not in world 1!\n");
@@ -845,7 +1108,8 @@ class Randomizer
                     return false;
                 }
             }
-        }
+        */
+
 
         // Underground Bonus Area shuffle happens here
         // BUT WHY?
@@ -918,6 +1182,79 @@ class Randomizer
 
         $this->log->write("Player starting lives: " . $new_lives . "\n");
         $game->addData(StartingLivesOffset, pack('C*', $new_lives - 1));
+    }
+
+    /*
+     * Disable warp pipes! Makes the pipes not-enterable, players should use at own risk.
+     */
+    public function disableWarpPipes(&$game)
+    {
+        $this->log->write("Disabling Warp Zones!\n");
+
+        $game->addData(0x2cdc, pack('C*', 0x72));
+        $game->addData(0x2cde, pack('C*', 0x72));
+        $game->addData(0x2ce0, pack('C*', 0x72));
+        $game->addData(0x2d81, pack('C*', 0x72));
+        $game->addData(0x2a03, pack('C*', 0x72));
+        $game->addData(0x2a05, pack('C*', 0x72));
+        $game->addData(0x2a07, pack('C*', 0x72));
+        $this->removeWarpZoneLabels($game);
+
+        $warp_text_variations = [
+            "WELCOME TO NOPE ZONE!",
+            "   WELCOME TO HELL   ",
+            "WELCOME TO SOFT LOCK!",
+            " WELCOME TO TIMEOUT! ",
+            "OOOOOOOOOOOOOOOOOOPS!",
+            "    OH        NO     ",
+            "       SORRY!        ",
+            "NO WARP SOUP FOR YOU!",
+            "NO WARP ZONE FOR YOU!",
+            "   NO WARP FOR YOU!  ",
+            "     YOU DINGUS!     ",
+            "     YOU DONGLE!     ",
+            "     BREAK ROOM!     ",
+            "TAKE A DEEP BREATH...",
+            "    OUT OF ORDER     ",
+            " UNDER CONSTRUCTION  ",
+            "   PLUMBER NEEDED    ",
+            "ERROR- WARP NOT FOUND",
+            "     FEELSBADMAN     ",
+        ];
+        $text = $warp_text_variations[mt_rand(0, count($warp_text_variations) - 1)];
+        // $text = $warp_text_variations[16];
+        $this->setText($game, "Warp", $text);
+    }
+
+    public function writeNewWarpZoneCode(&$game)
+    {
+        // NEW ROUTINE:
+        // ldx #$04        A2 04
+        // lda $e9         A5 E9
+        // cmp #$d8        C9 D8
+        // beq WarpNum     F0 07
+        // inx             E8
+        // cmp #$05        C9 05
+        // beq WarpNum     F0 02
+        // inx             E8
+        // nop             EA
+        $new_code = [
+            0xA2, 0x04,
+            0xA5, 0xE9,
+            0xC9, 0xD8,
+            0xF0, 0x07,
+            0xE8,
+            0xC9, 0x05,
+            0xF0, 0x02,
+            0xE8,
+            0xEA
+        ];
+
+        $offset = 0x1702;
+
+        for ($i = 0; $i < count($new_code); $i++) {
+            $game->addData($offset + $i, pack('C*', $new_code[$i]));
+        }
     }
 
     public function randomizeWarpZones(&$game)
@@ -997,7 +1334,13 @@ class Randomizer
                 foreach ($world->levels as $level) {
                     if ($level->name == '1-2') {
                         for ($i = 0; $i < 3; $i++) {
-                            $new_warp = mt_rand($world->num + 2, 8);
+                            $min_world = 1;
+                            if (($world->num + 2) > 8) {
+                                $min_world = 8;
+                            } else {
+                                $min_world = $world->num + 2;
+                            }
+                            $new_warp = mt_rand($min_world, 8);
                             $game->addData($offset + $i, pack('C*', $new_warp));
                             $this->log->write("Warp pipe in 1-2 (world $world->num) randomized to $new_warp\n");
                         }
@@ -1005,12 +1348,24 @@ class Randomizer
                     if ($level->name == '4-2') {
                         // area accessed by beanstalk
                         for ($i = 8; $i < 11; $i++) {
-                            $new_warp = mt_rand($world->num + 2, 8);
+                            $min_world = 1;
+                            if (($world->num + 2) > 8) {
+                                $min_world = 8;
+                            } else {
+                                $min_world = $world->num + 2;
+                            }
+                            $new_warp = mt_rand($min_world, 8);
                             $game->addData($offset + $i, pack('C*', $new_warp));
                             $this->log->write("Warp pipe in 4-2 (beanstalk area) (world $world->num) randomized to $new_warp\n");
                         }
                         // area at end of level (only one pipe there)
-                        $new_warp = mt_rand($world->num + 2, 8);
+                        $min_world = 1;
+                        if (($world->num + 2) > 8) {
+                            $min_world = 8;
+                        } else {
+                            $min_world = $world->num + 2;
+                        }
+                        $new_warp = mt_rand($min_world, 8);
                         $game->addData($offset + 5, pack('C*', $new_warp));
                         $this->log->write("Warp pipe in 4-2 (end of level) (world $world->num) randomized to $new_warp\n");
                     }
@@ -1050,8 +1405,9 @@ class Randomizer
             foreach ($game->worlds as $world) {
                 foreach ($world->levels as $level) {
                     if ($level->name == '1-2') {
-                        $good_warp[0] = mt_rand($world->num + 2, 8);
-                        $good_warp[1] = mt_rand($world->num + 2, 8);
+                        $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                        $good_warp[0] = mt_rand($min_world, 8);
+                        $good_warp[1] = mt_rand($min_world, 8);
                         $bad_warp = mt_rand(1, $world->num + 1);
                         // make sure we shuffle the order so you can't know which pipe is which
                         $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
@@ -1064,8 +1420,9 @@ class Randomizer
                     }
                     if ($level->name == '4-2') {
                         // area accessed by beanstalk
-                        $good_warp[0] = mt_rand($world->num + 2, 8);
-                        $good_warp[1] = mt_rand($world->num + 2, 8);
+                        $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                        $good_warp[0] = mt_rand($min_world, 8);
+                        $good_warp[1] = mt_rand($min_world, 8);
                         $bad_warp = mt_rand(1, $world->num + 1);
                         $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
 
@@ -1078,7 +1435,8 @@ class Randomizer
                         // warp zone at end of 4-2 will be 50/50 good or bad
                         $chance = mt_rand(1, 100);
                         if ($chance <= 50) {
-                            $new_warp = mt_rand($world->num + 2, 8);
+                            $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                            $new_warp = mt_rand($min_world, 8);
                         } else {
                             $new_warp = mt_rand(1, $world->num + 1);
                         }
@@ -1118,10 +1476,42 @@ class Randomizer
         $this->log->write("Fireworks will appear when last digit of timer is " . $random_digits[1] . ", " . $random_digits[3] . " or " . $random_digits[6] . "\n");
     }
 
-    // TODO: rewrite!
+    public function randomizeBackground(&$game)
+    {
+        $this->log->write("Randomizing background and scenery...\n");
+        foreach ($game->worlds as $world) {
+            foreach ($world->levels as $level) {
+                if ($level->level_data_offset != 0) {
+                    $this->log->write("$level->name\n");
+                    $headerByte1 = $this->rom->read($level->level_data_offset);
+                    $headerByte2 = $this->rom->read($level->level_data_offset + 1);
+                    $level->setHeaderBytes($headerByte1, $headerByte2);
+                    $this->log->writeVerbose(sprintf("Read header bytes: %02x %02x\n", $headerByte1, $headerByte2));
+                    $this->log->writeVerbose("Old background: " . $level->getBackgroundDescription() . "\n");
+                    $this->log->writeVerbose("Old scenery:    " . $level->getSceneryDescription() . "\n");
+                    $this->log->writeVerbose("Old compliment: " . $level->getComplimentDescription() . "\n");
+
+                    $newScenery = mt_rand(0, 3);
+                    $newCompliment = mt_rand(0, 2);
+                    $newBackground = mt_rand(0, 7);
+                    $level->setScenery($newScenery);
+                    $level->setCompliment($newCompliment);
+                    $level->setBackground($newBackground);
+                    
+                    $newBytes = $level->getHeaderBytes();
+                    $this->log->writeVerbose(sprintf("New header bytes: %02x %02x\n", $newBytes[0], $newBytes[1]));
+                    $this->log->writeVerbose("New background: " . $level->getBackgroundDescription() . "\n");
+                    $this->log->writeVerbose("New scenery:    " . $level->getSceneryDescription() . "\n");
+                    $this->log->writeVerbose("New compliment: " . $level->getComplimentDescription() . "\n");
+                }
+            }
+        }
+    }
+
+    // TODO: rewrite! (???)
     public function fixPipes(Game &$game)
     {
-        $levels = ['4-1', '1-2', '2-1', '1-1', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '8-1', '8-2', '2-2', '7-2'];
+        $levels = ['1-1', '1-2', '2-1', '2-2', '3-1', '4-1', '4-2', '5-1', '5-2', '6-2', '7-1', '7-2', '8-1', '8-2'];
         $this->log->write("Fixing Pipes...\n");
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
@@ -1168,6 +1558,67 @@ class Randomizer
         }
     }
 
+    public function fixLoopingCastles(Game &$game)
+    {
+        $this->log->write("Fixing looping castles (4-4 and 7-4)...\n");
+        $offset44 = 0x407b;
+        $offset74 = 0x407d;
+        $world44 = 0;
+        $world74 = 0;
+
+        foreach ($game->worlds as $world) {
+            if ($world->hasLevel('4-4')) {
+                $world44 = $world->num;
+            }
+            if ($world->hasLevel('7-4')) {
+                $world74 = $world->num;
+            }
+        }
+
+        if ($world44 == $world74) {
+            $this->log->write("FATAL ERROR: 4-4 and 7-4 are in the same world?!?!?!?!?!\n");
+            exit(1);
+        }
+
+        $game->addData($offset44, pack('C*', $world44));
+        $game->addData($offset44 + 1, pack('C*', $world44));
+        $game->addData($offset74, pack('C*', $world74));
+        $game->addData($offset74 + 1, pack('C*', $world74));
+        $game->addData($offset74 + 2, pack('C*', $world74));
+        $game->addData($offset74 + 3, pack('C*', $world74));
+        $game->addData($offset74 + 4, pack('C*', $world74));
+        $game->addData($offset74 + 5, pack('C*', $world74));
+    }
+
+    /*
+     * Set coin tallies needed to activate bonus hidden 1-UP blocks to zero
+     */
+    public function zeroCoinTallies(Game &$game)
+    {
+        $offset = 0x32d2;
+        for ($i = 0; $i < 8; $i++) {
+            $game->addData($offset + $i, pack('C*', 0x00));
+        }
+    }
+
+    public function disableDemoActions(Game &$game)
+    {
+        for ($offset = 0x350; $offset < 0x364; $offset++) {
+            $game->addData($offset, pack('C*', 0x80));
+        }
+    }
+
+    public function shuffleMusic(Game &$game)
+    {
+        $bytes = [ 0x01, 0x02, 0x04, 0x08 ];
+        $offset = 0x10f7;
+        $shuffled = mt_shuffle($bytes);
+
+        for ($i = 0; $i < 4; $i++) {
+            $game->addData($offset + $i, pack('C*', $shuffled[$i]));
+        }
+    }
+
     public function setTextSeedhash(string $text, Game &$game)
     {
         $offset = 0x9fa1; // + 0x8000;   if using smb+duckhunt rom
@@ -1210,6 +1661,7 @@ class Randomizer
             "NewQuest" => [0xdcf, 0xded], // WE PRESENT YOU A NEW QUEST.
             "WorldSelect" => [0xdee, 0xdfe], // PUSH BUTTON B
             "WorldSelect2" => [0xdff, 0xe13], // TO SELECT A WORLD
+            "Warp" => [0x7d0, 0x7e7], // WELCOME TO WARP ZONE!
         ];
 
         $offset = $messages[$text][0] + 3;
@@ -1253,156 +1705,10 @@ class Randomizer
         $this->log->write("Randomized win text to entry " . $variation . " (" . $win_variations[$variation][0] . ")\n");
     }
 
-    // public function basicallyHowGetOptionsFromFlagsWouldWork($flags)
-    // {
-    //     if ($flags[0] == 'M') {
-    //         $options['pipeTransitions'] = 'remove';
-    //     } else if ($flags[0] == 'E') {
-    //         $options['pipeTransitions'] = 'keep';
-    //     } else {
-    //         $options['pipeTransitions'] = 'invalid';
-    //     }
-    //     return $options;
-    // }
-
-    // New flag encoding and decoding algorithm - thanks to Fred Coughlin!
-    // I've pretty much stolen the entire algorithm from Fred.
-    // Don't know if he got it from somewhere or came up with it himself.
-    // It's pretty simple actually.
-    public function calculateFlagsNew($options = null)
-    {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz';
-        //$alphabet = 'MpQa8WoNsBiEd3VuRfCyT2tXgJeZnU4hI7kAlSwOj6DmPxFqL5bGrKv9HzY1c0';
-        $flag_string = '';
-        $option_values = [
-            [config('smbr.randomizer.options.pipeTransitions'), $options['pipeTransitions']],
-            [config('smbr.randomizer.options.shuffleLevels'), $options['shuffleLevels']],
-            [config('smbr.randomizer.options.normalWorldLength'), $options['normalWorldLength']],
-            [config('smbr.randomizer.options.enemies'), $options['enemies']],
-            [config('smbr.randomizer.options.blocks'), $options['blocks']],
-            [config('smbr.randomizer.options.bowserAbilities'), $options['bowserAbilities']],
-            [config('smbr.randomizer.options.bowserHitpoints'), $options['bowserHitpoints']],
-            [config('smbr.randomizer.options.startingLives'), $options['startingLives']],
-            [config('smbr.randomizer.options.warpZones'), $options['warpZones']],
-            [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
-            [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
-            [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
-        ];
-        $flag = 0;
-
-        foreach ($option_values as list($o, $selected)) {
-            $selected_index = array_search($selected, array_keys($o)); // TODO: do we need + 1 here?? probably not?
-            $flag *= count($o);
-            $flag += $selected_index;
-            // print("Flag: $flag\n");
-        }
-
-        // print("Flag number: " . $flag . "\n");
-
-        $i = 0;
-        $alphabet_length = strlen($alphabet);
-        do {
-            $z = $flag % $alphabet_length;
-            // print("Z: $z - flag: " . round($flag) . " - " . $alphabet[$z] . "\n");
-            $flag_string[$i] = $alphabet[$z];
-            $flag /= $alphabet_length;
-            $i++;
-        } while ($flag > 1);
-
-        // print("New flag string: $flag_string \n");
-        return strrev($flag_string);
-    }
-
-    public function betterFlagsToOptions($flag_string, $options)
-    {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz';
-        $alphabet_length = strlen($alphabet);
-        $flag_number = 0;
-        $option_values = [
-            [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
-            [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
-            [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
-            [config('smbr.randomizer.options.warpZones'), $options['warpZones']],
-            [config('smbr.randomizer.options.startingLives'), $options['startingLives']],
-            [config('smbr.randomizer.options.bowserHitpoints'), $options['bowserHitpoints']],
-            [config('smbr.randomizer.options.bowserAbilities'), $options['bowserAbilities']],
-            [config('smbr.randomizer.options.blocks'), $options['blocks']],
-            [config('smbr.randomizer.options.enemies'), $options['enemies']],
-            [config('smbr.randomizer.options.normalWorldLength'), $options['normalWorldLength']],
-            [config('smbr.randomizer.options.shuffleLevels'), $options['shuffleLevels']],
-            [config('smbr.randomizer.options.pipeTransitions'), $options['pipeTransitions']],
-        ];
-
-        for ($i = 0; $i < strlen($flag_string); $i++) {
-            $j = 0;
-            for ($j = 0; $j < $alphabet_length && $alphabet[$j] != $flag_string[$i]; $j++);
-            $flag_number *= $alphabet_length;
-            $flag_number += $j;
-        }
-
-        print("Flag string decoded back to number: $flag_number \n");
-
-        // Now, go through options and set correct choice
-        // TODO: improve variable names
-        // TODO: understand this algorithm completely!
-        foreach ($option_values as list($o, $selected)) {
-            $z = count($o);
-            $selected_option = $flag_number % $z;
-            $flag_number /= $z;
-            print("Selected option: $selected_option \n");
-            // Here we need to find out which key in array matches selected_option
-        }
-    }
-
-    /*
-    public function getFlags($options)
-    {
-        $flags[0] = $options['pipeTransitions'][2];
-        $flags[1] = $options['shuffleLevels'][1];
-        $flags[1]++;
-        $flags[1]++;
-        $flags[2] = $options['normalWorldLength'][1];
-        $flags[2]++;
-        $flags[2]++;
-        $flags[3] = $options['enemies'][12];
-        $flags[4] = $options['blocks'][11];
-        $flags[4]++;
-        $flags[4]++;
-        $flags[5] = $options['bowserAbilities'][3];
-        $flags[6] = $options['bowserHitpoints'][0];
-        $flags[6]++;
-        $flags[7] = $options['startingLives'][0];
-        $flags[7]++;
-        $flags[7]++;
-        $flags[8] = $options['warpZones'][2];
-        $flags[8]++;
-        $flags[8]++;
-        $flags[8]++;
-        $flags[9] = $options['hiddenWarpDestinations'][3];
-        $flags[9]++;
-        $flags[9]++;
-        $flags[9]++;
-        $flags[10] = $options['fireworks'][3];
-        $flags[10]--;
-        $flags[10]--;
-        $flags[10]--;
-        $flags[11] = $options['shuffleUndergroundBonus'][2];
-        $flags[11]++;
-        $flags[11]++;
-        $flags[11]++;
-        $flags[11]++;
-
-        $s = implode("", $flags);
-        $f = strtoupper($s);
-
-        return $f;
-    }
-    */
-
     public function makeFlags()
     {
-        $this->flags = $this->calculateFlagsNew($this->options);
-        // $this->betterFlagsToOptions($this->calculateFlagsNew($this->options), $this->options);
+        $this->flags = $this->flagstring->getFlagstring();
+        //$this->flagstringToOptions($this->flags, $this->options);
     }
 
     public function makeSeedHash()
@@ -1418,8 +1724,8 @@ class Randomizer
 
     public function setSeed(int $rng_seed = null)
     {
-        $rng_seed = $rng_seed ?: random_int(1, 9999999999); // cryptographic pRNG for seeding
-        $this->rng_seed = $rng_seed % 10000000000;
+        $rng_seed = $rng_seed ?: random_int(1, 9999999999999); // cryptographic pRNG for seeding
+        $this->rng_seed = $rng_seed % 10000000000000;
         mt_srand($this->rng_seed);
     }
 
@@ -1448,6 +1754,11 @@ class Randomizer
         // Note: Sanity checking takes care of underground bonus area shuffling!
         // TODO: maybe structure that differently?
         if ($this->options['shuffleLevels'] == "all") {
+            if ($this->options['pipeTransitions'] == "keep") {
+                $game->num_levels = 35;
+            } else {
+                $game->num_levels = 32;
+            }
             if ($this->options['normalWorldLength'] == "true") {
                 // normal world length
                 $this->log->write("Shuffling all levels (normal world length)...\n");
@@ -1467,6 +1778,7 @@ class Randomizer
             }
         } else if ($this->options['shuffleLevels'] == "worlds") {
             $this->log->write('Shuffling world order...');
+            $game->num_levels = 32;
             $this->shuffleWorldOrder($game);
             while (!$this->sanityCheckWorldLayout($game)) {
                 $game->resetWorlds();
@@ -1475,6 +1787,7 @@ class Randomizer
             $game->setVanillaWorldData();
         } else if ($this->options['shuffleLevels'] == "none") {
             $game->setVanillaWorldData();
+            $game->num_levels = 35;
             while (!$this->sanityCheckWorldLayout($game)) {
                 $this->log->write("Vanilla World Layout sanity check failed?!! Something is very wrong - that shouldn't happen!\n");
                 exit(1);
@@ -1489,16 +1802,16 @@ class Randomizer
             $this->fixPipes($game);
         }
 
-        //  Shuffle Enemies
-        if ($this->options['enemies'] == "randomizeFull") {
-            $this->randomizeEnemies($game, false);
-        } else if ($this->options['enemies'] == "randomizePools") {
-            $this->randomizeEnemies($game, true);
+        // Randomize Enemies
+        if ($this->options['enemies'] == "randomizeChaos") {
+            $this->randomizeEnemiesChaos($game);
+        } else if ($this->options['enemies'] == "randomizeControlled") {
+            $this->randomizeEnemiesControlled($game);
         } else if ($this->options['enemies'] == "randomizeNone") {
             $this->log->write("No randomization of enemies!\n");
         }
 
-        // Shuffle Blocks
+        // Randomize Blocks
         if ($this->options['blocks'] == "randomizeAll") {
             $this->randomizeBlocks($game, $item_pools->all_items, $item_pools->all_items);
         } else if ($this->options['blocks'] == "randomizePowerups") {
@@ -1507,10 +1820,20 @@ class Randomizer
             $this->randomizeBlocks($game, $item_pools->all_question_blocks, $item_pools->all_question_blocks);
             $this->randomizeBlocks($game, $item_pools->all_hidden_blocks, $item_pools->all_hidden_blocks);
             $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
+        } else if ($this->options['blocks'] == "randomizeBricks") {
+            $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
+        } else if ($this->options['blocks'] == "randomizeBricksQuestion") {
+            $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
+            $this->randomizeBlocks($game, $item_pools->all_question_blocks, $item_pools->all_question_blocks);
         } else if ($this->options['blocks'] == "randomizeCoins") {
             $this->randomizeBlocks($game, $item_pools->all_items, $item_pools->all_coins);
         } else if ($this->options['blocks'] == "randomizeNone") {
             $this->log->write("No randomization of blocks!\n");
+        }
+
+        // Randomize Blocks in Underground Bonus Areas
+        if ($this->options['randomizeUndergroundBricks'] == 'true') {
+            $this->randomizeBlocksInUndergroundBonus($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
         }
 
         // Randomize Bowser's Abilities
@@ -1530,7 +1853,11 @@ class Randomizer
 
         // Randomize warp zones
         if ($this->options['warpZones'] != "normal") {
-            $this->randomizeWarpZones($game);
+            if ($this->options['warpZones'] == "disable") {
+                $this->disableWarpPipes($game);
+            } else {
+                $this->randomizeWarpZones($game);
+            }
         }
 
         // Remove warp zone destination text if selected
@@ -1538,12 +1865,53 @@ class Randomizer
             $this->removeWarpZoneLabels($game);
         }
 
+        // Randomize fireworks
         if ($this->options['fireworks'] == "true") {
             $this->randomizeFireworks($game);
         }
 
+        // Randomize background/scenery
+        if ($this->options['randomizeBackground'] == "true") {
+            $this->randomizeBackground($game);
+        }
+
+        // Randomize where secondary hard mode starts
+        // if ($this->options['hardMode'] == 'random') {
+        //     $this->randomizeSecondaryHardModeStart($game);
+        // } else if ($this->options['hardMode'] == 'always') {
+        //     $this->setAlwaysSecondaryHardMode($game);
+        // }
+
+        // Randomize Fire Bar Spin Speed
+        if ($this->options['randomizeSpinSpeed'] == 'true') {
+            $this->randomizeSpinSpeed($game);
+        }
+
+        // Shuffle Fire Bar Spin Directions
+        if ($this->options['shuffleSpinDirections'] == 'true') {
+            $this->shuffleSpinDirections($game);
+        }
+
+        // Shuffle music
+        if ($this->options['shuffleMusic'] == 'true') {
+            $this->shuffleMusic($game);
+        }
+
         // Fix Midway Points
         $this->fixMidwayPoints($game);
+
+        // Fix Looping Castles
+        $this->fixLoopingCastles($game);
+
+        // Zero coin tallies
+        // TODO: THIS DOESN'T SEEM TO WORK!!!!!
+        $this->zeroCoinTallies($game);
+
+        // Write New Warp Zone Code :D
+        $this->writeNewWarpZoneCode($game);
+
+        // Disable demo actions
+        $this->disableDemoActions($game);
 
         // Set seedhash text
         $this->setTextSeedhash($this->seedhash, $game);

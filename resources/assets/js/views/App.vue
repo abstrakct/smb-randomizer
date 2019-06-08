@@ -5,8 +5,8 @@
         <b-col></b-col>
         <b-col cols="8">
           <b-card :title="'Super Mario Bros. Randomizer v' + this.version" style="max-width: 150rem;">
-            <b-alert :show="true" variant="info">NOTE: this software is still under development, and currently in a beta/testing stage (at best)! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
-            <b-alert dismissible fade :show="error" variant="danger">
+            <b-alert dismissible :show="true" variant="info">NOTE: this software is still under development, and currently in a beta/testing stage (at best)! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
+            <b-alert dismissible fade :show="error" variant="danger" v-html="this.errorMessage">
               Error: {{ this.errorMessage }}
             </b-alert>
 
@@ -25,25 +25,36 @@
               <b-card title="Options" style="max-width: 150rem;">
                 <b-row>
                   <b-col>
-                    <smbr-input id="seed" label="Seed number" v-model="selectedOptions.seed" type="number" placeholder="Input seed number here, or leave blank for random"></smbr-input>
+                    <p><strong>Current flags: {{ currentFlags }}</strong></p>
+                    <smbr-input id="seed" label="Seed number" @input="updateInputted" storage-key="smbr.opt.seed" v-model="selectedOptions.seed" type="number" placeholder="Input seed number here, or leave blank for random"></smbr-input>
+                    <smbr-input id="flags" label="Flags" v-model="inputFlags" type="text" @input="updateInputted" placeholder="(NOT IMPLEMENTED) Input flagstring here to set all options from a flag string"></smbr-input>
+                    <b-button @click="applyFlagstring">Apply flagstring</b-button>
                     <smbr-select id="olw" label="Level Randomization" @input="updateInputted" storage-key="smbr.opt.levels" v-model="selectedOptions.shuffleLevels" :options="randomizerOptions.shuffleLevels"></smbr-select>
                     <smbr-select id="owz" label="Warp Zones" @input="updateInputted" storage-key="smbr.opt.warpzones" v-model="selectedOptions.warpZones" :options="randomizerOptions.warpZones"></smbr-select>
                     <smbr-select id="obl" label="Blocks" @input="updateInputted" storage-key="smbr.opt.blocks" v-model="selectedOptions.blocks" :options="randomizerOptions.blocks"></smbr-select>
                     <smbr-select id="oen" label="Enemies" @input="updateInputted" storage-key="smbr.opt.enemies" v-model="selectedOptions.enemies" :options="randomizerOptions.enemies"></smbr-select>
-                    <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserHitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
-                    <smbr-select id="osl" label="Starting Lives" @input="updateInputted" storage-key="smbr.opt.startingLives" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives"></smbr-select>
+                    <smbr-select id="obh" label="Bowser's Hitpoints" @input="updateInputted" storage-key="smbr.opt.bowserhitpoints" v-model="selectedOptions.bowserHitpoints" :options="randomizerOptions.bowserHitpoints"></smbr-select>
+                    <smbr-select id="osl" label="Starting Lives" @input="updateInputted" storage-key="smbr.opt.startinglives" v-model="selectedOptions.startingLives" :options="randomizerOptions.startingLives"></smbr-select>
+                    <smbr-select id="ohm" label="Secondary Hard Mode" @input="updateInputted" storage-key="smbr.opt.hardmode" v-model="selectedOptions.hardMode" :options="randomizerOptions.hardMode"></smbr-select>
                   </b-col>
 
                   <b-col>
-                    <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
-                    <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
-                    <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
                     <smbr-checkbox id="owl" label="Worlds can have varying lengths" @input="updateInputted" storage-key="smbr.opt.normalworldlength" v-model="selectedOptions.normalWorldLength" checked-value="false" unchecked-value="true"></smbr-checkbox>
                     <smbr-checkbox id="opt" label="Remove pipe transitions" @input="updateInputted" storage-key="smbr.opt.pipetransitions" v-model="selectedOptions.pipeTransitions" checked-value="remove" unchecked-value="keep"></smbr-checkbox>
                     <smbr-checkbox id="ohw" label="Hide warp pipe destinations" @input="updateInputted" storage-key="smbr.opt.hiddenwarpdestinations" v-model="selectedOptions.hiddenWarpDestinations" checked-value="true" unchecked-value="false"></smbr-checkbox>
-                    <smbr-checkbox id="oub" label="Shuffle destinations of pipes going to underground bonus areas" @input="updateInputted" storage-key="smbr.opt.shuffleundegroundbonus" v-model="selectedOptions.shuffleUndergroundBonus" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="oub" label="Shuffle destinations of pipes going to underground bonus areas" @input="updateInputted" storage-key="smbr.opt.shuffleundergroundbonus" v-model="selectedOptions.shuffleUndergroundBonus" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="orb" label="Randomize background and scenery (EXPERIMENTAL)" @input="updateInputted" storage-key="smbr.opt.randomizebackground" v-model="selectedOptions.randomizeBackground" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="oba" label="Randomize where Bowser starts throwing hammers and breathing fire" @input="updateInputted" storage-key="smbr.opt.bowserabilities" v-model="selectedOptions.bowserAbilities" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ofw" label="Randomize fireworks" @input="updateInputted" storage-key="smbr.opt.fireworks" v-model="selectedOptions.fireworks" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ofw" label="Randomize brick blocks in underground bonus areas" @input="updateInputted" storage-key="smbr.opt.randomizeundergroundbricks" v-model="selectedOptions.randomizeUndergroundBricks" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="oef" label="Exclude Fire Bars from enemy randomization" @input="updateInputted" v-model="selectedOptions.excludeFirebars" storage-key="smbr.opt.excludefirebars" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ors" label="Randomize the spin speed of Fire Bars" @input="updateInputted" v-model="selectedOptions.randomizeSpinSpeed" storage-key="smbr.opt.randomizespinspeed" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ord" label="Shuffle the spin directions of Fire Bars" @input="updateInputted" v-model="selectedOptions.shuffleSpinDirections" storage-key="smbr.opt.shufflespindirections" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ovl" label="Generate verbose debug log" @input="updateInputted" storage-key="smbr.opt.verboselog" v-model="selectedOptions.verboseLog" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="omu" label="Shuffle the music (does not change flags/seedhash)" @input="updateInputted" storage-key="smbr.opt.shufflemusic" v-model="selectedOptions.shuffleMusic" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
+                    <smbr-select id="ocsl" label="Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.luigicolors" v-model="selectedOptions.colorscheme.luigi" :options="randomizerOptions.colorscheme.luigi"></smbr-select>
+                    <smbr-select id="ocsf" label="Fire Mario/Luigi Color Scheme" @input="updateInputted" storage-key="smbr.opt.firecolors" v-model="selectedOptions.colorscheme.fire" :options="randomizerOptions.colorscheme.fire"></smbr-select>
 
                     <p> </p>
 
@@ -79,6 +90,7 @@
           </b-alert>
           <b-card title="Information">
             <b-button variant="info" href="/about">About/Help</b-button>
+            <!-- <b-button @click="loadDefaultsButton">Load default options</b-button> -->
             <p></p>
             <b-alert dismissible :show="info" variant="info" v-html="infoMessage">
               {{ infoMessage }}
@@ -94,7 +106,7 @@
 export default {
   props: ["version"],
 
-  // TODO: Store selected options in localNorage
+  // TODO: Store selected options in localForage
   // TODO: Disable certain options when certain options are selected!
   data() {
     return {
@@ -120,10 +132,12 @@ export default {
       infoMessage: "",
       // options
       optionsLoaded: false,
-      defaultLoaded: false,
+      defaultLoaded: false,  // apparently not used?
       defaultOptions: null,
       randomizerOptions: null,
       generateLog: true,
+      currentFlags: "",
+      inputFlags: "",
 
       selectedOptions: {
         seed: null,
@@ -143,7 +157,15 @@ export default {
         warpZones: "",
         hiddenWarpDestinations: "",
         fireworks: "",
-        shuffleUndergroundBonus: ""
+        shuffleUndergroundBonus: "",
+        randomizeBackground: "",
+        hardMode: "",
+        randomizeUndergroundBricks: "",
+        excludeFirebars: "",
+        randomizeSpinSpeed: "",
+        shuffleSpinDirections: "",
+        verboseLog: "",
+        shuffleMusic: "",
       }
     };
   },
@@ -195,6 +217,9 @@ export default {
 
     this.loadLocalOptions();
 
+    // Set flags input box
+    this.getFlags();
+
     // Look for stored ROM in localforage, and load it if found.
     localforage.getItem("smbr.rom.base.data").then(function(blob) {
       if (blob == null) {
@@ -203,6 +228,16 @@ export default {
       }
       EventBus.$emit("loadBlob", { target: { files: [new Blob([blob])] } });
     });
+
+    // Load stored seed number
+    localforage.getItem("smbr.opt.seed").then(function(value) {
+      this.selectedOptions.seed = value;
+    }.bind(this));
+
+    // Load stored path to logfile
+    localforage.getItem("smbr.rom.randomized.logfilename").then(function(value) {
+      this.rando.logfullpath = value;
+    }.bind(this));
 
     EventBus.$on("update-baserom-filename", this.updateFilename);
     EventBus.$on("store-randomized-rom", this.storeRandomizedRom);
@@ -242,7 +277,15 @@ export default {
           warpZones: this.selectedOptions.warpZones,
           hiddenWarpDestinations: this.selectedOptions.hiddenWarpDestinations,
           fireworks: this.selectedOptions.fireworks,
-          shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus
+          shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
+          randomizeBackground: this.selectedOptions.randomizeBackground,
+          hardMode: this.selectedOptions.hardMode,
+          randomizeUndergroundBricks: this.selectedOptions.randomizeUndergroundBricks,
+          excludeFirebars: this.selectedOptions.excludeFirebars,
+          randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
+          shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
+          verboseLog: this.selectedOptions.verboseLog,
+          shuffleMusic: this.selectedOptions.shuffleMusic,
         })
         .then(response => {
           this.rando.fullpath = response.data.fullpath;
@@ -250,6 +293,7 @@ export default {
           this.rando.logfullpath = response.data.logfullpath;
           this.rando.base64data = response.data.base64data;
           this.rando.done = true;
+          localforage.setItem("smbr.rom.randomized.logfilename", this.rando.logfullpath);
         })
         .then(() => {
           EventBus.$emit("store-randomized-rom");
@@ -350,6 +394,7 @@ export default {
     updateInputted() {
       this.updateInfoMessage();
       this.checkSelectedOptions();
+      this.getFlags();
     },
 
     updateInfoMessage() {
@@ -372,7 +417,7 @@ export default {
       ) {
         this.error = true;
         this.errorMessage +=
-          "Warp Zones Gamble require 'Hide warp pipe destinations' to be selected.";
+          "Warp Zones Gamble require 'Hide warp pipe destinations' to be selected.<br>";
       }
 
       if (
@@ -381,7 +426,7 @@ export default {
       ) {
         this.error = true;
         this.errorMessage +=
-          "Invalid combination: 'Shuffle world order only' and 'Worlds can have varying length'";
+          "Invalid combination: 'Shuffle world order only' and 'Worlds can have varying length'<br>";
       }
 
       if (
@@ -390,7 +435,7 @@ export default {
       ) {
         this.error = true;
         this.errorMessage +=
-          "Invalid combination: 'Do not shuffle levels' and 'Worlds can have varying length'";
+          "Invalid combination: 'Do not shuffle levels' and 'Worlds can have varying length'<br>";
       }
 
       if (
@@ -400,7 +445,21 @@ export default {
       ) {
         this.error = true;
         this.errorMessage +=
-          "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'";
+          "Invalid combination: 'Keep pipe transitions', 'Shuffle all levels' and 'Each world has 4 levels'<br>";
+      }
+
+      if (
+        this.selectedOptions.shuffleLevels == "none" &&
+        this.selectedOptions.shuffleUndergroundBonus == "true"
+      ) {
+        this.error = true;
+        this.errorMessage +=
+          "Invalid combination: Options 'no level shuffle' and 'shuffle underground bonus areas' does not currently work correctly together.<br>"
+      }
+
+      if (this.selectedOptions.randomizeBackground == "true") {
+        this.info = true;
+          this.infoMessage += "<p><b>Randomize background and scenery</b> is an UNFINISHED, EXPERIMENTAL FEATURE and NOT guaranteed to give good results! Use at your own risk!</p>"
       }
     },
 
@@ -411,11 +470,11 @@ export default {
         { key: "smbr.opt.blocks", val: this.defaultOptions.blocks },
         { key: "smbr.opt.enemies", val: this.defaultOptions.enemies },
         {
-          key: "smbr.opt.bowserHitpoints",
+          key: "smbr.opt.bowserhitpoints",
           val: this.defaultOptions.bowserHitpoints
         },
         {
-          key: "smbr.opt.startingLives",
+          key: "smbr.opt.startinglives",
           val: this.defaultOptions.startingLives
         },
         {
@@ -453,7 +512,39 @@ export default {
         {
           key: "smbr.opt.shuffleundergroundbonus",
           val: this.defaultOptions.shuffleUndergroundBonus
-        }
+        },
+        {
+          key: "smbr.opt.randomizebackground",
+          val: this.defaultOptions.randomizeBackground
+        },
+        {
+          key: "smbr.opt.hardmode",
+          val: this.defaultOptions.hardMode
+        },
+        {
+          key: "smbr.opt.randomizeundergroundbricks",
+          val: this.defaultOptions.randomizeUndergroundBricks
+        },
+        {
+          key: "smbr.opt.excludefirebars",
+          val: this.defaultOptions.excludeFirebars
+        },
+        {
+          key: "smbr.opt.randomizespinspeed",
+          val: this.defaultOptions.randomizeSpinSpeed
+        },
+        {
+          key: "smbr.opt.shufflespindirections",
+          val: this.defaultOptions.shuffleSpinDirections
+        },
+        {
+          key: "smbr.opt.verboselog",
+          val: this.defaultOptions.verboseLog
+        },
+        {
+          key: "smbr.opt.shufflemusic",
+          val: this.defaultOptions.shuffleMusic
+        },,
       ];
 
       arr.forEach(function(entry) {
@@ -471,11 +562,60 @@ export default {
       this.selectedOptions = Object.assign({}, this.defaultOptions);
     },
 
+    applyFlagstring() {
+      axios
+        .post("/randomizer/flags/set", { flagstring: this.inputFlags })
+        .then(response => {
+          console.log(response);
+          this.selectedOptions.randomizeBackground = true;
+        });
+    },
+
+/* 
+ * this isn't working....
+    loadDefaultsButton() {
+      this.storeDefaultsLocally();
+      EventBus.$emit('update-value');
+      this.updateInputted();
+    },
+    */
+
     loadLocalOptions() {},
 
     onError(error) {
       this.error = true;
       this.errorMessage = error;
+    },
+
+    getFlags() {
+      // this.error = false;
+      axios
+        .post("/randomizer/flags/get", {
+          headers: { "content-type": "multipart/form-data" },
+          shuffleLevels: this.selectedOptions.shuffleLevels,
+          normalWorldLength: this.selectedOptions.normalWorldLength,
+          pipeTransitions: this.selectedOptions.pipeTransitions,
+          enemies: this.selectedOptions.enemies,
+          blocks: this.selectedOptions.blocks,
+          bowserAbilities: this.selectedOptions.bowserAbilities,
+          bowserHitpoints: this.selectedOptions.bowserHitpoints,
+          startingLives: this.selectedOptions.startingLives,
+          warpZones: this.selectedOptions.warpZones,
+          hiddenWarpDestinations: this.selectedOptions.hiddenWarpDestinations,
+          fireworks: this.selectedOptions.fireworks,
+          shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
+          randomizeBackground: this.selectedOptions.randomizeBackground,
+          hardMode: this.selectedOptions.hardMode,
+          randomizeUndergroundBricks: this.selectedOptions.randomizeUndergroundBricks,
+          excludeFirebars: this.selectedOptions.excludeFirebars,
+          randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
+          shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
+          shuffleMusic: this.selectedOptions.shuffleMusic,
+        })
+        .then(response => {
+          console.log(response);
+          this.currentFlags = response.data;
+        });
     }
   }
 };

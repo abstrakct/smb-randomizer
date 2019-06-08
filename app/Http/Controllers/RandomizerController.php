@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use SMBR\Logger;
 use SMBR\Randomizer;
 use SMBR\Rom;
+use SMBR\Flagstring;
+
 
 class RandomizerController extends Controller
 {
@@ -36,6 +38,13 @@ class RandomizerController extends Controller
         $options['hiddenWarpDestinations'] = $request->input('hiddenWarpDestinations');
         $options['fireworks'] = $request->input('fireworks');
         $options['shuffleUndergroundBonus'] = $request->input('shuffleUndergroundBonus');
+        $options['randomizeBackground'] = $request->input('randomizeBackground');
+        $options['hardMode'] = $request->input('hardMode');
+        $options['randomizeUndergroundBricks'] = $request->input('randomizeUndergroundBricks');
+        $options['excludeFirebars'] = $request->input('excludeFirebars');
+        $options['randomizeSpinSpeed'] = $request->input('randomizeSpinSpeed');
+        $options['shuffleSpinDirections'] = $request->input('shuffleSpinDirections');
+        $options['shuffleMusic'] = $request->input('shuffleMusic');
 
         $options['mariocolors'] = $request->input('mario');
         $options['luigicolors'] = $request->input('luigi');
@@ -46,17 +55,21 @@ class RandomizerController extends Controller
 
         $rando->setSeed($rando->getSeed());
         $rando->makeFlags();
-        $rando->makeSeedHash();
+
         $romfilename = $request->input('romfilename');
 
-        $outfilename = "output/roms/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . strtoupper($rando->getFlags($options)) . ".nes";
-        $logfilename = "output/logs/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . strtoupper($rando->getFlags($options)) . ".log.txt";
-        $outfilebasename = substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . strtoupper($rando->getFlags($options)) . ".nes";
+        // Set filenames
+        $outfilename = "output/roms/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".nes";
+        $logfilename = "output/logs/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".log.txt";
+        $outfilebasename = substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".nes";
 
         // Start the logger
-        $log = new Logger($logfilename, $request->input('generateLog'));
+        $log = new Logger($logfilename, $request->input('generateLog'), $request->input('verboseLog') == "true" ? "verbose" : "normal");
         $rom->setLogger($log);
         $rando->setLogger($log);
+
+        // Make seedhash
+        $rando->makeSeedHash();
 
         // Print out the selected options and relevant information
         // $rando->printOptions();
@@ -98,5 +111,37 @@ class RandomizerController extends Controller
     public function defaultoptions()
     {
         return config('smbr.randomizer.defaultOptions');
+    }
+
+    public function getflags(Request $request)
+    {
+        $options['pipeTransitions'] = $request->input('pipeTransitions');
+        $options['shuffleLevels'] = $request->input('shuffleLevels');
+        $options['normalWorldLength'] = $request->input('normalWorldLength');
+        $options['enemies'] = $request->input('enemies');
+        $options['blocks'] = $request->input('blocks');
+        $options['bowserAbilities'] = $request->input('bowserAbilities');
+        $options['bowserHitpoints'] = $request->input('bowserHitpoints');
+        $options['startingLives'] = $request->input('startingLives');
+        $options['warpZones'] = $request->input('warpZones');
+        $options['hiddenWarpDestinations'] = $request->input('hiddenWarpDestinations');
+        $options['fireworks'] = $request->input('fireworks');
+        $options['shuffleUndergroundBonus'] = $request->input('shuffleUndergroundBonus');
+        $options['randomizeBackground'] = $request->input('randomizeBackground');
+        $options['hardMode'] = $request->input('hardMode');
+        $options['randomizeUndergroundBricks'] = $request->input('randomizeUndergroundBricks');
+        $options['excludeFirebars'] = $request->input('excludeFirebars');
+        $options['randomizeSpinSpeed'] = $request->input('randomizeSpinSpeed');
+        $options['shuffleSpinDirections'] = $request->input('shuffleSpinDirections');
+
+        $f = new Flagstring($options);
+        return $f->getFlagstring();
+    }
+
+    public function setOptionsFromFlagstring(Request $request)
+    {
+        //$rando = new Randomizer(0);
+        //$rando->setOptionsFromFlagstring($request->input('flagstring'));
+        //return $rando->getOptions();
     }
 }

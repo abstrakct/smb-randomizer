@@ -2,6 +2,9 @@
   <div>
     <b-form-group :label="label">
       <b-form-input @input="onInput" v-model="value" :type="type" :placeholder="placeholder"> </b-form-input>
+      <!-- <b-input-group-append>
+        <b-button>click</b-button>
+      </b-input-group-append> -->
     </b-form-group>
   </div>
 </template>

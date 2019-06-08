@@ -18,6 +18,8 @@ class Randomize extends Command
      *
      * @var string
      */
+
+     // TODO: this should, if possible, use default options from config
     protected $signature = 'smbr:randomize {input_file : base rom to randomize}'
         . '{output_dir : where to save the randomized rom}'
         . '{--log=normal : Log level}'
@@ -26,15 +28,22 @@ class Randomize extends Command
         . '{--pipe-transitions=remove : keep or remove pipe transitions}'
         . '{--shuffle-levels=all : level randomization}'
         . '{--normal-world-length=false : world length options}'
-        . '{--enemies=randomizePools : enemy randomization}'
-        . '{--blocks=randomizeAll : block randomization}'
+        . '{--enemies=randomizeControlled : enemy randomization}'
+        . '{--blocks=randomizeGrouped : block randomization}'
         . '{--bowser-abilities=true : randomize Bowser abilities}'
         . '{--bowser-hitpoints=random : randomize Bowser hitpoints}'
         . '{--starting-lives=random : randomize player starting lives}'
-        . '{--warp-zones=random : randomize warp zones}'
+        . '{--warp-zones=shuffle : randomize warp zones}'
         . '{--hidden-warp-destinations=false : hidden warp destinations}'
         . '{--fireworks=true : randomize when fireworks appear}'
         . '{--shuffle-underground-bonus=true : shuffle destinations of underground bonus level pipes }'
+        . '{--randomize-background=false : randomize the background and scenery of levels }'
+        . '{--hard-mode=vanilla : change where secondary hard mode is activated }'
+        . '{--randomize-underground-bricks=true : randomize content of brick blocks in underground bonus areas }'
+        . '{--exclude-firebars=false : exclude fire bars from enemy randomization }'
+        . '{--randomize-spin-speed=false : randomize fire bar spin speeds }'
+        . '{--shuffle-spin-directions=false : shuffle fire bar spin directions }'
+        . '{--shuffle-music=false : shuffle music }'
         . '{--mariocolors=random : Mario Color Scheme}'
         . '{--luigicolors=random : Luigi Color Scheme}'
         . '{--firecolors=random : Fire Color Scheme}'
@@ -81,6 +90,13 @@ class Randomize extends Command
         $smbrOptions['hiddenWarpDestinations'] = $this->option('hidden-warp-destinations');
         $smbrOptions['fireworks'] = $this->option('fireworks');
         $smbrOptions['shuffleUndergroundBonus'] = $this->option('shuffle-underground-bonus');
+        $smbrOptions['randomizeBackground'] = $this->option('randomize-background');
+        $smbrOptions['hardMode'] = $this->option('hard-mode');
+        $smbrOptions['randomizeUndergroundBricks'] = $this->option('randomize-underground-bricks');
+        $smbrOptions['excludeFirebars'] = $this->option('exclude-firebars');
+        $smbrOptions['randomizeSpinSpeed'] = $this->option('randomize-spin-speed');
+        $smbrOptions['shuffleSpinDirections'] = $this->option('shuffle-spin-directions');
+        $smbrOptions['shuffleMusic'] = $this->option('shuffle-music');
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');
@@ -97,22 +113,10 @@ class Randomize extends Command
         //print_r($vanilla);
         //print(count($vanilla->worlds[1]->levels));
 
-        $webmode = false;
         $rom = new Rom($input_file);
         $checksum = $rom->getMD5();
         $ok = $rom->checkMD5();
 
-        if ($webmode) {
-            print("<br><br>SMB RANDOMIZER " . printVersion() . "<br><br>ROM filename: $input_file<br>");
-            print("MD5 checksum: $checksum");
-            if ($ok) {
-                print(" <b>[OK]</b><br>");
-            } else {
-                print(" <b>[FAILED!]</b><br>");
-                print("Trying to use this ROM anyway, <b>not guaranteed to work,</b> results may vary...<br>");
-                //TODO: Add checks to see if ROM is usable (check data in various offsets).
-            }
-        } else {
             print("\n\nSuper Mario Bros. RANDOMIZER v" . \SMBR\Randomizer::VERSION . "\n\nROM filename: $input_file\n");
             print("MD5 checksum: $checksum");
             if ($ok) {
@@ -122,7 +126,6 @@ class Randomize extends Command
                 print("Trying to use this ROM anyway, not guaranteed to work, results may vary...\n");
                 //TODO: Add checks to see if ROM is usable (check data in various offsets).
             }
-        }
 
         print("\n");
 
@@ -145,18 +148,8 @@ class Randomize extends Command
         // Make seedhash
         $rando->makeSeedHash();
 
-        print("SeedHash: $rando->seedhash\n");
-
-        // if ($webmode) {
-        //     $dir = "webout/" . $rando->getSeed() . "-" . strtoupper($rando->getFlags());
-        //     if (!file_exists($dir)) {
-        //         mkdir($dir, 0744);
-        //     }
-
-        //     $outfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".nes";
-        //     $logfilename = $dir . "/smb-rando-" . $rando->getSeed() . "-" . strtoupper($rando->flags) . ".log";
-        // } else {
-        // }
+        print("Flagstring: $rando->flags\n");
+        print("Seedhash: $rando->seedhash\n");
 
         // Print out the selected options and relevant information
         $rando->printOptions();
@@ -172,21 +165,15 @@ class Randomize extends Command
 
         // write JSON formatted data to logfile
         $game_json = json_encode($randomized_game, JSON_PRETTY_PRINT);
-        $log->write("\nJSON:\n\n");
-        $log->write($game_json);
-        $log->write("\n\n");
+        $log->writeVerbose("\nJSON:\n\n");
+        $log->writeVerbose($game_json);
+        $log->writeVerbose("\n\n");
 
         // write "pretty" world layout to logfile
         //$log->write($randomized_game->prettyprint());
 
         $log->close();
 
-        if ($webmode) {
-            print('<br><br><b>Finished!</b><br><a href="' . $outfilename . '">Click here to download randomized ROM!</a>');
-            print('<br><a href="' . $logfilename . '">Click here to view the log (contains spoilers!)</a>');
-        } else {
             print("\nFinished!\nFilename: $outfilename\n");
-        }
-
     }
 }

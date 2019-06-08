@@ -1,15 +1,44 @@
+NEW ATTEMPT 2019-04-03
+
+offset of code: 0x1702
+
+ORIGINAL:
+ldx #$04        A2 04
+lda WorldNumber AD 5F 07
+beq WarpNum     F0 08
+inx             E8
+ldy AreaType    AC 4E 07
+dey             88
+bne WarpNum     D0 01
+inx             E8
+
+15 bytes
+At the end of this routine, X must be 4 for 1-2 WZ, 5 for 4-2 end, 6 for 4-2 "sky" WZ
+
+NEW ROUTINE:
+ldx #$04        A2 04
+lda $e9         A5 E9
+cmp #$d8        C9 D8
+beq WarpNum     F0 07
+inx             E8
+cmp #$05        C9 05
+beq WarpNum     F0 02
+inx             E8
+nop             EA
+
+
 
 ScrollLockObject_Warp:
          2 ldx #$04            ;load value of 4 for game text routine as default
-         2 lda WorldNumber     ;warp zone (4-3-2), then check world number
+         3 lda WorldNumber     ;warp zone (4-3-2), then check world number
          2 beq WarpNum
          1 inx                 ;if world number > 1, increment for next warp zone (5)
-         2 ldy AreaType        ;check area type
+         3 ldy AreaType        ;check area type
          1 dey
          2 bne WarpNum         ;if ground area type, increment for last warp zone
          1 inx                 ;(8-7-6) and move on
 
-total: 13 bytes
+total: 15 bytes
 
          2 ldx #$04
          2 lda WorldNumber

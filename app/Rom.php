@@ -28,6 +28,7 @@ class Rom
 
     private $tmpfile;
     private $log;
+    private $num_writes = [];
     protected $rom;
     protected $level;
 
@@ -46,6 +47,8 @@ class Rom
         }
 
         $this->rom = fopen($this->tmpfile, "r+");
+
+        $this->num_writes = array_fill(0, 0xa010, 0);
     }
 
     public function setLogger($l)
@@ -138,11 +141,19 @@ class Rom
 
         $d = array_values(unpack('C*', $data));
         $m = sprintf("rom::write addr: %04x ", $offset);
-        $this->log->write($m);
+        $this->log->writeVerbose($m);
         foreach ($d as $value) {
-            $this->log->write(sprintf("%02x ", $value));
+            $this->log->writeVerbose(sprintf("%02x ", $value));
         }
-        $this->log->write("\n");
+        $this->log->writeVerbose("\n");
+
+        // Log how many writes to each address
+        $this->num_writes[$offset]++;
+        if ($this->num_writes[$offset] > 1) {
+            $s = sprintf("Address 0x%04x written %d times!\n", $offset, $this->num_writes[$offset]);
+            $this->log->writeVerbose($s);
+        }
+
         return $this;
     }
 
@@ -182,6 +193,7 @@ class Rom
         }
 
         // Write fixed pipes
+        // TODO: use data packets?!
         foreach ($game->worlds as $world) {
             foreach ($world->levels as $level) {
                 if ($level->pipe_pointers) {
@@ -203,10 +215,26 @@ class Rom
             }
         }
 
+        // Write level headers
+        // TODO: use data packets?!
+        if ($game->options['randomizeBackground'] == "true") {
+            foreach ($game->worlds as $world) {
+                foreach ($world->levels as $level) {
+                    if ($level->level_data_offset != 0) {
+                        $bytes = $level->getHeaderBytes();
+                        $this->write($level->level_data_offset, pack('C*', $bytes[0]));
+                        $this->write($level->level_data_offset + 1, pack('C*', $bytes[1]));
+                    }
+                }
+            }
+        }
+
         // Write data packets
         foreach ($game->getDataPackets() as $packet) {
             $this->write($packet->getOffset(), $packet->getData());
         }
+
+        $this->log->write("DONE!\n");
     }
 
     public function setMarioOuterColor(int $color, Game &$game)

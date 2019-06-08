@@ -31,6 +31,7 @@ class Game
     public $worlds = [];
     public $midway_points = [];
     public $options;
+    public $num_levels;
     private $data_packets = [];
 
     public function __construct($options)
@@ -79,8 +80,13 @@ class Game
             $ret .= sprintf($world->getName() . "\n");
             $l = 1;
             foreach ($world->levels as $level) {
-                $ret .= sprintf("\t" . $world->num + 1 . "-" . $trans->smbtoascii($l) . ": " . $level->name . "\n");
-                $l++;
+                    $ret .= "\t";
+                if ($level->name == "Pipe Transition") {
+                    $ret .= sprintf("Pipe Transition\n");
+                } else {
+                    $ret .= sprintf($world->num + 1 . "-" . $trans->smbtoascii($l) . ": " . $level->name . "\n");
+                    $l++;
+                }
             }
         }
 
