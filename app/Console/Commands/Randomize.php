@@ -43,6 +43,7 @@ class Randomize extends Command
         . '{--exclude-firebars=false : exclude fire bars from enemy randomization }'
         . '{--randomize-spin-speed=false : randomize fire bar spin speeds }'
         . '{--shuffle-spin-directions=false : shuffle fire bar spin directions }'
+        . '{--ohko=false : one-hit knock-out mode }'
         . '{--shuffle-music=false : shuffle music }'
         . '{--mariocolors=random : Mario Color Scheme}'
         . '{--luigicolors=random : Luigi Color Scheme}'
@@ -96,6 +97,7 @@ class Randomize extends Command
         $smbrOptions['excludeFirebars'] = $this->option('exclude-firebars');
         $smbrOptions['randomizeSpinSpeed'] = $this->option('randomize-spin-speed');
         $smbrOptions['shuffleSpinDirections'] = $this->option('shuffle-spin-directions');
+        $smbrOptions['ohko'] = $this->option('ohko');
         $smbrOptions['shuffleMusic'] = $this->option('shuffle-music');
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');

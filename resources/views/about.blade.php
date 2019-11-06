@@ -136,6 +136,11 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <b>Secondary Hard Mode</b> - in vanilla SMB some levels appear two times, and if it appears after 5-3, there will be more enemies on the level. This is sometimes referred to as "secondary hard mode". With this option you can choose to have that always activated (meaning all enemies will spawn on each occurrence of these levels), or you can leave it unchanged. For now, these options do not influence where levels are placed, but there are plans for a mode where you can randomize where this mode starts, and the level shuffling will take this option into account.
                         <p></p>
                         <b>EXPERIMENTAL FEATURE: Randomize background and scenery</b> - this will change the background and scenery of each level. Results can get VERY strange, and there is very little sanity checking for this feature as of now, so there are no guarantees if you select this one. For now it's NOT recommended for races etc.
+                        <p></p>
+                        <b>OHKO (One-Hit Knock-Out) Mode</b> - if you enable this, any hit will kill Mario/Luigi, even if they are big or have the Fire Flower!
+                        <p></p>
+                        <b>The "Generate MYSTERY SEED" Button</b> - clicking this button will randomize the randomizer (yo dawg...)! In other words, if you click this the randomizer will randomly choose a setting for each option, and attempt to generate a seed with those options. No spoiler log will be generated, and you will not know which options were chosen! Exciting, yes?
+                        WARNING WARNING: At the moment, the "Mystery Seed" mode has very little error checking, so sometimes the randomizer gets stuck trying to generate a seed with options that are incompatible with each other. If this happens, just wait about a minute and try again. This will be fixed! 
 
 
                         <p></p>

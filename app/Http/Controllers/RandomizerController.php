@@ -2,11 +2,10 @@
 namespace SMBR\Http\Controllers;
 
 use Illuminate\Http\Request;
+use SMBR\Flagstring;
 use SMBR\Logger;
 use SMBR\Randomizer;
 use SMBR\Rom;
-use SMBR\Flagstring;
-
 
 class RandomizerController extends Controller
 {
@@ -24,28 +23,59 @@ class RandomizerController extends Controller
 
         $rom = new Rom($tmpfilename);
 
-        // TODO: set options here
-        $seed = (int) $request->input('seed');
-        $options['pipeTransitions'] = $request->input('pipeTransitions');
-        $options['shuffleLevels'] = $request->input('shuffleLevels');
-        $options['normalWorldLength'] = $request->input('normalWorldLength');
-        $options['enemies'] = $request->input('enemies');
-        $options['blocks'] = $request->input('blocks');
-        $options['bowserAbilities'] = $request->input('bowserAbilities');
-        $options['bowserHitpoints'] = $request->input('bowserHitpoints');
-        $options['startingLives'] = $request->input('startingLives');
-        $options['warpZones'] = $request->input('warpZones');
-        $options['hiddenWarpDestinations'] = $request->input('hiddenWarpDestinations');
-        $options['fireworks'] = $request->input('fireworks');
-        $options['shuffleUndergroundBonus'] = $request->input('shuffleUndergroundBonus');
-        $options['randomizeBackground'] = $request->input('randomizeBackground');
-        $options['hardMode'] = $request->input('hardMode');
-        $options['randomizeUndergroundBricks'] = $request->input('randomizeUndergroundBricks');
-        $options['excludeFirebars'] = $request->input('excludeFirebars');
-        $options['randomizeSpinSpeed'] = $request->input('randomizeSpinSpeed');
-        $options['shuffleSpinDirections'] = $request->input('shuffleSpinDirections');
-        $options['shuffleMusic'] = $request->input('shuffleMusic');
+        $mystery = (bool) $request->input('mysterySeed');
 
+        if (!$mystery) {
+            // TODO: set options here
+            $seed = (int) $request->input('seed');
+            $options['pipeTransitions'] = $request->input('pipeTransitions');
+            $options['shuffleLevels'] = $request->input('shuffleLevels');
+            $options['normalWorldLength'] = $request->input('normalWorldLength');
+            $options['enemies'] = $request->input('enemies');
+            $options['blocks'] = $request->input('blocks');
+            $options['bowserAbilities'] = $request->input('bowserAbilities');
+            $options['bowserHitpoints'] = $request->input('bowserHitpoints');
+            $options['startingLives'] = $request->input('startingLives');
+            $options['warpZones'] = $request->input('warpZones');
+            $options['hiddenWarpDestinations'] = $request->input('hiddenWarpDestinations');
+            $options['fireworks'] = $request->input('fireworks');
+            $options['shuffleUndergroundBonus'] = $request->input('shuffleUndergroundBonus');
+            $options['randomizeBackground'] = $request->input('randomizeBackground');
+            $options['hardMode'] = $request->input('hardMode');
+            $options['randomizeUndergroundBricks'] = $request->input('randomizeUndergroundBricks');
+            $options['excludeFirebars'] = $request->input('excludeFirebars');
+            $options['randomizeSpinSpeed'] = $request->input('randomizeSpinSpeed');
+            $options['shuffleSpinDirections'] = $request->input('shuffleSpinDirections');
+            $options['ohko'] = $request->input('ohko');
+            $options['mysterySeed'] = false;
+        } else {
+            // Generate MYSTERY SEED
+            // TODO: Check for illegal / impossible combinations!
+            $seed = null;
+            $options['pipeTransitions'] = array_rand(config('smbr.randomizer.options.pipeTransitions'));
+            $options['shuffleLevels'] = array_rand(config('smbr.randomizer.options.shuffleLevels'));
+            $options['normalWorldLength'] = array_rand(config('smbr.randomizer.options.normalWorldLength'));
+            $options['enemies'] = array_rand(config('smbr.randomizer.options.enemies'));
+            $options['blocks'] = array_rand(config('smbr.randomizer.options.blocks'));
+            $options['bowserAbilities'] = array_rand(config('smbr.randomizer.options.bowserAbilities'));
+            $options['bowserHitpoints'] = array_rand(config('smbr.randomizer.options.bowserHitpoints'));
+            $options['startingLives'] = array_rand(config('smbr.randomizer.options.startingLives'));
+            $options['warpZones'] = array_rand(config('smbr.randomizer.options.warpZones'));
+            $options['hiddenWarpDestinations'] = array_rand(config('smbr.randomizer.options.hiddenWarpDestinations'));
+            $options['fireworks'] = array_rand(config('smbr.randomizer.options.fireworks'));
+            $options['shuffleUndergroundBonus'] = array_rand(config('smbr.randomizer.options.shuffleUndergroundBonus'));
+            // maybe exclude this one...
+            $options['randomizeBackground'] = 'false'; //= array_rand(config('smbr.randomizer.options.randomizeBackground'));
+            $options['hardMode'] = array_rand(config('smbr.randomizer.options.hardMode'));
+            $options['randomizeUndergroundBricks'] = array_rand(config('smbr.randomizer.options.randomizeUndergroundBricks'));
+            $options['excludeFirebars'] = array_rand(config('smbr.randomizer.options.excludeFirebars'));
+            $options['randomizeSpinSpeed'] = array_rand(config('smbr.randomizer.options.randomizeSpinSpeed'));
+            $options['shuffleSpinDirections'] = array_rand(config('smbr.randomizer.options.shuffleSpinDirections'));
+            $options['ohko'] = array_rand(config('smbr.randomizer.options.ohko'));
+            $options['mysterySeed'] = true;
+        }
+
+        $options['shuffleMusic'] = $request->input('shuffleMusic');
         $options['mariocolors'] = $request->input('mario');
         $options['luigicolors'] = $request->input('luigi');
         $options['firecolors'] = $request->input('fire');
@@ -59,9 +89,15 @@ class RandomizerController extends Controller
         $romfilename = $request->input('romfilename');
 
         // Set filenames
-        $outfilename = "output/roms/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".nes";
-        $logfilename = "output/logs/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".log.txt";
-        $outfilebasename = substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".nes";
+        if (!$mystery) {
+            $outfilename = "output/roms/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".nes";
+            $logfilename = "output/logs/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".log.txt";
+            $outfilebasename = substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-" . $rando->flags . ".nes";
+        } else {
+            $outfilename = "output/roms/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-MYSTERY-SEED" . ".nes";
+            $logfilename = "output/logs/" . substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-MYSTERY-SEED" . ".log.txt";
+            $outfilebasename = substr($romfilename, 0, -4) . "_" . $rando->getSeed() . "-MYSTERY-SEED" . ".nes";
+        }
 
         // Start the logger
         $log = new Logger($logfilename, $request->input('generateLog'), $request->input('verboseLog') == "true" ? "verbose" : "normal");
@@ -101,6 +137,11 @@ class RandomizerController extends Controller
         ];
 
         return json_encode($responseData);
+    }
+
+    public function generateMysterySeed()
+    {
+
     }
 
     public function options()

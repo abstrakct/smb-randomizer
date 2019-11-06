@@ -12,11 +12,11 @@
  */
 
 use SMBR\Colorscheme;
+use SMBR\Flagstring;
 use SMBR\Game;
 use SMBR\ItemPools;
 use SMBR\Level;
 use SMBR\Translator;
-use SMBR\Flagstring;
 
 // TODO: move these somewhere better!
 const HammerTimeOffset = 0x512b;
@@ -57,7 +57,7 @@ class Randomizer
     // TODO: move all enemy data to Enemy class
     public $enemy_pools;
     public $item_pools;
-    const VERSION = "0.9.6";
+    const VERSION = "0.9.7";
 
     // Color schemes. TODO: improve
     public $colorschemes = [];
@@ -214,7 +214,7 @@ class Randomizer
      * A bit of circular logic here, but for the "controlled" mode,
      * we can select a level where SHM starts, and then make the level shuffle conform to
      * that.
-     * 
+     *
      * 2019-04-11
      * Also, it appears that we might have to force certain levels to be after start
      * of secondary hard mode, e.g. 7-4
@@ -299,7 +299,7 @@ class Randomizer
                     if ($this->options['hardMode'] == 'always') {
                         $h = 0;
                     }
-                    $o = $data[$i + 1] & 0b00111111;  // this is the enemy object
+                    $o = $data[$i + 1] & 0b00111111; // this is the enemy object
 
                     $this->log->writeVerbose("\tFound enemy: " . Enemy::getName($o) . "\n");
 
@@ -418,7 +418,7 @@ class Randomizer
                         $do_randomize = false;
                     }
 
-                    // TODO: 
+                    // TODO:
                     // if original enemy was firebar and new enemy is not firebar, set Y coord to one higher (-1).
                     // Will hopefully prevent enemies from being stuck inside the block where the firebar was
                     if ($do_randomize) {
@@ -477,7 +477,7 @@ class Randomizer
     public function shuffleSpinDirections(&$game)
     {
         $offset = 0x4464;
-        $data = [ 0x00, 0x00, 0x10, 0x10, 0x00 ];
+        $data = [0x00, 0x00, 0x10, 0x10, 0x00];
         $new_data = mt_shuffle($data);
 
         for ($i = 0; $i < 5; $i++) {
@@ -535,7 +535,7 @@ class Randomizer
     }
 
     // Randomize the few blocks that exist in underground bonus areas
-    // 
+    //
     public function randomizeBlocksInUndergroundBonus(Game &$game, $frompool, $topool)
     {
         $this->log->write("Randomizing blocks in underground bonus areas!\n");
@@ -582,8 +582,8 @@ class Randomizer
         if ($subset) {
             $levels = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
             $possible_levels = [
-                '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3', 
-                '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3', 
+                '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3',
+                '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3',
             ];
             $num_levels = mt_rand(8, 24);
 
@@ -953,7 +953,7 @@ class Randomizer
         //} else {
         //    $num_levels = 32;
         //}
-        
+
         foreach ($game->worlds as $world) {
             $levels += count($world->levels);
         }
@@ -1086,30 +1086,29 @@ class Randomizer
          */
 
         /*
-            foreach ($game->worlds as $world) {
-                if ($world->hasLevel('1-2') && $world->num != 0) {
-                    $this->log->writeVerbose("Sanity check fail: 1-2 is not in world 1!\n");
-                    return false;
-                }
-            }
+        foreach ($game->worlds as $world) {
+        if ($world->hasLevel('1-2') && $world->num != 0) {
+        $this->log->writeVerbose("Sanity check fail: 1-2 is not in world 1!\n");
+        return false;
+        }
+        }
 
-            // If we pass the previous test, now check 4-2 - it has to not be in world 1
-            foreach ($game->worlds as $world) {
-                if ($world->hasLevel('4-2') && $world->num == 0) {
-                    $this->log->writeVerbose("Sanity check fail: 4-2 is in world 1!\n");
-                    return false;
-                }
-            }
+        // If we pass the previous test, now check 4-2 - it has to not be in world 1
+        foreach ($game->worlds as $world) {
+        if ($world->hasLevel('4-2') && $world->num == 0) {
+        $this->log->writeVerbose("Sanity check fail: 4-2 is in world 1!\n");
+        return false;
+        }
+        }
 
-            // 4-2 also should not be in world 8
-            foreach ($game->worlds as $world) {
-                if ($world->hasLevel('4-2') && $world->num == 7) {
-                    $this->log->writeVerbose("Sanity check fail: 4-2 is in world 8!\n");
-                    return false;
-                }
-            }
-        */
-
+        // 4-2 also should not be in world 8
+        foreach ($game->worlds as $world) {
+        if ($world->hasLevel('4-2') && $world->num == 7) {
+        $this->log->writeVerbose("Sanity check fail: 4-2 is in world 8!\n");
+        return false;
+        }
+        }
+         */
 
         // Underground Bonus Area shuffle happens here
         // BUT WHY?
@@ -1122,7 +1121,6 @@ class Randomizer
                 return false;
             }
         }
-
 
         return true;
     }
@@ -1247,7 +1245,7 @@ class Randomizer
             0xC9, 0x05,
             0xF0, 0x02,
             0xE8,
-            0xEA
+            0xEA,
         ];
 
         $offset = 0x1702;
@@ -1312,6 +1310,8 @@ class Randomizer
             // it's a bit silly when all pipes lead to world 8.....
 
             /*
+             * The below comment is obsolete now that we have the new warp zone code!!
+             *
              * disasm line 3566
              * BIG PROBLEM!!!!: game expects one warp zone in world 1, the others in a later world
              * I can't find a reliable way to check what the current map is
@@ -1497,7 +1497,7 @@ class Randomizer
                     $level->setScenery($newScenery);
                     $level->setCompliment($newCompliment);
                     $level->setBackground($newBackground);
-                    
+
                     $newBytes = $level->getHeaderBytes();
                     $this->log->writeVerbose(sprintf("New header bytes: %02x %02x\n", $newBytes[0], $newBytes[1]));
                     $this->log->writeVerbose("New background: " . $level->getBackgroundDescription() . "\n");
@@ -1580,14 +1580,30 @@ class Randomizer
             exit(1);
         }
 
-        $game->addData($offset44, pack('C*', $world44));
+        $game->addData($offset44 + 0, pack('C*', $world44));
         $game->addData($offset44 + 1, pack('C*', $world44));
-        $game->addData($offset74, pack('C*', $world74));
+        $game->addData($offset74 + 0, pack('C*', $world74));
         $game->addData($offset74 + 1, pack('C*', $world74));
         $game->addData($offset74 + 2, pack('C*', $world74));
         $game->addData($offset74 + 3, pack('C*', $world74));
         $game->addData($offset74 + 4, pack('C*', $world74));
         $game->addData($offset74 + 5, pack('C*', $world74));
+    }
+
+    public function enableOHKO(Game &$game)
+    {
+        $offset = 0x5941;
+        // New code:
+        //
+        // LDX #00          ; set Mario status to small Mario (basically)
+        // JMP $D958        ; jump to KillPlayer routine
+        //
+        // = A2 00 4C 58 D9
+        $game->addData($offset + 0, pack('C*', 0xA2));
+        $game->addData($offset + 1, pack('C*', 0x00));
+        $game->addData($offset + 2, pack('C*', 0x4C));
+        $game->addData($offset + 3, pack('C*', 0x58));
+        $game->addData($offset + 4, pack('C*', 0xD9));
     }
 
     /*
@@ -1610,7 +1626,7 @@ class Randomizer
 
     public function shuffleMusic(Game &$game)
     {
-        $bytes = [ 0x01, 0x02, 0x04, 0x08 ];
+        $bytes = [0x01, 0x02, 0x04, 0x08];
         $offset = 0x10f7;
         $shuffled = mt_shuffle($bytes);
 
@@ -1622,24 +1638,42 @@ class Randomizer
     public function setTextSeedhash(string $text, Game &$game)
     {
         $offset = 0x9fa1; // + 0x8000;   if using smb+duckhunt rom
-        $titleOffset = $offset - 5;
+        $titleOffset = 0x9f9c;
         $this->log->write("Writing Seedhash on title screen...\n");
 
-        $game->addData($titleOffset + 0, pack('C*', $this->trans->asciitosmb('S')));
-        $game->addData($titleOffset + 1, pack('C*', $this->trans->asciitosmb('M')));
-        $game->addData($titleOffset + 2, pack('C*', $this->trans->asciitosmb('B')));
-        $game->addData($titleOffset + 3, pack('C*', $this->trans->asciitosmb('R')));
-        $game->addData($titleOffset + 4, pack('C*', $this->trans->asciitosmb(' ')));
+        if ($this->options['mysterySeed'] == false) {
+            $game->addData($titleOffset + 0, pack('C*', $this->trans->asciitosmb('S')));
+            $game->addData($titleOffset + 1, pack('C*', $this->trans->asciitosmb('M')));
+            $game->addData($titleOffset + 2, pack('C*', $this->trans->asciitosmb('B')));
+            $game->addData($titleOffset + 3, pack('C*', $this->trans->asciitosmb('R')));
+            $game->addData($titleOffset + 4, pack('C*', $this->trans->asciitosmb(' ')));
 
-        $game->addData($offset + 0, pack('C*', $this->trans->asciitosmb('S')));
-        $game->addData($offset + 1, pack('C*', $this->trans->asciitosmb('E')));
-        $game->addData($offset + 2, pack('C*', $this->trans->asciitosmb('E')));
-        $game->addData($offset + 3, pack('C*', $this->trans->asciitosmb('D')));
-        $game->addData($offset + 4, pack('C*', $this->trans->asciitosmb('H')));
-        $game->addData($offset + 5, pack('C*', $this->trans->asciitosmb('A')));
-        $game->addData($offset + 6, pack('C*', $this->trans->asciitosmb('S')));
-        $game->addData($offset + 7, pack('C*', $this->trans->asciitosmb('H')));
-        $game->addData($offset + 8, pack('C*', $this->trans->asciitosmb(' ')));
+            $game->addData($titleOffset + 5, pack('C*', $this->trans->asciitosmb('S')));
+            $game->addData($titleOffset + 6, pack('C*', $this->trans->asciitosmb('E')));
+            $game->addData($titleOffset + 7, pack('C*', $this->trans->asciitosmb('E')));
+            $game->addData($titleOffset + 8, pack('C*', $this->trans->asciitosmb('D')));
+            $game->addData($titleOffset + 9, pack('C*', $this->trans->asciitosmb('H')));
+            $game->addData($titleOffset + 10, pack('C*', $this->trans->asciitosmb('A')));
+            $game->addData($titleOffset + 11, pack('C*', $this->trans->asciitosmb('S')));
+            $game->addData($titleOffset + 12, pack('C*', $this->trans->asciitosmb('H')));
+            $game->addData($titleOffset + 13, pack('C*', $this->trans->asciitosmb(' ')));
+        } else {
+            $game->addData($titleOffset + 0, pack('C*', $this->trans->asciitosmb('S')));
+            $game->addData($titleOffset + 1, pack('C*', $this->trans->asciitosmb('M')));
+            $game->addData($titleOffset + 2, pack('C*', $this->trans->asciitosmb('B')));
+            $game->addData($titleOffset + 3, pack('C*', $this->trans->asciitosmb('R')));
+            $game->addData($titleOffset + 4, pack('C*', $this->trans->asciitosmb(' ')));
+
+            $game->addData($titleOffset + 5, pack('C*', $this->trans->asciitosmb('M')));
+            $game->addData($titleOffset + 6, pack('C*', $this->trans->asciitosmb('Y')));
+            $game->addData($titleOffset + 7, pack('C*', $this->trans->asciitosmb('S')));
+            $game->addData($titleOffset + 8, pack('C*', $this->trans->asciitosmb('T')));
+            $game->addData($titleOffset + 9, pack('C*', $this->trans->asciitosmb('E')));
+            $game->addData($titleOffset + 10, pack('C*', $this->trans->asciitosmb('R')));
+            $game->addData($titleOffset + 11, pack('C*', $this->trans->asciitosmb('Y')));
+            $game->addData($titleOffset + 12, pack('C*', $this->trans->asciitosmb('!')));
+            $game->addData($titleOffset + 13, pack('C*', $this->trans->asciitosmb(' ')));
+        }
         /*
          * Write the first 8 characters of the seedhash on title screen.
          * TODO: see if there's a way to draw some sprites instead!
@@ -1895,6 +1929,10 @@ class Randomizer
         // Shuffle music
         if ($this->options['shuffleMusic'] == 'true') {
             $this->shuffleMusic($game);
+        }
+
+        if ($this->options['ohko'] == 'true') {
+            $this->enableOHKO($game);
         }
 
         // Fix Midway Points

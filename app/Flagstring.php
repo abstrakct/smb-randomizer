@@ -40,6 +40,7 @@ class Flagstring
             [config('smbr.randomizer.options.excludeFirebars'), $options['excludeFirebars']],
             [config('smbr.randomizer.options.randomizeSpinSpeed'), $options['randomizeSpinSpeed']],
             [config('smbr.randomizer.options.shuffleSpinDirections'), $options['shuffleSpinDirections']],
+            [config('smbr.randomizer.options.ohko'), $options['ohko']],
         ];
         $flag = 0;
 
@@ -74,6 +75,7 @@ class Flagstring
         $alphabet_length = strlen($alphabet);
         $flag_number = 0;
         $option_values = [
+            [config('smbr.randomizer.options.ohko'), 'ohko'],
             [config('smbr.randomizer.options.shuffleSpinDirections'), 'shuffleSpinDirections'],
             [config('smbr.randomizer.options.randomizeSpinSpeed'), 'randomizeSpinSpeed'],
             [config('smbr.randomizer.options.excludeFirebars'), 'excludeFirebars'],
