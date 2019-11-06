@@ -31,6 +31,7 @@ return [
             'randomizeSpinSpeed' => 'false',
             'shuffleSpinDirections' => 'false',
             'shuffleMusic' => 'false',
+            'ohko' => 'false',
         ],
 
         'options' => [
@@ -186,6 +187,10 @@ return [
             'shuffleMusic' => [
                 'true' => 'Shuffle the music',
                 'false' => 'Do not shuffle the music',
+            ],
+            'ohko' => [
+                'true' => 'OHKO Mode on',
+                'false' => 'OHKO Mode off',
             ],
         ],
     ],

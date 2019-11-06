@@ -48,6 +48,18 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
 
     TODO
 
+  OHKO mode! line 11410 in disasm, offset 0x5941 in ROM
+   - JMP to $D958 ?  yes, it works
+    4C 58 D9 
+
+    BETTER CODE:
+    LDX #00           A2 00
+    JMP $D958         4C 58 D9
+
+  
+    - sometimes triggers game over music?! investigate!
+
+
   ENEMIES 
   - DONEISH algorithm needs big rework
   - idea: enemy groups?
@@ -68,11 +80,13 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
         action: 00 = no action, 80 = A button
 
   
-  TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
+  DONE?! TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
   TODO: maybe remove the "does not move" koopa troopa from the enemy pool? it's quite meh to have an enemy that doesn't move..
   DONEISH: Change/randomize y pos of (some) enemies? to prevent stuck enemies
 
   TODO: option to choose whether to allow 1-2/4-2 anywhere or not?
+
+  TODO: IDEA: Invert Mario? Start as Super Mario, mushroom makes you small... and small fire mario is now the norm... possible?
 
   TODO: Shuffle enemies? or keep the randomization as it is now?
   TODO: Disappearing enemies/objects

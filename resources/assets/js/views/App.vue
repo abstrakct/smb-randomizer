@@ -50,6 +50,7 @@
                     <smbr-checkbox id="oef" label="Exclude Fire Bars from enemy randomization" @input="updateInputted" v-model="selectedOptions.excludeFirebars" storage-key="smbr.opt.excludefirebars" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ors" label="Randomize the spin speed of Fire Bars" @input="updateInputted" v-model="selectedOptions.randomizeSpinSpeed" storage-key="smbr.opt.randomizespinspeed" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ord" label="Shuffle the spin directions of Fire Bars" @input="updateInputted" v-model="selectedOptions.shuffleSpinDirections" storage-key="smbr.opt.shufflespindirections" checked-value="true" unchecked-value="false"></smbr-checkbox>
+                    <smbr-checkbox id="ohko" label="OHKO (One-Hit Knock-Out) mode" @input="updateInputted" v-model="selectedOptions.ohko" storage-key="smbr.opt.ohko" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="ovl" label="Generate verbose debug log" @input="updateInputted" storage-key="smbr.opt.verboselog" v-model="selectedOptions.verboseLog" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-checkbox id="omu" label="Shuffle the music (does not change flags/seedhash)" @input="updateInputted" storage-key="smbr.opt.shufflemusic" v-model="selectedOptions.shuffleMusic" checked-value="true" unchecked-value="false"></smbr-checkbox>
                     <smbr-select id="ocsm" label="Mario Color Scheme" @input="updateInputted" storage-key="smbr.opt.mariocolors" v-model="selectedOptions.colorscheme.mario" :options="randomizerOptions.colorscheme.mario"></smbr-select>
@@ -61,6 +62,8 @@
                     <b-button variant="success" @click="generateSeedWithLog" class="w-100">Generate!</b-button>
                     <p> </p>
                     <b-button variant="success" @click="generateSeedNoLog" class="w-100">Generate ROM without the spoiler log (suitable for races etc.)</b-button>
+                    <p> </p>
+                    <b-button variant="success" @click="generateMysterySeed" class="w-100">Generate MYSTERY SEED!</b-button>
 
                     <div v-if="rando.stored">
                       <p></p>
@@ -136,6 +139,7 @@ export default {
       defaultOptions: null,
       randomizerOptions: null,
       generateLog: true,
+      mysterySeed: false,
       currentFlags: "",
       inputFlags: "",
 
@@ -166,6 +170,7 @@ export default {
         shuffleSpinDirections: "",
         verboseLog: "",
         shuffleMusic: "",
+        ohko: "",
       }
     };
   },
@@ -254,6 +259,12 @@ export default {
       this.generateSeed();
     },
 
+    generateMysterySeed() {
+      this.generateLog = true;
+      this.mysterySeed = true;
+      this.generateSeed();
+    },
+
     generateSeed() {
       this.error = false;
       axios
@@ -263,6 +274,7 @@ export default {
           romfilename: this.baseRomFilename,
           seed: this.selectedOptions.seed,
           generateLog: this.generateLog,
+          mysterySeed: this.mysterySeed,
           mario: this.selectedOptions.colorscheme.mario,
           luigi: this.selectedOptions.colorscheme.luigi,
           fire: this.selectedOptions.colorscheme.fire,
@@ -284,6 +296,7 @@ export default {
           excludeFirebars: this.selectedOptions.excludeFirebars,
           randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
           shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
+          ohko: this.selectedOptions.ohko,
           verboseLog: this.selectedOptions.verboseLog,
           shuffleMusic: this.selectedOptions.shuffleMusic,
         })
@@ -538,6 +551,10 @@ export default {
           val: this.defaultOptions.shuffleSpinDirections
         },
         {
+          key: "smbr.opt.ohko",
+          val: this.defaultOptions.ohko
+        },
+        {
           key: "smbr.opt.verboselog",
           val: this.defaultOptions.verboseLog
         },
@@ -610,6 +627,8 @@ export default {
           excludeFirebars: this.selectedOptions.excludeFirebars,
           randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
           shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
+          ohko: this.selectedOptions.ohko,
+          // TODO: why is shuffleMusic here?
           shuffleMusic: this.selectedOptions.shuffleMusic,
         })
         .then(response => {
