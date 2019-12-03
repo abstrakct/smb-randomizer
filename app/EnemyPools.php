@@ -198,12 +198,12 @@ class EnemyPools
                 Enemy::get('Green Cheep-Cheep (slow)'),
                 Enemy::get('Red Cheep-Cheep (fast)'),
             ],
-            Enemy::get('Hammer Bro') => [ 
+            Enemy::get('Hammer Bro') => [
                 Enemy::get('Hammer Bro'),
                 Enemy::get('Blooper'),
                 Enemy::get('Podoboo'),
             ],
-            Enemy::get('Goomba') => [ 
+            Enemy::get('Goomba') => [
                 Enemy::get('Green Koopa Troopa'),
                 Enemy::get('Red Koopa Troopa (walks off floors)'),
                 Enemy::get('Buzzy Beetle'),
@@ -438,7 +438,7 @@ class EnemyPools
                 Enemy::get('Green Cheep-Cheep (slow)'),
                 Enemy::get('Red Cheep-Cheep (fast)'),
                 Enemy::get('Yellow Koopa Paratroopa (does not move)'),
-            ]
+            ],
         ];
 
         $this->toad_new_coords = [
@@ -491,9 +491,9 @@ class EnemyPools
 
         $this->dont_use = [Enemy::get('Spiny')];
 
-        // offsets for enemies to leave unchanged
+        // Offsets for specific enemies that will be left unchanged
         $this->exceptions = [
-            0x1e66,              // Toad/Princess in 8-4
+            0x1e66, // Toad/Princess in 8-4
         ];
     }
 }

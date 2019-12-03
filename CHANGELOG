@@ -1,3 +1,8 @@
+v0.9.8
+- Fixed hidden 1-UPs not showing up. Now, they will always show up when level order is randomized, and/or 
+  when hidden 1-UPs are included in block randomization.
+
+  
 v0.9.7
 - The autoplay/demo actions that Mario does while waiting for you to press start have been disabled.
   This is to minimize any spoilers you get about the first level.

@@ -376,6 +376,7 @@ class Randomizer
         }
     }
 
+    // This is for the CHAOS randomization
     public function randomizeEnemiesOnLevel($offset, $level, &$game)
     {
         $end = 0;
@@ -442,6 +443,16 @@ class Randomizer
                                 } else {
                                     $new_object = $this->enemy_pools->reasonable_enemy_pool[mt_rand(0, count($this->enemy_pools->reasonable_enemy_pool) - 1)];
                                     $acceptable = true;
+
+                                    // This doesn't always work because firebars can be in the floor or in the ceiling.
+                                    // Possible solution: manually create a list of offsets for firebars in vanilla game,
+                                    // and whether y should be increased or decreased
+
+                                    //if (enemyIsInPool($o, $this->enemy_pools->firebar_pool) && !enemyIsInPool($new_object, $this->enemy_pools->firebar_pool)) {
+                                    //    $new_y = $y - 2;
+                                    //    $new_coord = ($x | $new_y);
+                                    //    $game->addData($offset + $i, pack('C*', $new_coord));
+                                    //}
                                 }
                             }
 

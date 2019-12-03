@@ -40,7 +40,6 @@ BUG: Bowser + cheep cheep generator (?) can despawn Bowser! not good!
 BUG: Bowser can despawn in general!! I don't know why! Even with no other enemies on screen! WHY
   UPDATE: it's related to changing where secondary hard mode starts! Still not sure why though.....
 
-BUG: there should be max 1 hidden 1-up in each world! In level x-1
 
 BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
@@ -49,18 +48,6 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
 
 
     TODO
-
-  OHKO mode! line 11410 in disasm, offset 0x5941 in ROM
-   - JMP to $D958 ?  yes, it works
-    4C 58 D9 
-
-    BETTER CODE:
-    LDX #00           A2 00
-    JMP $D958         4C 58 D9
-
-  
-    - sometimes triggers game over music?! investigate!
-
 
   ENEMIES 
   - DONEISH algorithm needs big rework
@@ -78,13 +65,10 @@ BUG: long firebars sometimes just stop. seems related to spin speed randomizatio
        b) DONE option to randomize where it's activated
        c) tighter control of where levels are placed, possibly together with b)
 
-  DONE: DemoActionData change. Offset: 0x350 - 0x364 (actions) 0x365 - 0x37a (timing)
-        action: 00 = no action, 80 = A button
-
   
   DONE?! TODO: FIX Enemies stuck inside terrain!!!!!!!!!!!! IMPORTANT!!!!!
   TODO: maybe remove the "does not move" koopa troopa from the enemy pool? it's quite meh to have an enemy that doesn't move..
-  DONEISH: Change/randomize y pos of (some) enemies? to prevent stuck enemies
+  PARTIALLY DONE: Change/randomize y pos of (some) enemies? to prevent stuck enemies
 
   TODO: option to choose whether to allow 1-2/4-2 anywhere or not?
 
@@ -135,17 +119,10 @@ TODO: DONE FOR UNDERGROUND BONUS AREA - Randomize where pipes lead to?
       -- also include cloud/water areas
 TODO: Shuffle which pipes can be entered?
 TODO: Randomize Fake Bowser identities!? possible? yes, SEE LINE 11121 IN DISASM!! rom offset 0x5746
-TODO: Option to randomize music? (line 2790 in disasm)
-      -- ROM offset 0x10f7 - 4 bytes - shuffle 01, 02, 04, 08
 TODO: Option to disable fireworks completely? (just set all to zero)
 TODO: Randomize fireworks X,Y (line 8632 in disasm)
 TODO: Shuffle all coins/powerups in vanilla in one big pool, so that you in total get the same number of coins/powerups, but don't know where they are
 TODO: Disappearing trampolines
-TODO: Disappearing powerup blocks sometimes - might be related to stuff around line 5860 in disasm
------> YES! Hidden1UpCoinAmts needs to be dealt with. Easy way out: set to 0 for all worlds. That way bonus 1ups will always (?) spawn.
-      Other option: change so it matches the amount of coins in the 3rd level of each world.
-      Problem: worlds don't always have >= 3 levels!
-      So......
 TODO: Option to not randomize texts
 TODO: Keep randomized texts independent of game seed? or make it an option?
 TODO: Option to keep castles in vanilla order? why? just because we can?
@@ -203,10 +180,32 @@ TODO: randomized levels?? As in, not shuffled, but random! levels can appear mul
 *********************************************************
 DONE
 *********************************************************
+DONE: Option to randomize music? (line 2790 in disasm)
+      -- ROM offset 0x10f7 - 4 bytes - shuffle 01, 02, 04, 08
+DONE: Disappearing powerup blocks sometimes - might be related to stuff around line 5860 in disasm
+-----> YES! Hidden1UpCoinAmts needs to be dealt with. Easy way out: set to 0 for all worlds. That way bonus 1ups will always (?) spawn.
+      Other option: change so it matches the amount of coins in the 3rd level of each world.
+      Problem: worlds don't always have >= 3 levels!
+      So......
 DONE: Option to exclude firebars from randomization
 DONE: Options to randomize/shuffle firebar spin speed / directions!
     Offset 0x445f (5 bytes) = spin speed data (28 38 28 38 28)
     Offset 0x4464 (5 bytes) = spin direction (00 00 10 10 00) - 00 = clockwise, 10 = counter-clockwise
+
+DONE: DemoActionData change. Offset: 0x350 - 0x364 (actions) 0x365 - 0x37a (timing)
+        action: 00 = no action, 80 = A button
+
+DONE:
+  OHKO mode! line 11410 in disasm, offset 0x5941 in ROM
+   - JMP to $D958 ?  yes, it works
+    4C 58 D9 
+
+    BETTER CODE:
+    LDX #00           A2 00
+    JMP $D958         4C 58 D9
+
+    FIXED: - sometimes triggers game over music?! investigate!
+
 
 DONE: Randomize enemies in pools better! from-/to-pools
 DONE: Disasm line  8370: fire bar spin speed / direction -- can be randomized!?
