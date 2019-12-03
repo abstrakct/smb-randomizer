@@ -180,6 +180,7 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <li>If Normal World Length is <i>false</i>, there will be no midway points in any level! In other words:
                             No matter where you die on a level, you will respawn at the beginning of the level! This is due
                             to limitations in the original game code, and a fix would require some serious romhacking.</li>
+                        <li>Normally, most hidden 1-UPs only show if you have gotten a certain amount of coins in the 3rd level of the previous world. This doesn't work very well with randomized world layouts, so in those cases I have changed it so that you can always get the hidden 1-UP.</li>
                         <li>Bowser sometimes (very very rarely) disappears/does not spawn. Might be related to there being too
                             many other enemies on screen. This must be fixed. UPDATE: I haven't seen this happen in a long time, it might be fixed.</li>
                         <p></p>

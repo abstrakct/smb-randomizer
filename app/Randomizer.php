@@ -1617,6 +1617,15 @@ class Randomizer
         }
     }
 
+    public function alwaysGiveHidden1UPs(Game &$game)
+    {
+        // Overwrite code which checks if Hidden1UPFlag is set
+        $offset = 0x1b11;
+        $game->addData($offset + 0, pack('C*', 0xA9));
+        $game->addData($offset + 1, pack('C*', 0x01)); // LDA #$01
+        $game->addData($offset + 2, pack('C*', 0xEA)); // NOP
+    }
+
     public function disableDemoActions(Game &$game)
     {
         for ($offset = 0x350; $offset < 0x364; $offset++) {
@@ -1747,6 +1756,7 @@ class Randomizer
 
     public function makeSeedHash()
     {
+        // mystery seed ?
         $hashstring = $this->flags . strval($this->getSeed() . \SMBR\Randomizer::VERSION . $this->rom->getMD5()) . $this->log->getActuallySave();
         $this->seedhash = hash("crc32b", $hashstring);
     }
@@ -1810,6 +1820,11 @@ class Randomizer
                     $this->shuffleAllLevels($game);
                 }
             }
+
+            // Make it possible to always get the hidden 1-UPs (i.e. ignore coin tallies)
+            // TODO: make this a separate option?
+            $this->alwaysGiveHidden1UPs($game);
+
         } else if ($this->options['shuffleLevels'] == "worlds") {
             $this->log->write('Shuffling world order...');
             $game->num_levels = 32;
@@ -1943,7 +1958,7 @@ class Randomizer
 
         // Zero coin tallies
         // TODO: THIS DOESN'T SEEM TO WORK!!!!!
-        $this->zeroCoinTallies($game);
+        // $this->zeroCoinTallies($game);
 
         // Write New Warp Zone Code :D
         $this->writeNewWarpZoneCode($game);

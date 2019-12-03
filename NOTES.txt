@@ -40,6 +40,8 @@ BUG: Bowser + cheep cheep generator (?) can despawn Bowser! not good!
 BUG: Bowser can despawn in general!! I don't know why! Even with no other enemies on screen! WHY
   UPDATE: it's related to changing where secondary hard mode starts! Still not sure why though.....
 
+BUG: there should be max 1 hidden 1-up in each world! In level x-1
+
 BUG: No level shuffle + remove pipe transitions doesn't work together.
 BUG: No level shuffle + shuffle underground bonus area doesn't work together. (Entered pipe in 1-1, exit in 1-2.)
 BUG: long firebars sometimes just stop. seems related to spin speed randomization.

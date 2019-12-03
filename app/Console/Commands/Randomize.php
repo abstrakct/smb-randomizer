@@ -19,7 +19,7 @@ class Randomize extends Command
      * @var string
      */
 
-     // TODO: this should, if possible, use default options from config
+    // TODO: this should, if possible, use default options from config
     protected $signature = 'smbr:randomize {input_file : base rom to randomize}'
         . '{output_dir : where to save the randomized rom}'
         . '{--log=normal : Log level}'
@@ -102,6 +102,7 @@ class Randomize extends Command
         $smbrOptions['mariocolors'] = $this->option('mariocolors');
         $smbrOptions['luigicolors'] = $this->option('luigicolors');
         $smbrOptions['firecolors'] = $this->option('firecolors');
+        $smbrOptions['mysterySeed'] = false;
         $this->do_the_randomizer($this->argument('input_file'), $this->argument('output_dir'), $this->option('seed'), $smbrOptions, $this->option('log'), $this->option('savelog'));
     }
 
@@ -119,15 +120,15 @@ class Randomize extends Command
         $checksum = $rom->getMD5();
         $ok = $rom->checkMD5();
 
-            print("\n\nSuper Mario Bros. RANDOMIZER v" . \SMBR\Randomizer::VERSION . "\n\nROM filename: $input_file\n");
-            print("MD5 checksum: $checksum");
-            if ($ok) {
-                print(" [OK]\n");
-            } else {
-                print(" [FAILED!]\n");
-                print("Trying to use this ROM anyway, not guaranteed to work, results may vary...\n");
-                //TODO: Add checks to see if ROM is usable (check data in various offsets).
-            }
+        print("\n\nSuper Mario Bros. RANDOMIZER v" . \SMBR\Randomizer::VERSION . "\n\nROM filename: $input_file\n");
+        print("MD5 checksum: $checksum");
+        if ($ok) {
+            print(" [OK]\n");
+        } else {
+            print(" [FAILED!]\n");
+            print("Trying to use this ROM anyway, not guaranteed to work, results may vary...\n");
+            //TODO: Add checks to see if ROM is usable (check data in various offsets).
+        }
 
         print("\n");
 
@@ -176,6 +177,6 @@ class Randomize extends Command
 
         $log->close();
 
-            print("\nFinished!\nFilename: $outfilename\n");
+        print("\nFinished!\nFilename: $outfilename\n");
     }
 }
