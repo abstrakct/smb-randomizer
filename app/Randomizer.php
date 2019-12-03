@@ -1863,12 +1863,14 @@ class Randomizer
         // Randomize Blocks
         if ($this->options['blocks'] == "randomizeAll") {
             $this->randomizeBlocks($game, $item_pools->all_items, $item_pools->all_items);
+            $this->alwaysGiveHidden1UPs($game);
         } else if ($this->options['blocks'] == "randomizePowerups") {
             $this->randomizeBlocks($game, $item_pools->powerups, $item_pools->powerups);
         } else if ($this->options['blocks'] == "randomizeGrouped") {
             $this->randomizeBlocks($game, $item_pools->all_question_blocks, $item_pools->all_question_blocks);
             $this->randomizeBlocks($game, $item_pools->all_hidden_blocks, $item_pools->all_hidden_blocks);
             $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
+            $this->alwaysGiveHidden1UPs($game);
         } else if ($this->options['blocks'] == "randomizeBricks") {
             $this->randomizeBlocks($game, $item_pools->all_brick_blocks, $item_pools->all_brick_blocks);
         } else if ($this->options['blocks'] == "randomizeBricksQuestion") {
