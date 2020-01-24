@@ -606,6 +606,9 @@ export default {
         }
       }
 
+      // Make sure the last byte is present and correct
+      data.push(0xff);
+
       var arr = new Uint8Array(data);
       var newRom = new NewROM(arr.buffer);
 
