@@ -112,7 +112,7 @@ class Rom
 
     public function b64()
     {
-        $data = $this->read(0, self::SIZE);
+        $data = $this->read(0, self::SIZE + 1);
         return base64_encode(implode(" ", $data));
     }
 
