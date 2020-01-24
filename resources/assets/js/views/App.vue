@@ -367,7 +367,7 @@ export default {
       inputFlags: "",
 
       selectedOptions: {
-        seed: null,
+        seed: "",
         colorscheme: {
           mario: "",
           luigi: "",
@@ -715,6 +715,7 @@ export default {
 
     storeDefaultsLocally() {
       var arr = [
+        { key: "smbr.opt.seed", val: 0 },
         { key: "smbr.opt.levels", val: this.defaultOptions.shuffleLevels },
         { key: "smbr.opt.warpzones", val: this.defaultOptions.warpZones },
         { key: "smbr.opt.blocks", val: this.defaultOptions.blocks },
