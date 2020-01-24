@@ -46,7 +46,7 @@
                       type="number"
                       placeholder="Input seed number here, or leave blank for random"
                     ></smbr-input>
-                    <smbr-input
+                    <!-- <smbr-input
                       id="flags"
                       label="Flags"
                       v-model="inputFlags"
@@ -54,7 +54,7 @@
                       @input="updateInputted"
                       placeholder="(NOT IMPLEMENTED) Input flagstring here to set all options from a flag string"
                     ></smbr-input>
-                    <b-button @click="applyFlagstring">Apply flagstring</b-button>
+                    <b-button @click="applyFlagstring">Apply flagstring</b-button>-->
                     <smbr-select
                       id="olw"
                       label="Level Randomization"
@@ -103,14 +103,14 @@
                       v-model="selectedOptions.startingLives"
                       :options="randomizerOptions.startingLives"
                     ></smbr-select>
-                    <smbr-select
+                    <!-- <smbr-select
                       id="ohm"
                       label="Secondary Hard Mode"
                       @input="updateInputted"
                       storage-key="smbr.opt.hardmode"
                       v-model="selectedOptions.hardMode"
                       :options="randomizerOptions.hardMode"
-                    ></smbr-select>
+                    ></smbr-select>-->
                   </b-col>
 
                   <b-col>
@@ -147,15 +147,6 @@
                       @input="updateInputted"
                       storage-key="smbr.opt.shuffleundergroundbonus"
                       v-model="selectedOptions.shuffleUndergroundBonus"
-                      checked-value="true"
-                      unchecked-value="false"
-                    ></smbr-checkbox>
-                    <smbr-checkbox
-                      id="orb"
-                      label="Randomize background and scenery (EXPERIMENTAL)"
-                      @input="updateInputted"
-                      storage-key="smbr.opt.randomizebackground"
-                      v-model="selectedOptions.randomizeBackground"
                       checked-value="true"
                       unchecked-value="false"
                     ></smbr-checkbox>
@@ -223,11 +214,11 @@
                       unchecked-value="false"
                     ></smbr-checkbox>
                     <smbr-checkbox
-                      id="ovl"
-                      label="Generate verbose debug log"
+                      id="orb"
+                      label="Randomize background and scenery (EXPERIMENTAL)"
                       @input="updateInputted"
-                      storage-key="smbr.opt.verboselog"
-                      v-model="selectedOptions.verboseLog"
+                      storage-key="smbr.opt.randomizebackground"
+                      v-model="selectedOptions.randomizeBackground"
                       checked-value="true"
                       unchecked-value="false"
                     ></smbr-checkbox>
@@ -264,10 +255,23 @@
                       v-model="selectedOptions.colorscheme.fire"
                       :options="randomizerOptions.colorscheme.fire"
                     ></smbr-select>
+                    <smbr-checkbox
+                      id="ovl"
+                      label="Generate verbose debug log"
+                      @input="updateInputted"
+                      storage-key="smbr.opt.verboselog"
+                      v-model="selectedOptions.verboseLog"
+                      checked-value="true"
+                      unchecked-value="false"
+                    ></smbr-checkbox>
 
                     <p></p>
 
-                    <b-button variant="success" @click="generateSeedWithLog" class="w-100">Generate!</b-button>
+                    <b-button
+                      variant="success"
+                      @click="generateSeedWithLog"
+                      class="w-100"
+                    >Generate ROM!</b-button>
                     <p></p>
                     <b-button
                       variant="success"
