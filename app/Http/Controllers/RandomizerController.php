@@ -174,6 +174,7 @@ class RandomizerController extends Controller
         $options['excludeFirebars'] = $request->input('excludeFirebars');
         $options['randomizeSpinSpeed'] = $request->input('randomizeSpinSpeed');
         $options['shuffleSpinDirections'] = $request->input('shuffleSpinDirections');
+        $options['ohko'] = $request->input('ohko');
 
         $f = new Flagstring($options);
         return $f->getFlagstring();

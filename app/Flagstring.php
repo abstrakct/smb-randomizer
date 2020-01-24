@@ -5,7 +5,7 @@
 // Don't know if he got it from somewhere or came up with it himself.
 // It's pretty simple actually.
 
-class Flagstring 
+class Flagstring
 {
     protected $flagstring;
     protected $options;
@@ -22,28 +22,27 @@ class Flagstring
         //$alphabet = 'MpQa8WoNsBiEd3VuRfCyT2tXgJeZnU4hI7kAlSwOj6DmPxFqL5bGrKv9HzY1c0';
         $flag_string = '';
         $option_values = [
-            [config('smbr.randomizer.options.pipeTransitions'), $options['pipeTransitions']],
-            [config('smbr.randomizer.options.shuffleLevels'), $options['shuffleLevels']],
-            [config('smbr.randomizer.options.normalWorldLength'), $options['normalWorldLength']],
-            [config('smbr.randomizer.options.enemies'), $options['enemies']],
-            [config('smbr.randomizer.options.blocks'), $options['blocks']],
-            [config('smbr.randomizer.options.bowserAbilities'), $options['bowserAbilities']],
-            [config('smbr.randomizer.options.bowserHitpoints'), $options['bowserHitpoints']],
-            [config('smbr.randomizer.options.startingLives'), $options['startingLives']],
-            [config('smbr.randomizer.options.warpZones'), $options['warpZones']],
-            [config('smbr.randomizer.options.hiddenWarpDestinations'), $options['hiddenWarpDestinations']],
-            [config('smbr.randomizer.options.fireworks'), $options['fireworks']],
-            [config('smbr.randomizer.options.shuffleUndergroundBonus'), $options['shuffleUndergroundBonus']],
-            [config('smbr.randomizer.options.randomizeBackground'), $options['randomizeBackground']],
-            [config('smbr.randomizer.options.hardMode'), $options['hardMode']],
-            [config('smbr.randomizer.options.randomizeUndergroundBricks'), $options['randomizeUndergroundBricks']],
-            [config('smbr.randomizer.options.excludeFirebars'), $options['excludeFirebars']],
-            [config('smbr.randomizer.options.randomizeSpinSpeed'), $options['randomizeSpinSpeed']],
-            [config('smbr.randomizer.options.shuffleSpinDirections'), $options['shuffleSpinDirections']],
-            [config('smbr.randomizer.options.ohko'), $options['ohko']],
+            [config('smbr.randomizer.options.pipeTransitions'), $this->options['pipeTransitions']],
+            [config('smbr.randomizer.options.shuffleLevels'), $this->options['shuffleLevels']],
+            [config('smbr.randomizer.options.normalWorldLength'), $this->options['normalWorldLength']],
+            [config('smbr.randomizer.options.enemies'), $this->options['enemies']],
+            [config('smbr.randomizer.options.blocks'), $this->options['blocks']],
+            [config('smbr.randomizer.options.bowserAbilities'), $this->options['bowserAbilities']],
+            [config('smbr.randomizer.options.bowserHitpoints'), $this->options['bowserHitpoints']],
+            [config('smbr.randomizer.options.startingLives'), $this->options['startingLives']],
+            [config('smbr.randomizer.options.warpZones'), $this->options['warpZones']],
+            [config('smbr.randomizer.options.hiddenWarpDestinations'), $this->options['hiddenWarpDestinations']],
+            [config('smbr.randomizer.options.fireworks'), $this->options['fireworks']],
+            [config('smbr.randomizer.options.shuffleUndergroundBonus'), $this->options['shuffleUndergroundBonus']],
+            [config('smbr.randomizer.options.randomizeBackground'), $this->options['randomizeBackground']],
+            [config('smbr.randomizer.options.hardMode'), $this->options['hardMode']],
+            [config('smbr.randomizer.options.randomizeUndergroundBricks'), $this->options['randomizeUndergroundBricks']],
+            [config('smbr.randomizer.options.excludeFirebars'), $this->options['excludeFirebars']],
+            [config('smbr.randomizer.options.randomizeSpinSpeed'), $this->options['randomizeSpinSpeed']],
+            [config('smbr.randomizer.options.shuffleSpinDirections'), $this->options['shuffleSpinDirections']],
+            [config('smbr.randomizer.options.ohko'), $this->options['ohko']],
         ];
         $flag = 0;
-
 
         foreach ($option_values as list($o, $selected)) {
             $selected_index = array_search($selected, array_keys($o)); // TODO: do we need + 1 here?? probably not?
