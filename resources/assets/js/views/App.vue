@@ -478,11 +478,13 @@ export default {
   methods: {
     generateSeedNoLog() {
       this.generateLog = false;
+      this.mysterySeed = false;
       this.generateSeed();
     },
 
     generateSeedWithLog() {
       this.generateLog = true;
+      this.mysterySeed = false;
       this.generateSeed();
     },
 
