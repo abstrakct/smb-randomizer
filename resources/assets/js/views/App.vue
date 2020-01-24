@@ -271,24 +271,35 @@
                       variant="success"
                       @click="generateSeedWithLog"
                       class="w-100"
+                      :disabled="this.rando.done ? false : true"
                     >Generate ROM!</b-button>
                     <p></p>
                     <b-button
                       variant="success"
                       @click="generateSeedNoLog"
                       class="w-100"
+                      :disabled="this.rando.done ? false : true"
                     >Generate ROM without the spoiler log (suitable for races etc.)</b-button>
                     <p></p>
                     <b-button
                       variant="success"
                       @click="generateMysterySeed"
                       class="w-100"
-                    >Generate MYSTERY SEED!</b-button>
+                      :disabled="this.rando.done ? false : true"
+                    >
+                      Generate
+                      <strong>MYSTERY SEED!</strong> (Warning: buggy, might crash!)
+                    </b-button>
 
                     <div v-if="rando.stored">
                       <p></p>
 
-                      <b-button variant="success" @click="saveRandomizedRom" class="w-100">
+                      <b-button
+                        variant="success"
+                        @click="saveRandomizedRom"
+                        class="w-100"
+                        :disabled="this.rando.done ? false : true"
+                      >
                         Save
                         <strong>{{ rando.filename }}</strong>
                       </b-button>
@@ -300,6 +311,7 @@
                           variant="info"
                           class="w-100"
                           :href="rando.logfullpath"
+                          :disabled="this.rando.done ? false : true"
                         >View log (contains spoilers!)</b-button>
                       </div>
                     </div>
@@ -347,7 +359,7 @@ export default {
         filename: "",
         logfullpath: "",
         base64data: "",
-        done: false,
+        done: true,
         stored: false
       },
       // error
@@ -477,18 +489,21 @@ export default {
 
   methods: {
     generateSeedNoLog() {
+      this.rando.done = false;
       this.generateLog = false;
       this.mysterySeed = false;
       this.generateSeed();
     },
 
     generateSeedWithLog() {
+      this.rando.done = false;
       this.generateLog = true;
       this.mysterySeed = false;
       this.generateSeed();
     },
 
     generateMysterySeed() {
+      this.rando.done = false;
       this.generateLog = true;
       this.mysterySeed = true;
       this.generateSeed();

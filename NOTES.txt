@@ -24,8 +24,9 @@ aka There and Back Again
 ************
 BUGS
 
-TODO
+TODO / DONEISH
 - Show feedback that something is happening when seed is being generated
+--- for now: buttons are disabled while seed is being generated - probably enough feedback?
 -- like, a little text or animation, "generating..." 
 - A way to share seeds via a link or similar (use database?)
 
@@ -128,7 +129,6 @@ TODO: Keep randomized texts independent of game seed? or make it an option?
 TODO: Option to keep castles in vanilla order? why? just because we can?
 TODO: No level shuffle + remove pipe transitions combo does not remove pipe transitions. can be fixed.
 TODO: Check that all options are set to a valid value!
-TODO: Disasm line  1084: change demo action data in order to not spoil first level??  offset 0x350 in rom, length 20 bytes
 TODO: Disasm line  7338: maybe a better way to shuffle powerups? for mode that changes all powerups of one type to another.
 TODO: Disasm line  8549: randomize fire Y positions?
 TODO: A way to let individual options not change other aspects of randomization?!
@@ -194,6 +194,7 @@ DONE: Options to randomize/shuffle firebar spin speed / directions!
 
 DONE: DemoActionData change. Offset: 0x350 - 0x364 (actions) 0x365 - 0x37a (timing)
         action: 00 = no action, 80 = A button
+      DONE: Disasm line  1084: change demo action data in order to not spoil first level??  offset 0x350 in rom, length 20 bytes
 
 DONE:
   OHKO mode! line 11410 in disasm, offset 0x5941 in ROM
