@@ -106,6 +106,30 @@
                       v-model="selectedOptions.hardMode"
                       :options="randomizerOptions.hardMode"
                     ></smbr-select>-->
+                    <smbr-select
+                      id="ocsm"
+                      label="Mario Color Scheme"
+                      @input="updateInputted"
+                      storage-key="smbr.opt.mariocolors"
+                      v-model="selectedOptions.colorscheme.mario"
+                      :options="randomizerOptions.colorscheme.mario"
+                    ></smbr-select>
+                    <smbr-select
+                      id="ocsl"
+                      label="Luigi Color Scheme"
+                      @input="updateInputted"
+                      storage-key="smbr.opt.luigicolors"
+                      v-model="selectedOptions.colorscheme.luigi"
+                      :options="randomizerOptions.colorscheme.luigi"
+                    ></smbr-select>
+                    <smbr-select
+                      id="ocsf"
+                      label="Fire Mario/Luigi Color Scheme"
+                      @input="updateInputted"
+                      storage-key="smbr.opt.firecolors"
+                      v-model="selectedOptions.colorscheme.fire"
+                      :options="randomizerOptions.colorscheme.fire"
+                    ></smbr-select>
                   </b-col>
 
                   <b-col>
@@ -226,30 +250,6 @@
                       checked-value="true"
                       unchecked-value="false"
                     ></smbr-checkbox>
-                    <smbr-select
-                      id="ocsm"
-                      label="Mario Color Scheme"
-                      @input="updateInputted"
-                      storage-key="smbr.opt.mariocolors"
-                      v-model="selectedOptions.colorscheme.mario"
-                      :options="randomizerOptions.colorscheme.mario"
-                    ></smbr-select>
-                    <smbr-select
-                      id="ocsl"
-                      label="Luigi Color Scheme"
-                      @input="updateInputted"
-                      storage-key="smbr.opt.luigicolors"
-                      v-model="selectedOptions.colorscheme.luigi"
-                      :options="randomizerOptions.colorscheme.luigi"
-                    ></smbr-select>
-                    <smbr-select
-                      id="ocsf"
-                      label="Fire Mario/Luigi Color Scheme"
-                      @input="updateInputted"
-                      storage-key="smbr.opt.firecolors"
-                      v-model="selectedOptions.colorscheme.fire"
-                      :options="randomizerOptions.colorscheme.fire"
-                    ></smbr-select>
                     <smbr-checkbox
                       id="ovl"
                       label="Generate verbose debug log"
