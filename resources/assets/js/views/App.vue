@@ -10,11 +10,6 @@
           >
             <b-alert
               dismissible
-              :show="true"
-              variant="info"
-            >NOTE: this software is still under development, and currently in a beta/testing stage (at best)! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
-            <b-alert
-              dismissible
               fade
               :show="error"
               variant="danger"
@@ -332,6 +327,11 @@
             <b-button variant="info" href="/about">About/Help</b-button>
             <!-- <b-button @click="loadDefaultsButton">Load default options</b-button> -->
             <p></p>
+            <b-alert
+              dismissible
+              :show="true"
+              variant="info"
+            >NOTE: this software is still under development, and currently in a beta/testing stage (at best)! Things might not work out as you expect, but hopefully the worst problem you'll face is a "Server error" message!</b-alert>
             <b-alert dismissible :show="info" variant="info" v-html="infoMessage">{{ infoMessage }}</b-alert>
           </b-card>
         </b-col>
