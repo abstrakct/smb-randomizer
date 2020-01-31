@@ -26,6 +26,7 @@ Check it out: https://smbr.herebemonsters.network (Note: you need to provide you
 - OHKO (One Hit Knock Out) mode!
 - Randomize Bowser's hitpoints
 - Selectable color schemes (including random colors) for Mario/Luigi/Fire M/L
+- And more!
 
 ## LICENSE
 
