@@ -2,6 +2,7 @@ v0.9.8
 - Added OHKO (One-Hit Knock-Out) mode. One hit will kill Mario regardless of Mario's status!
 - Added (experimental) Mystery Seed mode - the randomizer's options will be randomized!
   NOTE: As of now, this mode doesn't check if chosen options are incompatible with each other, so it might crash!
+  NOTE: Also, you can get spoilers from the log.
 - Fixed hidden 1-UPs not showing up. Now, they will always show up when level order is randomized, and/or 
   when hidden 1-UPs are included in block randomization.
 - Various minor bugfixes.
