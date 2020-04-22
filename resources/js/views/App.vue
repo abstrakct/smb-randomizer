@@ -581,7 +581,7 @@ export default {
 
     updateRom(rom, current_rom_hash) {
       if (!rom) {
-        console.log(rom);
+        // console.log(rom);
         return;
       }
 
@@ -837,7 +837,7 @@ export default {
       axios
         .post("/randomizer/flags/set", { flagstring: this.inputFlags })
         .then(response => {
-          console.log(response);
+          // console.log(response);
           this.selectedOptions.randomizeBackground = true;
         });
     },
@@ -887,7 +887,7 @@ export default {
           //shuffleMusic: this.selectedOptions.shuffleMusic,
         })
         .then(response => {
-          console.log(response);
+          // console.log(response);
           this.currentFlags = response.data;
         });
     }
