@@ -1,11 +1,11 @@
 <?php
-namespace SMBR\Http\Controllers;
+namespace App\Http\Controllers;
 
+use App\SMBR\Flagstring;
+use App\SMBR\Logger;
+use App\SMBR\Randomizer;
+use App\SMBR\Rom;
 use Illuminate\Http\Request;
-use SMBR\Flagstring;
-use SMBR\Logger;
-use SMBR\Randomizer;
-use SMBR\Rom;
 
 class RandomizerController extends Controller
 {

@@ -1,9 +1,0 @@
-Hi Big Jon, you don't know me, but I discovered SpeedGaming and the SMB3 randomizer (and thus also yourself) around January this year. I instantly got hooked, and the SMB3R tournament was incredibly entertaining!
-Being a fan of randomization in other games/genres I also very quickly became fascinated by the idea of randomizing these old games I played as a kid. And since I am a hobby programmer
-I quickly started thinking about making a randomizer of my own. Long story short: I discovered there was no good randomizer for good old Super Mario Bros. for the NES - so I made one!
-Now, it's not perfect yet, and there might be bugs, and there are issues I'm looking into, but still, I think I have created a pretty cool randomizer with many interesting options
-you can choose from. At this point I consider the randomizer to be in a beta stage, and thus I am looking for people who knows SMB well and would like to test out the randomizer.
-Of course you are free to live stream anything created by this randomizer - and I'd love to watch you do that!
-I am also welcoming any feedback regarding any aspect of the randomizer.
-The randomizer will be available online, very much like the altpp randomizer - in fact I haved taught myself a whole lot just from
-the alttp randomizer source code and veetorp's streams 

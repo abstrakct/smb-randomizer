@@ -10,12 +10,11 @@
     <title>SMBR</title>
 
     <!-- Bootswatch theme -->
-    {{--
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/darkly/bootstrap.min.css"> --}}
-    <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css') }}"> {{--
-    <link rel="stylesheet" type="text/css" href="{{ mix('css/darkly/bulmaswatch/bulmaswatch.min.css') }}">--}} {{--
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css"> --}} {{--
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet"> --}}
+    {{-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/darkly/bootstrap.min.css"> --}}
+    <link rel="stylesheet" type="text/css" href="{{ mix('css/app.css') }}"> 
+    {{-- <link rel="stylesheet" type="text/css" href="{{ mix('css/darkly/bulmaswatch/bulmaswatch.min.css') }}">--}} 
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css"> --}} 
+    {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet"> --}}
 
 
     <style>

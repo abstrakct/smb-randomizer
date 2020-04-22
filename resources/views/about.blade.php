@@ -5,7 +5,7 @@
         <b-row>
             <b-col>
                 <div>
-                    <h1>About SMB Randomizer v{!! SMBR\Randomizer::VERSION !!}</h1>
+                    <h1>About SMB Randomizer v{!! App\SMBR\Randomizer::VERSION !!}</h1>
                     <h2>aka useful information before diving in</h2>
                 </div>
                 <div>
@@ -133,7 +133,7 @@ although I haven't personally come across an impossible/unwinable seed at this p
                         <p></p>
                         <b>Randomize brick blocks in underground bonus areas</b> - select this to randomize the content of the few brick blocks in underground bonus areas that normally have a mushroom or coins.
                         <p></p>
-                        <b>Secondary Hard Mode</b> - in vanilla SMB some levels appear two times, and if it appears after 5-3, there will be more enemies on the level. This is sometimes referred to as "secondary hard mode". With this option you can choose to have that always activated (meaning all enemies will spawn on each occurrence of these levels), or you can leave it unchanged. For now, these options do not influence where levels are placed, but there are plans for a mode where you can randomize where this mode starts, and the level shuffling will take this option into account.
+                        This option is temporarily disabled. <del><b>Secondary Hard Mode</b> - in vanilla SMB some levels appear two times, and if it appears after 5-3, there will be more enemies on the level. This is sometimes referred to as "secondary hard mode". With this option you can choose to have that always activated (meaning all enemies will spawn on each occurrence of these levels), or you can leave it unchanged. For now, these options do not influence where levels are placed, but there are plans for a mode where you can randomize where this mode starts, and the level shuffling will take this option into account.</del>
                         <p></p>
                         <b>EXPERIMENTAL FEATURE: Randomize background and scenery</b> - this will change the background and scenery of each level. Results can get VERY strange, and there is very little sanity checking for this feature as of now, so there are no guarantees if you select this one. For now it's NOT recommended for races etc.
                         <p></p>

@@ -1,8 +1,8 @@
 <?php
 
-namespace SMBR\Http\Controllers;
+namespace App\Http\Controllers;
 
-use SMBR\Rom;
+use App\SMBR\Rom;
 
 class SettingsController extends Controller
 {
