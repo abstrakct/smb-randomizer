@@ -4,10 +4,7 @@
       <b-row>
         <b-col></b-col>
         <b-col cols="8">
-          <b-card
-            :title="'Super Mario Bros. Randomizer v' + this.version"
-            style="max-width: 150rem;"
-          >
+          <b-card :title="'Super Mario Bros. Randomizer v' + this.version" style="max-width: 150rem;">
             <b-alert
               dismissible
               fade
@@ -25,7 +22,7 @@
 
             <p></p>
 
-            <div v-if="baseRomLoaded && optionsLoaded">
+            <div v-if="optionsLoaded">
               <b-card title="Options" style="max-width: 150rem;">
                 <b-row>
                   <b-col>
@@ -266,21 +263,21 @@
                       variant="success"
                       @click="generateSeedWithLog"
                       class="w-100"
-                      :disabled="this.rando.done ? false : true"
+                      :disabled="!this.baseRomLoaded || !this.rando.done"
                     >Generate ROM!</b-button>
                     <p></p>
                     <b-button
                       variant="success"
                       @click="generateSeedNoLog"
                       class="w-100"
-                      :disabled="this.rando.done ? false : true"
+                      :disabled="!this.baseRomLoaded || !this.rando.done"
                     >Generate ROM without the spoiler log (suitable for races etc.)</b-button>
                     <p></p>
                     <b-button
                       variant="success"
                       @click="generateMysterySeed"
                       class="w-100"
-                      :disabled="this.rando.done ? false : true"
+                      :disabled="!this.baseRomLoaded || !this.rando.done"
                     >
                       Generate
                       <strong>MYSTERY SEED!</strong> (WARNING: buggy, might crash!)
@@ -510,6 +507,11 @@ export default {
     },
 
     generateSeed() {
+      if(!this.baseRomLoaded) {
+        this.error = true;
+        this.errorMessage = "You need to supply a valid ROM file!";
+        return;
+      }
       this.error = false;
       axios
         .post("/randomizer/generate", {
@@ -536,8 +538,7 @@ export default {
           shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
           randomizeBackground: this.selectedOptions.randomizeBackground,
           hardMode: this.selectedOptions.hardMode,
-          randomizeUndergroundBricks: this.selectedOptions
-            .randomizeUndergroundBricks,
+          randomizeUndergroundBricks: this.selectedOptions.randomizeUndergroundBricks,
           excludeFirebars: this.selectedOptions.excludeFirebars,
           randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
           shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,
