@@ -877,8 +877,7 @@ export default {
           shuffleUndergroundBonus: this.selectedOptions.shuffleUndergroundBonus,
           randomizeBackground: this.selectedOptions.randomizeBackground,
           hardMode: this.selectedOptions.hardMode,
-          randomizeUndergroundBricks: this.selectedOptions
-            .randomizeUndergroundBricks,
+          randomizeUndergroundBricks: this.selectedOptions.randomizeUndergroundBricks,
           excludeFirebars: this.selectedOptions.excludeFirebars,
           randomizeSpinSpeed: this.selectedOptions.randomizeSpinSpeed,
           shuffleSpinDirections: this.selectedOptions.shuffleSpinDirections,

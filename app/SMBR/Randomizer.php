@@ -21,18 +21,18 @@ use App\SMBR\Level;
 use App\SMBR\Translator;
 
 // TODO: move these somewhere better!
-const HammerTimeOffset = 0x512b;
-const HammerTimeOffset2 = 0x5161;
-const FireTimeOffset = 0x515d;
-const BowserHPOffset = 0x457c;
+const HammerTimeOffset    = 0x512b;
+const HammerTimeOffset2   = 0x5161;
+const FireTimeOffset      = 0x515d;
+const BowserHPOffset      = 0x457c;
 const StartingLivesOffset = 0x107a;
-const WarpZonesOffset = 0x0802;
-const WarpZone12Offset = 0x0802;
+const WarpZonesOffset     = 0x0802;
+const WarpZone12Offset    = 0x0802;
 const WarpZone42SkyOffset = 0x080a;
 const WarpZone42EndOffset = 0x0807;
-const FireworksOffset1 = 0x5308;
-const FireworksOffset2 = 0x530e;
-const FireworksOffset3 = 0x5314;
+const FireworksOffset1    = 0x5308;
+const FireworksOffset2    = 0x530e;
+const FireworksOffset3    = 0x5314;
 
 function enemyIsInPool($o, $pool)
 {
@@ -77,26 +77,26 @@ class Randomizer
      */
     public function __construct($seed = 1, $opt = null, $rom = null)
     {
-        $this->rng_seed = $seed;
-        $this->options = $opt;
-        $this->rom = $rom;
-        $this->flagstring = new Flagstring($opt);
-        $this->trans = new Translator();
-        $this->enemy_pools = new \App\SMBR\EnemyPools();
-        $this->item_pools = new \App\SMBR\ItemPools();
+        $this->rng_seed     = $seed;
+        $this->options      = $opt;
+        $this->rom          = $rom;
+        $this->flagstring   = new Flagstring($opt);
+        $this->trans        = new Translator();
+        $this->enemy_pools  = new \App\SMBR\EnemyPools();
+        $this->item_pools   = new \App\SMBR\ItemPools();
         $this->colorschemes = array('random' => new Colorscheme(0, 0, 0),
-            'Vanilla Mario' => new Colorscheme(0x16, 0x27, 0x18),
-            'Vanilla Luigi' => new Colorscheme(0x30, 0x27, 0x19),
-            'Vanilla Fire' => new Colorscheme(0x37, 0x27, 0x16),
-            'Pale Ninja' => new Colorscheme(0xce, 0xd0, 0x1e),
-            'All Black' => new Colorscheme(0x8d, 0x8d, 0x8d),
-            'Black & Blue' => new Colorscheme(0xcc, 0x18, 0x2f),
-            'Black & Blue 2' => new Colorscheme(0x51, 0xf8, 0x6e),
-            'Denim' => new Colorscheme(0x80, 0xa7, 0xcc),
-            'Mustard Man' => new Colorscheme(0xd8, 0x27, 0x28),
-            'Pretty In Pink' => new Colorscheme(0xe3, 0xb2, 0x14),
-            'Outrun' => new Colorscheme(0x61, 0x27, 0x94),
-            'Outrun 2' => new Colorscheme(0x94, 0x27, 0x61),
+            'Vanilla Mario'                      => new Colorscheme(0x16, 0x27, 0x18),
+            'Vanilla Luigi'                      => new Colorscheme(0x30, 0x27, 0x19),
+            'Vanilla Fire'                       => new Colorscheme(0x37, 0x27, 0x16),
+            'Pale Ninja'                         => new Colorscheme(0xce, 0xd0, 0x1e),
+            'All Black'                          => new Colorscheme(0x8d, 0x8d, 0x8d),
+            'Black & Blue'                       => new Colorscheme(0xcc, 0x18, 0x2f),
+            'Black & Blue 2'                     => new Colorscheme(0x51, 0xf8, 0x6e),
+            'Denim'                              => new Colorscheme(0x80, 0xa7, 0xcc),
+            'Mustard Man'                        => new Colorscheme(0xd8, 0x27, 0x28),
+            'Pretty In Pink'                     => new Colorscheme(0xe3, 0xb2, 0x14),
+            'Outrun'                             => new Colorscheme(0x61, 0x27, 0x94),
+            'Outrun 2'                           => new Colorscheme(0x94, 0x27, 0x61),
         );
     }
 
@@ -147,16 +147,16 @@ class Randomizer
         if ($colorscheme == "random") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = mt_rand(0, 255);
+            $skin  = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else if ($colorscheme == "clothes") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = 0x27;
+            $skin  = 0x27;
             $inner = mt_rand(0, 255);
         } else {
             $outer = $this->colorschemes[$colorscheme]->outer;
-            $skin = $this->colorschemes[$colorscheme]->skin;
+            $skin  = $this->colorschemes[$colorscheme]->skin;
             $inner = $this->colorschemes[$colorscheme]->inner;
         }
         $this->rom->setMarioOuterColor($outer, $game);
@@ -171,16 +171,16 @@ class Randomizer
         if ($colorscheme == "random") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = mt_rand(0, 255);
+            $skin  = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else if ($colorscheme == "clothes") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = 0x27;
+            $skin  = 0x27;
             $inner = mt_rand(0, 255);
         } else {
             $outer = $this->colorschemes[$colorscheme]->outer;
-            $skin = $this->colorschemes[$colorscheme]->skin;
+            $skin  = $this->colorschemes[$colorscheme]->skin;
             $inner = $this->colorschemes[$colorscheme]->inner;
         }
         $this->rom->setFireOuterColor($outer, $game);
@@ -195,16 +195,16 @@ class Randomizer
         if ($colorscheme == "random") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = mt_rand(0, 255);
+            $skin  = mt_rand(0, 255);
             $inner = mt_rand(0, 255);
         } else if ($colorscheme == "clothes") {
             $this->setSeed();
             $outer = mt_rand(0, 255);
-            $skin = 0x27;
+            $skin  = 0x27;
             $inner = mt_rand(0, 255);
         } else {
             $outer = $this->colorschemes[$colorscheme]->outer;
-            $skin = $this->colorschemes[$colorscheme]->skin;
+            $skin  = $this->colorschemes[$colorscheme]->skin;
             $inner = $this->colorschemes[$colorscheme]->inner;
         }
         $this->rom->setLuigiOuterColor($outer, $game);
@@ -274,8 +274,8 @@ class Randomizer
 
     public function newRandomizeEnemiesOnLevel($offset, &$game)
     {
-        $data = $this->rom->read($offset, 100);
-        $end = 0;
+        $data                          = $this->rom->read($offset, 100);
+        $end                           = 0;
         $level_has_cheepcheepgenerator = false;
 
         foreach ($data as $byte) {
@@ -296,8 +296,8 @@ class Randomizer
                 if ($data[$i] != 0xFF) {
                     // Let's randomize!
                     $do_randomize = true;
-                    $p = $data[$i + 1] & 0b10000000;
-                    $h = $data[$i + 1] & 0b01000000;
+                    $p            = $data[$i + 1] & 0b10000000;
+                    $h            = $data[$i + 1] & 0b01000000;
                     if ($this->options['hardMode'] == 'always') {
                         $h = 0;
                     }
@@ -332,7 +332,7 @@ class Randomizer
 
                         while (!$acceptable) {
                             $acceptable = true;
-                            $new_enemy = $new_candidates[mt_rand(0, count($new_candidates) - 1)];
+                            $new_enemy  = $new_candidates[mt_rand(0, count($new_candidates) - 1)];
 
                             if ($new_enemy == Enemy::get('Red Flying Cheep-Cheep Generator')) {
                                 $level_has_cheepcheepgenerator = true;
@@ -381,7 +381,7 @@ class Randomizer
     // This is for the CHAOS randomization
     public function randomizeEnemiesOnLevel($offset, $level, &$game)
     {
-        $end = 0;
+        $end        = 0;
         $percentage = 100; // if == 100 then all enemies will be randomized, if 50 there's a 50% chance of randomization happening for each enemy, etc.
         // TODO: change percentage based on settings/flags/something.
         // TODO: or remove this percentage setting?
@@ -396,8 +396,8 @@ class Randomizer
         }
         for ($i = 0; $i < $end; $i += 2) {
             $do_randomize = true;
-            $x = $data[$i] & 0xf0;
-            $y = $data[$i] & 0x0f;
+            $x            = $data[$i] & 0xf0;
+            $y            = $data[$i] & 0x0f;
             if ($y == 0xE) {
                 $i++;
             } else if ($y > 0xE) {
@@ -425,13 +425,13 @@ class Randomizer
                     // if original enemy was firebar and new enemy is not firebar, set Y coord to one higher (-1).
                     // Will hopefully prevent enemies from being stuck inside the block where the firebar was
                     if ($do_randomize) {
-                        $new_data = 0;
+                        $new_data   = 0;
                         $acceptable = false;
 
                         while (!$acceptable) {
                             if ($o == Enemy::get('Toad')) {
                                 $new_object = $this->enemy_pools->toad_pool[mt_rand(0, count($this->enemy_pools->toad_pool) - 1)];
-                                $new_coord = 0xc8;
+                                $new_coord  = 0xc8;
                                 $game->addData($offset + $i, pack('C*', $new_coord));
                                 $acceptable = true;
                             } else if (enemyIsInPool($o, $this->enemy_pools->generator_pool)) {
@@ -489,8 +489,8 @@ class Randomizer
 
     public function shuffleSpinDirections(&$game)
     {
-        $offset = 0x4464;
-        $data = [0x00, 0x00, 0x10, 0x10, 0x00];
+        $offset   = 0x4464;
+        $data     = [0x00, 0x00, 0x10, 0x10, 0x00];
         $new_data = mt_shuffle($data);
 
         for ($i = 0; $i < 5; $i++) {
@@ -510,7 +510,7 @@ class Randomizer
                 }
 
                 $this->log->writeVerbose("Randomizing item blocks in $level->name\n");
-                $end = 0;
+                $end  = 0;
                 $data = $this->rom->read($level->level_data_offset, 200);
                 foreach ($data as $byte) {
                     $end++;
@@ -521,7 +521,7 @@ class Randomizer
 
                 for ($i = 2; $i < $end; $i += 2) {
                     $do_randomize = true;
-                    $y = $data[$i] & 0b00001111;
+                    $y            = $data[$i] & 0b00001111;
                     if ($y > 0x0B) {
                         $do_randomize = false;
                     }
@@ -531,13 +531,13 @@ class Randomizer
                     }
 
                     if ($do_randomize) {
-                        $p = $data[$i + 1] & 0b10000000;
-                        $object = $data[$i + 1] & 0b01111111;
+                        $p        = $data[$i + 1] & 0b10000000;
+                        $object   = $data[$i + 1] & 0b01111111;
                         $new_data = 0x99;
                         if (in_array($object, $frompool)) {
-                            $pull_key = mt_rand(0, count($topool) - 1);
+                            $pull_key   = mt_rand(0, count($topool) - 1);
                             $new_object = $topool[$pull_key];
-                            $new_data = $p | $new_object;
+                            $new_data   = $p | $new_object;
                             $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_data));
                             $this->log->writeVerbose("  Changed " . Item::getName($object) . " to " . Item::getName($new_object) . "\n");
                         }
@@ -554,8 +554,8 @@ class Randomizer
         $this->log->write("Randomizing blocks in underground bonus areas!\n");
 
         $level = Level::get('underground-bonus');
-        $end = 0;
-        $data = $this->rom->read($level->level_data_offset, 200);
+        $end   = 0;
+        $data  = $this->rom->read($level->level_data_offset, 200);
 
         foreach ($data as $byte) {
             $end++;
@@ -566,19 +566,19 @@ class Randomizer
 
         for ($i = 2; $i < $end; $i += 2) {
             $do_randomize = true;
-            $y = $data[$i] & 0b00001111;
+            $y            = $data[$i] & 0b00001111;
             if ($y > 0x0B) {
                 $do_randomize = false;
             }
 
             if ($do_randomize) {
-                $p = $data[$i + 1] & 0b10000000;
-                $object = $data[$i + 1] & 0b01111111;
+                $p        = $data[$i + 1] & 0b10000000;
+                $object   = $data[$i + 1] & 0b01111111;
                 $new_data = 0x99;
                 if (in_array($object, $frompool)) {
-                    $pull_key = mt_rand(0, count($topool) - 1);
+                    $pull_key   = mt_rand(0, count($topool) - 1);
                     $new_object = $topool[$pull_key];
-                    $new_data = $p | $new_object;
+                    $new_data   = $p | $new_object;
                     $game->addData($level->level_data_offset + $i + 1, pack('C*', $new_data));
                     $this->log->writeVerbose("  Changed " . Item::getName($object) . " to " . Item::getName($new_object) . "\n");
                 }
@@ -593,7 +593,7 @@ class Randomizer
     public function shuffleAllLevels(&$game, $subset = false)
     {
         if ($subset) {
-            $levels = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
+            $levels          = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
             $possible_levels = [
                 '1-1', '1-2', '1-3', '2-1', '2-2', '2-3', '3-1', '3-2', '3-3', '4-1', '4-2', '4-3',
                 '5-1', '5-2', '5-3', '6-1', '6-2', '6-3', '7-1', '7-2', '7-3', '8-1', '8-2', '8-3',
@@ -620,8 +620,8 @@ class Randomizer
         $shuffledlevels = mt_shuffle($all_levels);
         //print_r($shuffledlevels);
 
-        $levelindex = 0;
-        $worldindex = 0;
+        $levelindex   = 0;
+        $worldindex   = 0;
         $shuffleindex = 0;
 
         // TODO: reduce code duplication!
@@ -629,7 +629,7 @@ class Randomizer
             for ($i = 0; $i < count($shuffledlevels); $i++) {
                 // print("handling " . Level::get($shuffledlevels[$shuffleindex])->name . " worldindex = $worldindex levelindex = $levelindex\n");
                 // Select next level in list of shuffled levels, set its data
-                $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
+                $game->worlds[$worldindex]->levels[$levelindex]            = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
 
                 // Is this level a castle?
@@ -648,7 +648,7 @@ class Randomizer
             }
         } else if ($this->options['pipeTransitions'] == 'keep') {
             for ($i = 0; $i < count($shuffledlevels); $i++) {
-                $game->worlds[$worldindex]->levels[$levelindex] = Level::get($shuffledlevels[$shuffleindex]);
+                $game->worlds[$worldindex]->levels[$levelindex]            = Level::get($shuffledlevels[$shuffleindex]);
                 $game->worlds[$worldindex]->levels[$levelindex]->world_num = $worldindex;
 
                 if (Level::get($shuffledlevels[$shuffleindex])->map >= 0x60 and Level::get($shuffledlevels[$shuffleindex])->map <= 0x65) {
@@ -681,7 +681,7 @@ class Randomizer
      */
     public function shuffleWorldOrder(&$game)
     {
-        $worlds = [0, 1, 2, 3, 4, 5, 6];
+        $worlds         = [0, 1, 2, 3, 4, 5, 6];
         $shuffledworlds = mt_shuffle($worlds);
 
         // shuffle worlds 1-7
@@ -753,11 +753,11 @@ class Randomizer
         ];
         $castles = ['1-4', '2-4', '3-4', '4-4', '5-4', '6-4', '7-4', '8-4'];
 
-        $shuffledlevels = mt_shuffle($levels);
+        $shuffledlevels  = mt_shuffle($levels);
         $shuffledcastles = mt_shuffle($castles);
 
         if ($this->options['pipeTransitions'] == 'remove') {
-            $levelindex = 0;
+            $levelindex  = 0;
             $castleindex = 0;
             for ($w = 0; $w < 8; $w++) {
                 for ($i = 0; $i < 3; $i++) {
@@ -871,7 +871,7 @@ class Randomizer
             6 => [Pipe::get('4-1 Exit 1'), Pipe::get('6-2 Exit 2')],
             8 => [Pipe::get('4-2 Exit 1'), Pipe::get('5-1 Exit 1'), Pipe::get('6-2 Exit 1'), Pipe::get('8-2 Exit 1')],
         ];
-        $pipeList = [];
+        $pipeList  = [];
         $pageCount = [
             0 => 3,
             2 => 2,
@@ -900,13 +900,13 @@ class Randomizer
 
         for ($page = 0; $page <= 8; $page += 2) {
             $used_worlds = [];
-            $done = false;
-            $n = 0;
-            $fail = 0;
+            $done        = false;
+            $n           = 0;
+            $fail        = 0;
             while (!$done) {
                 $key = mt_rand(0, count($pipeList) - 1);
                 if (!in_array($pipeList[$key][0]->getWorldActive(), $used_worlds)) {
-                    $used_worlds[] = $pipeList[$key][0]->getWorldActive();
+                    $used_worlds[]     = $pipeList[$key][0]->getWorldActive();
                     $newPipes[$page][] = $pipeList[$key];
 
                     // print info
@@ -930,17 +930,23 @@ class Randomizer
         }
 
         // Set new data
+        $this->log->writeVerbose("###\nSetting new data for pipes\n###\n");
         for ($page = 0; $page <= 8; $page += 2) {
             for ($i = 0; $i < $pageCount[$page]; $i++) {
                 $entry = $newPipes[$page][$i][0];
                 $entry->setPage($page);
                 $originalExit = VanillaPipe::get($newPipes[$page][$i][1]->name);
-                $newExit = $exitsByPage[$page][$i];
+                $newExit      = $exitsByPage[$page][$i];
 
                 $newExit->setWorldActive($entry->getWorldActive());
                 $newExit->setMap($originalExit->getMap());
                 $newExit->setPage($originalExit->getPage());
                 $newExit->setNewPageFlag($originalExit->getNewPageFlag());
+
+                $this->log->writeVerbose("Original exit: {$originalExit->name}\n");
+                $this->log->writeVerbose("New world active: {$newExit->getWorldActive()}\n");
+                $this->log->writeVerbose("New map: {$newExit->getMap()}\n");
+                $this->log->writeVerbose("New page: {$newExit->getPage()}\n");
             }
         }
 
@@ -1026,7 +1032,7 @@ class Randomizer
 
             foreach ($game->worlds as $world) {
                 if (($world->hasLevel('8-2') && $world->hasLevel('5-1'))) {
-                    $this->log->writeVerbose("Sanity check fail: 6-2 and 5-1 are in the same world!\n");
+                    $this->log->writeVerbose("Sanity check fail: 8-2 and 5-1 are in the same world!\n");
                     return false;
                 }
             }
@@ -1051,10 +1057,25 @@ class Randomizer
                     return false;
                 }
             }
+        } else {
+            // Sanity checks for when we're shuffling underground bonus areas
+            foreach ($game->worlds as $world) {
+                // not sure why, but things break when 1-1 is in the same world as these. probably related to cloud areas in 5-2 and 6-2
+                if (($world->hasLevel('1-1') && $world->hasLevel('5-2'))) {
+                    $this->log->writeVerbose("Sanity check fail: 1-1 and 5-2 are in the same world! (shuffle underground = true)\n");
+                    return false;
+                }
+
+                if (($world->hasLevel('1-1') && $world->hasLevel('6-2'))) {
+                    $this->log->writeVerbose("Sanity check fail: 1-1 and 6-2 are in the same world! (shuffle underground = true)\n");
+                    return false;
+                }
+            }
         }
 
         // Levels with cloud area 1 must be in different worlds
         // TODO: add option to include these areas (and water area) in shuffle
+        // TODO: combine into one foreach loop
         foreach ($game->worlds as $world) {
             if (($world->hasLevel('5-2') && $world->hasLevel('2-1'))) {
                 $this->log->writeVerbose("Sanity check fail: 5-2 and 2-1 are in the same world!\n");
@@ -1143,7 +1164,7 @@ class Randomizer
         $this->log->write("Randomizing Bowser's abilities...\n");
 
         $new_hammer_world = mt_rand(0, 6);
-        $new_fire_world = mt_rand($new_hammer_world, 7);
+        $new_fire_world   = mt_rand($new_hammer_world, 7);
         //print("Hammer: $new_hammer_world\nFire: $new_fire_world\n");
 
         $game->addData(HammerTimeOffset, pack('C*', $new_hammer_world));
@@ -1290,9 +1311,9 @@ class Randomizer
             $game->addData(0x808, pack('C*', $new_warp));
         } else if ($this->options['warpZones'] == 'shuffle') {
             $this->log->write("Shuffling Warp Pipes...\n");
-            $destinations = [2, 3, 4, 5, 6, 7, 8]; // 0x24 is "blank"
+            $destinations          = [2, 3, 4, 5, 6, 7, 8]; // 0x24 is "blank"
             $shuffled_destinations = mt_shuffle($destinations);
-            $index = 0;
+            $index                 = 0;
             $game->addData($offset, pack('C*', $shuffled_destinations[0]));
             $game->addData($offset + 1, pack('C*', $shuffled_destinations[1]));
             $game->addData($offset + 2, pack('C*', $shuffled_destinations[2]));
@@ -1418,10 +1439,10 @@ class Randomizer
             foreach ($game->worlds as $world) {
                 foreach ($world->levels as $level) {
                     if ($level->name == '1-2') {
-                        $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                        $min_world    = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
                         $good_warp[0] = mt_rand($min_world, 8);
                         $good_warp[1] = mt_rand($min_world, 8);
-                        $bad_warp = mt_rand(1, $world->num + 1);
+                        $bad_warp     = mt_rand(1, $world->num + 1);
                         // make sure we shuffle the order so you can't know which pipe is which
                         $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
 
@@ -1433,11 +1454,11 @@ class Randomizer
                     }
                     if ($level->name == '4-2') {
                         // area accessed by beanstalk
-                        $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
+                        $min_world    = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
                         $good_warp[0] = mt_rand($min_world, 8);
                         $good_warp[1] = mt_rand($min_world, 8);
-                        $bad_warp = mt_rand(1, $world->num + 1);
-                        $shuffled = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
+                        $bad_warp     = mt_rand(1, $world->num + 1);
+                        $shuffled     = mt_shuffle([$good_warp[0], $good_warp[1], $bad_warp]);
 
                         $offset = WarpZonesOffset + 8;
                         for ($i = 0; $i < 3; $i++) {
@@ -1449,7 +1470,7 @@ class Randomizer
                         $chance = mt_rand(1, 100);
                         if ($chance <= 50) {
                             $min_world = (($world->num + 2) > 8 ? 8 : ($world->num + 2));
-                            $new_warp = mt_rand($min_world, 8);
+                            $new_warp  = mt_rand($min_world, 8);
                         } else {
                             $new_warp = mt_rand(1, $world->num + 1);
                         }
@@ -1479,7 +1500,7 @@ class Randomizer
     public function randomizeFireworks(&$game)
     {
         $this->log->write("Randomizing fireworks...\n");
-        $digits = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        $digits        = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         $random_digits = mt_shuffle($digits);
 
         // use indexes 1, 3, 6 just as a nod to the original game :)
@@ -1504,7 +1525,7 @@ class Randomizer
                     $this->log->writeVerbose("Old scenery:    " . $level->getSceneryDescription() . "\n");
                     $this->log->writeVerbose("Old compliment: " . $level->getComplimentDescription() . "\n");
 
-                    $newScenery = mt_rand(0, 3);
+                    $newScenery    = mt_rand(0, 3);
                     $newCompliment = mt_rand(0, 2);
                     $newBackground = mt_rand(0, 7);
                     $level->setScenery($newScenery);
@@ -1576,8 +1597,8 @@ class Randomizer
         $this->log->write("Fixing looping castles (4-4 and 7-4)...\n");
         $offset44 = 0x407b;
         $offset74 = 0x407d;
-        $world44 = 0;
-        $world74 = 0;
+        $world44  = 0;
+        $world74  = 0;
 
         foreach ($game->worlds as $world) {
             if ($world->hasLevel('4-4')) {
@@ -1648,8 +1669,8 @@ class Randomizer
 
     public function shuffleMusic(Game &$game)
     {
-        $bytes = [0x01, 0x02, 0x04, 0x08];
-        $offset = 0x10f7;
+        $bytes    = [0x01, 0x02, 0x04, 0x08];
+        $offset   = 0x10f7;
         $shuffled = mt_shuffle($bytes);
 
         for ($i = 0; $i < 4; $i++) {
@@ -1659,7 +1680,7 @@ class Randomizer
 
     public function setTextSeedhash(string $text, Game &$game)
     {
-        $offset = 0x9fa1; // + 0x8000;   if using smb+duckhunt rom
+        $offset      = 0x9fa1; // + 0x8000;   if using smb+duckhunt rom
         $titleOffset = 0x9f9c;
         $this->log->write("Writing Seedhash on title screen...\n");
 
@@ -1713,14 +1734,14 @@ class Randomizer
             "ThankYouMario" => [0xd64, 0xd77], // THANK YOU MARIO!
             "ThankYouLuigi" => [0xd78, 0xd8b], // THANK YOU LUIGI!
             "AnotherCastle" => [0xd8c, 0xdb7], // BUT OUR PRINCESS IS IN \ ANOTHER CASTLE!
-            "QuestOver" => [0xdb8, 0xdce], // YOUR QUEST IS OVER.
-            "NewQuest" => [0xdcf, 0xded], // WE PRESENT YOU A NEW QUEST.
-            "WorldSelect" => [0xdee, 0xdfe], // PUSH BUTTON B
-            "WorldSelect2" => [0xdff, 0xe13], // TO SELECT A WORLD
-            "Warp" => [0x7d0, 0x7e7], // WELCOME TO WARP ZONE!
+            "QuestOver"     => [0xdb8, 0xdce], // YOUR QUEST IS OVER.
+            "NewQuest"      => [0xdcf, 0xded], // WE PRESENT YOU A NEW QUEST.
+            "WorldSelect"   => [0xdee, 0xdfe], // PUSH BUTTON B
+            "WorldSelect2"  => [0xdff, 0xe13], // TO SELECT A WORLD
+            "Warp"          => [0x7d0, 0x7e7], // WELCOME TO WARP ZONE!
         ];
 
-        $offset = $messages[$text][0] + 3;
+        $offset     = $messages[$text][0] + 3;
         $lastoffset = $messages[$text][1];
         for ($i = 0; $i < strlen($newtext); $i++) {
             if ($i + $offset > $lastoffset) {
@@ -1770,7 +1791,7 @@ class Randomizer
     public function makeSeedHash()
     {
         // mystery seed ?
-        $hashstring = $this->flags . strval($this->getSeed() . \App\SMBR\Randomizer::VERSION . $this->rom->getMD5()) . $this->log->getActuallySave();
+        $hashstring     = $this->flags . strval($this->getSeed() . \App\SMBR\Randomizer::VERSION . $this->rom->getMD5()) . $this->log->getActuallySave();
         $this->seedhash = hash("crc32b", $hashstring);
     }
 
@@ -1781,7 +1802,7 @@ class Randomizer
 
     public function setSeed(int $rng_seed = null)
     {
-        $rng_seed = $rng_seed ?: random_int(1, 9999999999999); // cryptographic pRNG for seeding
+        $rng_seed       = $rng_seed ?: random_int(1, 9999999999999); // cryptographic pRNG for seeding
         $this->rng_seed = $rng_seed % 10000000000000;
         mt_srand($this->rng_seed);
     }
@@ -1791,7 +1812,7 @@ class Randomizer
     {
         include "TextVariations.php";
 
-        $game = new Game($this->options);
+        $game       = new Game($this->options);
         $item_pools = new ItemPools();
 
         // Set up 8 worlds in game structure
@@ -2008,7 +2029,7 @@ function mt_shuffle(array $array)
 {
     $new_array = [];
     while (count($array)) {
-        $pull_key = mt_rand(0, count($array) - 1);
+        $pull_key  = mt_rand(0, count($array) - 1);
         $new_array = array_merge($new_array, array_splice($array, $pull_key, 1));
     }
 
